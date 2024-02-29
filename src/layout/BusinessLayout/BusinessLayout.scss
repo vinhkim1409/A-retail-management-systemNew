@@ -1,0 +1,27 @@
+.BusinessLayoutContainer{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    .sidebar{
+        width: 16%;
+        min-height: 100vh;
+    }
+    .content-and-navbar{
+        width: 84%;
+        // height: 100%;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    .navbar{
+        height: 60px;
+        background-color: white;
+        box-shadow: 3px 3px 10px 0px #d3d3d3;
+    }
+    .content{
+
+        padding: 0 3%;
+    }
+}

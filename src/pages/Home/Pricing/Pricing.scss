@@ -1,0 +1,125 @@
+.Pricing-container{
+    border-radius: 80px;
+    padding: 20px 0 50px 0;
+    margin: 0 20px;
+    background: linear-gradient(to bottom, #FFFFFF, #FFFFFF, #ddf5ff);
+    line-height: normal;
+    .description{
+        width: 70%;
+        margin: 0 auto 40px auto;
+        text-align: center;
+        h1{
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        p{
+            font-size: 20px;
+        }
+    }
+    .pricing{
+        width: 70%;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+    }
+    .box-pricing{
+        width: 32%;
+        height: 500px;
+        border-radius: 1em;
+        box-sizing: border-box;
+        padding: 30px;
+        background-color: white;
+        box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+        transition: box-shadow 0.3s ease-in-out;
+    }
+    .box-pricing:hover {
+        box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.2); /* Đổ bóng lớn hơn khi hover */
+      }
+    .name-package-first{
+        padding: 5px 10px;
+        border-radius: 10px;
+        border: none;
+        background-color: rgb(197, 216, 255);
+        color: #0400ff;
+        font-size: 1.125em;
+        font-weight: bold;
+    }
+    .package-second{
+        display: flex;
+        justify-content: space-between;
+    }
+    .name-package-second{
+        padding: 5px 10px;
+        border-radius: 10px;
+        border: none;
+        background-color: rgb(191, 255, 215);
+        color: #007200;
+        font-size: 1.125em;
+        font-weight: bold;
+    }
+    .name-package-third{
+        padding: 5px 10px;
+        border-radius: 10px;
+        border: none;
+        background-color: #fff1d7;
+        color: #eb9900;
+        font-size: 1.125em;
+        font-weight: bold;
+    }
+    .popular-package{
+        color: #007200;
+        border: none;
+        background-color: #bfffd7;
+        border-radius: 10px;
+        text-align: right;
+        padding: 5px 10px;
+        font-weight: bold;
+    }
+    .description-package{
+        margin-top: 10px;
+    }
+    .price-package{
+        font-size: 24px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    .div-button{
+        display: flex;
+        justify-content: center;
+    }
+    .button-get-first, .button-get-second, .button-get-third{
+        border: none;
+        color: white;
+        border-radius: 1em;
+        padding: 10px 20px;
+        font-size: 1.25em;
+        font-weight: bold;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+    .button-get-first{
+        background-color: #0400ff;
+    }
+    .button-get-first:hover{
+        background-color: #0300b6;
+    }
+    .button-get-second{
+        background-color: #007200;
+    }
+    .button-get-second:hover{
+        background-color: #005400;
+    }
+    .button-get-third{
+        background-color: #eb9900;
+    }
+    .button-get-third:hover{
+        background-color: #b87800;
+    }
+    .feature-package{
+        margin-top: 10px;
+        height: 15em;
+    }
+    .detail-feature{
+        margin-bottom: 5px;
+    }
+}

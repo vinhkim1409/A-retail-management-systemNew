@@ -1,0 +1,53 @@
+.Business-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  padding-right: 10px;
+  .title{
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 3%;
+  }
+  .totalbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-bottom: 2%;
+  }
+  .labelbox {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto auto auto;
+  }
+  .allbox {
+    display: grid;
+    background-color: white;
+    border-radius: 10px;
+    grid-column: 1;
+  }
+  .textlable {
+    margin-left: 5%;
+    font-weight: 700;
+    margin-top: 5px;
+    font-size: 18px;
+    text-transform: capitalize;  
+    color: gray;
+  }
+  .searchbox {
+    margin-top: 3.5%;
+    grid-column: 7;
+    
+  }
+  .sortbox {
+    margin-top: 6%;
+    grid-column: 8;
+  }
+  .table {
+  }
+  .searchinput {
+    margin-right: 5px;
+    border-radius: 10px;
+  }
+  .sortinput {
+    border-radius: 10px;
+  }
+}

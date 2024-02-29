@@ -1,0 +1,146 @@
+.ClassInfor-container {
+  .title-group {
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .class1 {
+    padding: 0% 2% 2% 2%;
+  }
+  .class-box {
+    display: flex;
+    flex-direction: row;
+    padding: 0% 2% 2% 2%;
+  }
+  .info-box {
+    display: flex;
+    flex-direction: row;
+    width: 30%;
+    height: auto;
+    margin-right: 1%;
+  }
+  .title {
+    font-size: 18px;
+  }
+  .btn {
+    background-color: #0d6efd;
+    border: none;
+    color: white;
+    padding: 12px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+  }
+  button:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0d6efd;
+  }
+  button:hover {
+    box-shadow: 0 0 5px #0d6efd;
+    text-shadow: 0 0 5px white;
+  }
+  .title-small {
+    font-size: 18px;
+    font-weight: bold;
+    color: gray;
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0d6efd;
+  }
+  .content {
+    padding: 0% 0% 0% 1%;
+  }
+  .single {
+    margin-top: 1%;
+  }
+  .lable {
+    display: flex;
+    margin-top: 1%;
+  }
+  .lable-mini {
+    border: 1px solid lightgray;
+    width: 100%;
+    padding: 1% 1% 1% 1%;
+    text-align: center;
+    background-color: rgba(217, 217, 217, 0.33);
+  }
+  .border-start {
+    border-radius: 5px 0px 0px 5px;
+  }
+  .border-end {
+    border-radius: 0px 5px 5px 0px;
+  }
+  .class1-1 {
+    display: flex;
+  }
+  .add {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .row-col {
+    display: flex;
+    flex-direction: row;
+  }
+  .box {
+    border: 1px solid lightgray;
+  }
+  .option-1 {
+    display: flex;
+    flex-direction: row;
+  }
+  .color-box1 {
+    border: 1px solid lightgray;
+    width: 19.8%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .price-box1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .price-contaner1 {
+    display: flex;
+    flex-direction: column;
+    width: 80.2%;
+  }
+  .size-box1 {
+    border: 1px solid lightgray;
+    width: 25%;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .buy-box1 {
+    border-radius: 0px;
+    width: 25%;
+  }
+  .sell-box1 {
+    border-radius: 0px;
+    width: 25%;
+  }
+  .quantity-box1 {
+    border-radius: 0px;
+    width: 25%;
+  }
+
+  .option-2 {
+    display: flex;
+  }
+  .option2-box {
+    width: 100%;
+    border-radius: 0px;
+  }
+  .attribute-box {
+    border: 1px solid lightgray;
+    width: 99%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

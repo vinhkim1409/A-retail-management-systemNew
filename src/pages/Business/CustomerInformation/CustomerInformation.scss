@@ -1,0 +1,43 @@
+.CustomerInformation-container{
+
+    .title{
+        margin-top: 20px;
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .content{
+        width: 90%;
+        margin: 0 auto;
+        background-color: white;
+        padding: 30px 20px;
+        border-radius: 10px;
+        display: flex;
+        border: 1px solid rgb(182, 182, 182);
+        box-shadow: 0px 10px 6px -6px #999999;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .avt{
+        width: 25%;
+        display: flex;
+        justify-content: center;
+        img{
+            border-radius: 50%;
+            width: 90%;
+        }
+    }
+    .infor{
+        width: 73%;
+        div{
+            margin-bottom: 10px;
+        }
+    }
+    .name{
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .sex, .phone, .address, .email{
+        font-size: 20px;
+    }
+}

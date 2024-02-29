@@ -1,0 +1,15 @@
+.CustomerLayoutContainer{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    height: 100vh;
+    flex-direction: column;
+    .navbar{
+        height: 50px;
+        background-color: white;
+        display: flex;
+        align-items: center;
+    }
+    
+}

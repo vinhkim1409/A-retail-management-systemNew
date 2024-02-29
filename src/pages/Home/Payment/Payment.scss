@@ -1,0 +1,91 @@
+.Payment {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  flex-direction: column;
+  background: linear-gradient(to bottom, #FFFFFF, #c9f0ff);
+  .textpayment {
+    text-align: center;
+  }
+  .box {
+    width: 1000px;
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between ;
+    
+    border-radius: 25px;
+   
+  }
+  .leftbox {
+    width: 45%;
+    margin-top: 2px;
+  }
+  .minileftbox{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background-color: #FFFFFF;
+    border: 1px solid #FFFFFF  ;
+    border-radius: 25px;
+    box-shadow: 10px 10px 5px  lightblue;
+  }
+  .inminileftbox{
+    margin: 30px 30px 30px 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  .paymentInfo {
+    width: 45%;
+    margin-top: 5px;
+    
+    
+  }
+  .inpaymentInfo{
+    padding:  30px 30px 30px 30px;
+    border-radius: 25px;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 10px 10px 5px  lightblue;
+  }
+  .imglogo{
+    width: 25px;
+    height: 25px;
+    margin-left: 10px;
+    margin-right: 10px;
+    
+  }
+  .imglogozalo{
+    width: 35px;
+    height: 15px;
+    margin-left: 5px;
+    margin-right: 8px;
+  }
+  .payInfo{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: 500;
+  }
+  .icon{
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .form-check{
+    margin-top: 3px;
+  }
+  .form-check-label{
+    margin-left: 10px;
+  }
+  .btn{
+    background-color: #0d6efd;
+    border: none;
+    color: white;
+    padding: 12px 34px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    margin-top: 5px;
+
+  }
+}

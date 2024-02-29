@@ -1,0 +1,26 @@
+.footer-main{
+    width: 70%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.25em;
+    flex-wrap: wrap;
+    border-top: 1.5px solid rgb(159, 159, 159);
+    padding-top:10px;
+    .logo{
+        width: 60%;
+    }
+    .email{
+        width: 20%;
+        display: flex;
+        justify-content: right;
+    }
+    .phone{
+        width: 20%;
+        display: flex;
+        justify-content: right;
+    }
+    .icon-email, .icon-phone{
+        margin-right: 10px;
+    }
+}

@@ -1,0 +1,93 @@
+.ware-container {
+  margin-bottom: 20px;
+  .title {
+    font-size: 30px;
+    font-weight: bold;
+  }
+  .toolkit {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 1%;
+  }
+  .btn {
+    background-color: #0d6efd;
+    border: none;
+    color: white;
+    padding: 12px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+  }
+  .btn:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0d6efd;
+  }
+  .btn:hover {
+    box-shadow: 0 0 5px #0d6efd;
+    text-shadow: 0 0 10px white;
+  }
+  .button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .pagination {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    button {
+      border: none;
+      margin-left: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  }
+  .search-button {
+    background-color: white;
+    border: 0px solid white;
+  }
+  .active {
+    color: black;
+  }
+  .pages {
+    width: 16%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 2%;
+   
+  }
+  .pages-number,
+  .icon-back,
+  .icon-next {
+    color: #808080;
+  }
+  .button-back {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .button-next {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .table-product {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding-bottom: 1%;
+    margin-top: 1%;
+    background-color: white;
+    border-radius: 10px;
+  }
+  .table-label {
+    font-weight: 600;
+  }
+}
