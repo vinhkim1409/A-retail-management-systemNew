@@ -1,0 +1,31 @@
+.Upload-container {
+  display: flex;
+  flex-direction: row;
+  .img-frame{
+    display: inline-block;
+    height: auto;
+    width: 12%;
+    margin-top: 1%;
+    margin-right: 5%;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  }
+ .img{
+  display: block;
+  height: 100%;
+  width: 100%;
+  
+ 
+ }
+  .upload-button {
+    height: auto;
+    width: 12%;
+    border: 1px dashed #0d6efd;
+    display: flex;
+    justify-content: center;
+   margin-top: 1%;
+  }
+  .icon{
+    width: 50px;
+    height: 100px;
+  }
+}

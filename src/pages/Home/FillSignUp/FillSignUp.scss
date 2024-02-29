@@ -1,0 +1,79 @@
+.Fillsignup-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  .form-element{
+    display: grid;
+    grid-template-columns: auto auto ;
+    grid-row: auto auto;
+  }
+  .form_container {
+    width: 40%;
+    padding: 5px;
+    border-radius: 25px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+  }
+  .form_container1 {
+    text-align: center;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 3px;
+  }
+  .btn {
+    background-color: #0d6efd;
+    border: none;
+    color: white;
+    padding: 12px 34px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    margin-top: 5px;
+
+  }
+  .form-control
+  {
+    width: 300px;
+    height: 30px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 10px;
+    grid-row: 2;
+    grid-column: 1;
+  }
+  .btn-google{
+    width: 66%;
+    margin-bottom: 10px;
+  }
+  .multi-form{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .form-control-1
+  {
+    width: 120px;
+    height: 30px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 10px;
+    grid-row: 2;
+    grid-column: 1/ span 1;
+  }
+  .text-center{
+    text-align: center;
+  }
+}

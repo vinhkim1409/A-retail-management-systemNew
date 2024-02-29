@@ -1,0 +1,74 @@
+.Addnewstaff-container {
+  .button {
+    display: flex;
+    justify-content: flex-end;
+ 
+  }
+  .btn {
+    background-color: #0d6efd;
+    border: none;
+    color: white;
+    padding: 12px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .btn:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0d6efd;
+  }
+  .btn:hover {
+    box-shadow: 0 0 5px #0d6efd;
+    text-shadow: 0 0 5px white;
+  }
+  .btn-box {
+    display: flex;
+    justify-content: center;
+    margin-top: 2%;
+    min-width: 100%;
+  }
+  .cancel {
+    margin-right: 8%;
+    background-color: #ffc107;
+  }
+  .cancel:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #ffc107;
+  }
+  .cancel:hover {
+    box-shadow: 0 0 5px #ffc107;
+    text-shadow: 0 0 5px white;
+  }
+  .save {
+  }
+  .btn-box{
+    display: flex;
+    justify-content: space-between;
+    min-width: 20%;
+  }
+  .title
+  {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 2%;
+  }
+  .label-box{
+    width: 300px;
+    height: 200px;
+    border: 1px dashed blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+  .icon{
+    width: 200px;
+    height: 100px;
+  }
+  .img{
+    width: 300px;
+    height: 200px;
+  }
+}

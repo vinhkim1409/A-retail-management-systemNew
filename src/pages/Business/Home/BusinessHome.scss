@@ -1,0 +1,45 @@
+.Businesshome-container {
+  border-radius: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  .label {
+    margin-left: 10px;
+    font-size: 30px;
+    font-weight: bold;
+  }
+  .chart {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 6%;
+    margin-top: 6%;
+  }
+  .tag {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-direction: column;
+    border: 2px solid lightgray;
+    margin-right: 5%;
+    width: 26%;
+    border-radius: 10px;
+    background-color: white;
+    padding-top: 1%;
+    padding-bottom: 1%;
+  }
+  .overview {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3%;
+  }
+  .number {
+    font-size: 40px;
+    font-weight: 700;
+    color: gray;
+  }
+  .chart1 {
+   
+    border: 1px solid gray;
+  }
+}

@@ -1,0 +1,23 @@
+.FooterCustomer-container{
+  padding: 20px 10% 0 10%;
+  background-color: rgb(255, 255, 255);
+  .text-container {
+    text-align: justify;
+  }
+  
+  .other-logo {
+    object-fit: contain;
+    max-width: 200px;
+    width: 100%;
+  }
+  .footer-section-logo {
+    max-height: 40px;
+    padding: 4px 0px;
+  }
+  .test{
+    background-color: red;
+  }
+  .test1{
+    background-color: blue;
+  }
+}
