@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "./CustomerBlacklist.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUnlock, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUnlock,
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 import {
   Box,
+  Button,
+  Modal,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
+  Typography,
   styled,
 } from "@mui/material";
 
@@ -23,6 +30,18 @@ const StyledTable = styled(Table)(() => ({
     "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
   },
 }));
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: 4,
+};
 
 function CustomerBlackList() {
   const [page, setPage] = React.useState(0);
@@ -191,7 +210,7 @@ function CustomerBlackList() {
     },
   ];
 
-  const [stateTag, setStateTag] = useState("website")
+  const [stateTag, setStateTag] = useState("website");
 
   useEffect(() => {
     setDefaultActiveTab();
@@ -203,142 +222,202 @@ function CustomerBlackList() {
   };
   const [currentTableData, setCurrentTableData] = useState(customerdatawebsite);
   const unBan = (email) => {
-    console.log("unban: ", email)
-  }
-  const totalPages = Math.ceil(currentTableData.length / 5)
+    console.log("unban: ", email);
+  };
+  const totalPages = Math.ceil(currentTableData.length / 5);
+
+  //Un ban
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <div className="CustomerBlackList-container">
-      <h2 className="title">Blacklist</h2>
-      <div className="tab">
-        <button
-          className={`tablinks button-website ${stateTag == "website" ? "active-tag" : ""}`}
-          onClick={() => {
-            setCurrentTableData(customerdatawebsite);
-            setStateTag("website")
-          }}
-        >
-          Website
-        </button>
-        <button
-          className={`tablinks button-shopee ${stateTag == "shopee" ? "active-tag" : ""}`}
-          onClick={() => {
-            setCurrentTableData(customerdatashopee);
-            setStateTag("shopee")
-          }}
-        >
-          Shopee
-        </button>
-      </div>
-      <div className="add">
-        <div className="add-button">Add</div>
-      </div>
-      <div className="table-product">
-        <Box width="100%" overflow="auto" backgroundColor="white" minHeight={450}>
-          <StyledTable>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  align="left"
-                  className="table-label"
-                  sx={{ minWidth: 100 }}
-                >
-                  Họ
-                </TableCell>
-                <TableCell
-                  align="left"
-                  className="table-label"
-                  sx={{ minWidth: 60 }}
-                >
-                  Tên
-                </TableCell>
-                <TableCell
-                  align="left"
-                  className="table-label"
-                  sx={{ minWidth: 120 }}
-                >
-                  Email
-                </TableCell>
-                <TableCell
-                  align="left"
-                  className="table-label"
-                  sx={{ minWidth: 120 }}
-                >
-                  Lý do
-                </TableCell>
-                <TableCell
-                  align="left"
-                  className="table-label"
-                  sx={{ minWidth: 100 }}
-                >
-                  Tình trạng
-                </TableCell>
-                <TableCell align="Center" className="table-label">
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {currentTableData
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell
-                      align="left"
-                      className="table-label"
-                      sx={{ maxWidth: 80 }}
-                    >
-                      {item.lastname}
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      className="table-label"
-                      sx={{ maxWidth: 50 }}
-                    >
-                      {item.firstname}
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      className="cell-content"
-                      sx={{ maxWidth: 100 }}
-                    >
-                      {item.email}
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      className="cell-content"
-                      sx={{ maxWidth: 100 }}
-                    >
-                      {item.reason}
-                    </TableCell>
-                    <TableCell align="left">{item.status}</TableCell>
-                    <TableCell align="center">
-                      <btn className="btn" onClick={() => { unBan(item.email) }}>
-                        <FontAwesomeIcon icon={faUnlock} />
-                      </btn>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </StyledTable>
-        </Box>
-        <div className="pages">
-          <div className="pages-number">1-5 of {page + 1}</div>
+    <>
+      <div className="CustomerBlackList-container">
+        <h2 className="title">Blacklist</h2>
+        <div className="tab">
           <button
-            className="button-back"
-            onClick={() => handleChangePage(page - 1)}
-            disabled={page == 0}
+            className={`tablinks button-website ${
+              stateTag == "website" ? "active-tag" : ""
+            }`}
+            onClick={() => {
+              setCurrentTableData(customerdatawebsite);
+              setStateTag("website");
+            }}
           >
-            <FontAwesomeIcon icon={faChevronLeft} className={`${page == 0 ? "icon-back" : "active"}`} />
+            Website
           </button>
           <button
-            className="button-next"
-            onClick={() => handleChangePage(page + 1)}
-            disabled={page == totalPages - 1}
+            className={`tablinks button-shopee ${
+              stateTag == "shopee" ? "active-tag" : ""
+            }`}
+            onClick={() => {
+              setCurrentTableData(customerdatashopee);
+              setStateTag("shopee");
+            }}
           >
-            <FontAwesomeIcon icon={faChevronRight} className={`${page == totalPages - 1 ? "icon-next" : "active"}`} />
+            Shopee
           </button>
         </div>
+        <div className="add">
+          <div className="add-button">Add</div>
+        </div>
+        <div className="table-product">
+          <Box
+            width="100%"
+            overflow="auto"
+            backgroundColor="white"
+            minHeight={450}
+          >
+            <StyledTable>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 100 }}
+                  >
+                    Họ
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 60 }}
+                  >
+                    Tên
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 120 }}
+                  >
+                    Email
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 120 }}
+                  >
+                    Lý do
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 100 }}
+                  >
+                    Tình trạng
+                  </TableCell>
+                  <TableCell align="Center" className="table-label"></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentTableData
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell
+                        align="left"
+                        className="table-label"
+                        sx={{ maxWidth: 80 }}
+                      >
+                        {item.lastname}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        className="table-label"
+                        sx={{ maxWidth: 50 }}
+                      >
+                        {item.firstname}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        className="cell-content"
+                        sx={{ maxWidth: 100 }}
+                      >
+                        {item.email}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        className="cell-content"
+                        sx={{ maxWidth: 100 }}
+                      >
+                        {item.reason}
+                      </TableCell>
+                      <TableCell align="left">{item.status}</TableCell>
+                      <TableCell align="center">
+                        <btn
+                          className="btn"
+                          onClick={() => {
+                            handleOpen()
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faUnlock} />
+                        </btn>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </StyledTable>
+          </Box>
+          <div className="pages">
+            <div className="pages-number">1-5 of {page + 1}</div>
+            <button
+              className="button-back"
+              onClick={() => handleChangePage(page - 1)}
+              disabled={page == 0}
+            >
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                className={`${page == 0 ? "icon-back" : "active"}`}
+              />
+            </button>
+            <button
+              className="button-next"
+              onClick={() => handleChangePage(page + 1)}
+              disabled={page == totalPages - 1}
+            >
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className={`${page == totalPages - 1 ? "icon-next" : "active"}`}
+              />
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="modal-modal-title"
+            sx={{ fontWeight: 600, fontSize: 30 }}
+          >
+            Unban customer
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Do you want to unban this customer ?
+          </Typography>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}
+          >
+            <Button variant="contained" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button variant="contained" color="error">
+              Yes
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+      
+    </>
   );
 }
 

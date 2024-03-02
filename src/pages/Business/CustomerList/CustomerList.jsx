@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./CustomerList.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBan } from "@fortawesome/free-solid-svg-icons";
-import { faChevronLeft,faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   Box,
   Button,
@@ -36,11 +39,23 @@ const StyledTable = styled(Table)(() => ({
   },
 }));
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  borderRadius:2,
+  p: 4,
+};
+
 function CustomerList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const handleChangePage = ( newPage) => {
+  const handleChangePage = (newPage) => {
     setPage(newPage);
   };
   const handleChangeRowsPerPage = (event) => {
@@ -203,124 +218,146 @@ function CustomerList() {
       status: "Bình thường",
     },
   ];
-  const [stateTag,setStateTag]=useState("website")
+  const [stateTag, setStateTag] = useState("website");
 
   useEffect(() => {
     setDefaultActiveTab();
   }, []);
- 
+
   const setDefaultActiveTab = () => {
     const TabButton = document.querySelector(".button-website");
     TabButton.click();
   };
 
   const [currentTableData, setCurrentTableData] = useState(customerdatawebsite);
-  const totalPages=Math.ceil(currentTableData.length/5)
-  return (
-    <div className="CustomerList-container">
-      <h2 className="title">Customer List</h2>
-      <div className="tab">
-        <button
-          className={`tablinks button-website ${stateTag=="website" ?"active-tag":""}`}
-          onClick={() => {
-            setCurrentTableData(customerdatawebsite);
-            setStateTag("website")
-          }}
-        >
-          Website
-        </button>
-        <button
-          className={`tablinks button-shopee ${stateTag=="shopee" ?"active-tag":""}`}
-          onClick={() => {
-            setCurrentTableData(customerdatashopee);
-            setStateTag("shopee")
-          }}
-        >
-          Shopee
-        </button>
-      </div>
-      <div className="table-product">
-        <Box width="100%" overflow="auto" backgroundColor="white" minHeight={350}>
-          <StyledTable>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  align="left"
-                  className="table-label"
-                  sx={{ minWidth: 100 }}
-                >
-                  Họ
-                </TableCell>
-                <TableCell
-                  align="left"
-                  className="table-label"
-                  sx={{ minWidth: 60 }}
-                >
-                  Tên
-                </TableCell>
-                <TableCell
-                  align="center"
-                  className="table-label"
-                  sx={{ minWidth: 100 }}
-                >
-                  Email
-                </TableCell>
-                <TableCell
-                  align="left"
-                  className="table-label"
-                  sx={{ minWidth: 100 }}
-                >
-                  Số điện thoại
-                </TableCell>
-                <TableCell
-                  align="left"
-                  className="table-label"
-                  sx={{ minWidth: 100 }}
-                >
-                  Tình trạng
-                </TableCell>
-                <TableCell align="left" className="table-label">
-                  Cấm
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {currentTableData
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell
-                      align="left"
-                      className="table-label"
-                      sx={{ maxWidth: 100 }}
-                    >
-                      {item.lastname}
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      className="table-label"
-                      sx={{ maxWidth: 50 }}
-                    >
-                      {item.firstname}
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      className="cell-content"
-                      sx={{ maxWidth: 100 }}
-                    >
-                      {item.email}
-                    </TableCell>
-                    <TableCell align="left">{item.phone}</TableCell>
-                    <TableCell align="left">{item.status}</TableCell>
-                    <TableCell align="left">
-                      <FontAwesomeIcon icon={faBan}/>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </StyledTable>
+  const totalPages = Math.ceil(currentTableData.length / 5);
 
-          {/* <TablePagination
+
+  const [open,setOpen]=useState(false)
+  const handleOpen=()=>{
+    setOpen(true)
+  }
+  const handleClose=()=>{
+    setOpen(false)
+  }
+
+
+
+  return (
+    <>
+      <div className="CustomerList-container">
+        <h2 className="title">Customer List</h2>
+        <div className="tab">
+          <button
+            className={`tablinks button-website ${
+              stateTag == "website" ? "active-tag" : ""
+            }`}
+            onClick={() => {
+              setCurrentTableData(customerdatawebsite);
+              setStateTag("website");
+            }}
+          >
+            Website
+          </button>
+          <button
+            className={`tablinks button-shopee ${
+              stateTag == "shopee" ? "active-tag" : ""
+            }`}
+            onClick={() => {
+              setCurrentTableData(customerdatashopee);
+              setStateTag("shopee");
+            }}
+          >
+            Shopee
+          </button>
+        </div>
+        <div className="table-product">
+          <Box
+            width="100%"
+            overflow="auto"
+            backgroundColor="white"
+            minHeight={350}
+          >
+            <StyledTable>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 100 }}
+                  >
+                    Họ
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 60 }}
+                  >
+                    Tên
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    className="table-label"
+                    sx={{ minWidth: 100 }}
+                  >
+                    Email
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 100 }}
+                  >
+                    Số điện thoại
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 100 }}
+                  >
+                    Tình trạng
+                  </TableCell>
+                  <TableCell align="left" className="table-label">
+                    Cấm
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentTableData
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell
+                        align="left"
+                        className="table-label"
+                        sx={{ maxWidth: 100 }}
+                      >
+                        {item.lastname}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        className="table-label"
+                        sx={{ maxWidth: 50 }}
+                      >
+                        {item.firstname}
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        className="cell-content"
+                        sx={{ maxWidth: 100 }}
+                      >
+                        {item.email}
+                      </TableCell>
+                      <TableCell align="left">{item.phone}</TableCell>
+                      <TableCell align="left">{item.status}</TableCell>
+                      <TableCell align="left">
+                        <FontAwesomeIcon icon={faBan} onClick={handleOpen}/>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </StyledTable>
+
+            {/* <TablePagination
             sx={{ px: 2 }}
             page={page}
             component="div"
@@ -332,26 +369,61 @@ function CustomerList() {
             nextIconButtonProps={{ "aria-label": "Next Page" }}
             backIconButtonProps={{ "aria-label": "Previous Page" }}
           /> */}
-        </Box>
-        <div className="pages">
+          </Box>
+          <div className="pages">
             <div className="pages-number">1-5 of {page + 1}</div>
             <button
               className="button-back"
               onClick={() => handleChangePage(page - 1)}
               disabled={page == 0}
             >
-              <FontAwesomeIcon icon={faChevronLeft} className={`${page == 0?"icon-back":"active"}`}  />
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                className={`${page == 0 ? "icon-back" : "active"}`}
+              />
             </button>
             <button
               className="button-next"
               onClick={() => handleChangePage(page + 1)}
               disabled={page == totalPages - 1}
             >
-              <FontAwesomeIcon icon={faChevronRight}className={`${page == totalPages - 1?"icon-next":"active"}`} />
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className={`${page == totalPages - 1 ? "icon-next" : "active"}`}
+              />
             </button>
           </div>
+        </div>
       </div>
-    </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="modal-modal-title"
+            sx={{ fontWeight: 600, fontSize: 30 }}
+          >
+            Ban customer
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Do you want to ban this customer ?
+          </Typography>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}
+          >
+            <Button variant="contained" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button variant="contained" color="error">
+              Yes
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+    </>
   );
 }
 
