@@ -3,20 +3,12 @@ import "./ProductM.scss";
 import {
   Box,
   Button,
-  FormControl,
-  Icon,
-  IconButton,
   InputAdornment,
-  MenuItem,
   Modal,
-  Paper,
-  Select,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
   TextField,
   Typography,
@@ -26,13 +18,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
   faPenToSquare,
-  faLessThan,
-  faGreaterThan,
   faTrashCan,
-  faChevronLeft,faChevronRight
+  faChevronLeft,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import shirt from "../../../assets/shirt.jpg";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function createData(pic, code, name, sell, buy, quantity) {
   return { pic, code, name, sell, buy, quantity };
@@ -47,7 +40,14 @@ const rows = [
   createData("Pic6", "6ABCDS", "Fans", "1200000", "1000000", "10"),
   createData("Pic7", "7ABCDS", "Chair", "1500000", "1000000", "10"),
   createData("Pic8", "8ABCDS", "Table", "1600000", "1000000", "10"),
-  createData("Pic9", "9ABCDS", "Fans FansFansFansFans Fans", "1700000", "1000000", "10"),
+  createData(
+    "Pic9",
+    "9ABCDS",
+    "Fans FansFansFansFans Fans",
+    "1700000",
+    "1000000",
+    "10"
+  ),
   createData("Pic1", "10ABCDS", "Fans", "1700000", "1000000", "10"),
   createData("Pic1", "11ABCDS", "Fans", "1200000", "1000000", "10"),
   createData("Pic2", "12ABCDS", "Chair", "1500000", "1000000", "10"),
@@ -76,8 +76,8 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
-  border: "2px solid #000",
   boxShadow: 24,
+  borderRadius:2,
   p: 4,
 };
 
@@ -94,8 +94,9 @@ const StyledTable = styled(Table)(() => ({
 function ProductM() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const totalProducts = rows.length;
-  const totalPages =Math.ceil(totalProducts / 5);
+  const [products,setProducts]=useState(rows)
+  const totalProducts = products.length;
+  const totalPages = Math.ceil(totalProducts / 5);
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -116,17 +117,18 @@ function ProductM() {
     <>
       <div className="button">
         <button
-          className="btn trash"
+          className="trash"
           onClick={() => {
             handleOpenModal(row.code);
           }}
         >
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
-        <Link to="/customer">
+        <Link >
           <button className="btn edit">
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
+         
         </Link>
         {/* <Link to={`/business/product/detail/${row.code}`}>
           <button className="btn minus">
@@ -136,7 +138,21 @@ function ProductM() {
       </div>
     </>
   );
-console.log(totalPages)
+  console.log(totalPages);
+        
+  //delete product
+  const handleDeleteProduct=()=>{
+    console.log(idDelete)
+    const updateArrayProduct=products.filter((n)=>n.code!=idDelete)
+    setProducts(updateArrayProduct)
+    //call api xoa
+    // tra ve status cua hanh dong xoa
+    notify()
+    //tat popup
+    setShowModal(false)
+
+  }
+  const notify = () => toast.success("Delete Successfully");
   return (
     <>
       <div className="ProductM-container">
@@ -172,7 +188,12 @@ console.log(totalPages)
           </div>
         </div>
         <div className="table-product">
-          <Box width="100%" overflow="auto" backgroundColor="white" minHeight={560}>
+          <Box
+            width="100%"
+            overflow="auto"
+            backgroundColor="white"
+            minHeight={560}
+          >
             <div className="label">
               <Typography
                 sx={{
@@ -190,10 +211,18 @@ console.log(totalPages)
               <TableHead>
                 <TableRow>
                   <TableCell align="left"></TableCell>
-                  <TableCell align="left" className="table-label" sx={{minWidth:100}} >
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 100 }}
+                  >
                     Code
                   </TableCell>
-                  <TableCell align="left" className="table-label"sx={{minWidth:100}} >
+                  <TableCell
+                    align="left"
+                    className="table-label"
+                    sx={{ minWidth: 100 }}
+                  >
                     Name
                   </TableCell>
                   <TableCell align="center" className="table-label">
@@ -209,7 +238,7 @@ console.log(totalPages)
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
+                {products
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
                     <TableRow key={index}>
@@ -223,10 +252,18 @@ console.log(totalPages)
                           }}
                         />
                       </TableCell>
-                      <TableCell align="left" className="table-label" sx={{maxWidth:100}}>
+                      <TableCell
+                        align="left"
+                        className="table-label"
+                        sx={{ maxWidth: 100 }}
+                      >
                         {row.code}
                       </TableCell>
-                      <TableCell align="left" className="table-label" sx={{maxWidth:80}}>
+                      <TableCell
+                        align="left"
+                        className="table-label"
+                        sx={{ maxWidth: 80 }}
+                      >
                         {row.name}
                       </TableCell>
                       <TableCell align="center">{row.sell}</TableCell>
@@ -260,14 +297,20 @@ console.log(totalPages)
               onClick={() => handleChangePage(page - 1)}
               disabled={page == 0}
             >
-              <FontAwesomeIcon icon={faChevronLeft} className={`${page == 0?"icon-back":"active"}`}  />
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                className={`${page == 0 ? "icon-back" : "active"}`}
+              />
             </button>
             <button
               className="button-next"
               onClick={() => handleChangePage(page + 1)}
               disabled={page == totalPages - 1}
             >
-              <FontAwesomeIcon icon={faChevronRight}className={`${page == totalPages - 1?"icon-next":"active"}`} />
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className={`${page == totalPages - 1 ? "icon-next" : "active"}`}
+              />
             </button>
           </div>
         </div>
@@ -291,13 +334,18 @@ console.log(totalPages)
           <Box
             sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}
           >
-            <Button variant="contained">Cancel</Button>
-            <Button variant="contained" color="error">
+            <Button variant="contained" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button variant="contained" color="error" onClick={()=>{
+              handleDeleteProduct()}}>
               Yes
+              
             </Button>
           </Box>
         </Box>
       </Modal>
+      <ToastContainer />
     </>
   );
 }

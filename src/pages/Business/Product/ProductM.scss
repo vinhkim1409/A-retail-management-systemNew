@@ -24,6 +24,14 @@
   }
   .trash {
     background-color: #e03444;
+    border: none;
+    color: white;
+    padding: 12px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
   }
   .trash:hover::before {
     transform: scale(1.1);

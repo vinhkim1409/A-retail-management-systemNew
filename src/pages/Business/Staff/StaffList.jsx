@@ -55,9 +55,7 @@ function StaffList() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const deleteStaff = (id) => {
-    console.log("delete staff:", id);
-  };
+ 
 
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -66,7 +64,7 @@ function StaffList() {
       <button
         className="trash"
         onClick={() => {
-          handleOpenModal(item.firstname);
+          handleOpenModal(item.id);
         }}
       >
         <FontAwesomeIcon icon={faTrashCan} />
@@ -81,7 +79,7 @@ function StaffList() {
       </button>
     </div>
   );
-  const stafflist = [
+  const staffs = [
     {
       id: 1,
       lastname: "Nguyen Minh",
@@ -147,6 +145,7 @@ function StaffList() {
       position: "Sales",
     },
   ];
+  const [stafflist,setStaffList]=useState(staffs)
   const totalpage = Math.ceil(stafflist.length / rowsPerPage);
 
   //delete staff
@@ -156,9 +155,15 @@ function StaffList() {
     setIdDelete(id);
     setShowModal(true);
   };
+  const deleteStaff = () => {
+    const newStaffArray=stafflist.filter((staff)=>staff.id!=idDelete)
+    setStaffList(newStaffArray);
+    handleClose()
+  };
   const handleClose = () => {
     setShowModal(false);
   };
+  
   return (
     <>
       <div className="StaffList-container">
@@ -329,7 +334,7 @@ function StaffList() {
               variant="contained"
               color="error"
               onClick={() => {
-                deleteStaff(idDelete);
+                deleteStaff();
                 handleClose();
               }}
             >

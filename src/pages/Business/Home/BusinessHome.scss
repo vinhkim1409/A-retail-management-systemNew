@@ -13,7 +13,7 @@
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: 6%;
-    margin-top: 6%;
+    margin-top: 2%;
   }
   .tag {
     display: flex;
@@ -32,6 +32,13 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 3%;
+    flex-direction: column;
+    .title{
+      font-size: 20px;
+      font-weight: 700;
+      padding-left: 1.5%;
+      margin-top: 1%;
+    }
   }
   .number {
     font-size: 40px;
@@ -42,4 +49,11 @@
    
     border: 1px solid gray;
   }
+  .title{
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 4%;
+    padding-left: 1.5%;
+  }
+  
 }

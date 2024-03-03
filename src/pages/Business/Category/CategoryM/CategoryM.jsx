@@ -36,6 +36,19 @@ const StyledTable = styled(Table)(() => ({
     "& tr": { "& td": { paddingLeft: 30, textTransform: "capitalize" } },
   },
 }));
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: 4,
+};
+
 function CategoryM() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -53,6 +66,25 @@ function CategoryM() {
   const handleChange = (name) => (event) => {
     if (name === "checkedA")
       setState({ ...state, [name]: event.target.checked });
+    let num = 0;
+    categorys.map((item) => {
+      if (ids.includes(item.id)) {
+        num = num + 1;
+      }
+    });
+    console.log(num)
+    if (num === 4) {
+      const newArray=[]
+      setIds(newArray)
+      
+    } else {
+      let arrayIds = [];
+      categorys.map((item) => {
+        arrayIds.push(item.id);
+      });
+      setIds(arrayIds);
+     
+    }
   };
   const handleChangeCheck = (item) => {
     if (ids.includes(item.id)) {
@@ -62,7 +94,7 @@ function CategoryM() {
       setIds([...ids, item.id]);
     }
   };
-  const categorys = [
+  const category = [
     {
       id: 1,
       name: "Ao thun",
@@ -84,6 +116,7 @@ function CategoryM() {
       numOfProducts: 3,
     },
   ];
+  const [categorys,setCategorys]=useState(category)
   //add products to category
   const [open, setOpen] = useState(false);
   const [idCatalog, setIdCatalog] = useState("");
@@ -94,20 +127,28 @@ function CategoryM() {
   const handleClose = () => {
     setOpen(false);
   };
+  const [openDelete, setOpenDelete] = useState(false);
+
+  const handleOpenDelete = () => {
+    setOpenDelete(true);
+  };
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
+  const handleDelete=()=>{
+    const newArrayIds=categorys.filter((item)=>!ids.includes(item.id))
+    setCategorys(newArrayIds)
+    setOpenDelete(false)
+  }
 
   return (
     <>
       <div className="CategoryM-container">
         <div className="title">Product Category</div>
         <div className="btn-box">
-          <div
-            className="detele-btn"
-            onClick={() => {
-              console.log(ids);
-            }}
-          >
+          <button className={`${ids.length==0?"disabled":"delete-btn"}`} onClick={handleOpenDelete} disabled={ids.length==0}>
             Delete
-          </div>
+          </button>
           <AddNewCategory />
         </div>
         <div className="table">
@@ -156,6 +197,35 @@ function CategoryM() {
         </div>
       </div>
       <AddProductCatalog open={open} handleClose={handleClose} id={idCatalog} />
+
+      <Modal
+        open={openDelete}
+        onClose={handleCloseDelete}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="modal-modal-title"
+            sx={{ fontWeight: 600, fontSize: 30 }}
+          >
+            Delete Category
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Do you want to delete category?
+          </Typography>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}
+          >
+            <Button variant="contained" onClick={handleCloseDelete}>
+              Cancel
+            </Button>
+            <Button variant="contained" color="error" onClick={handleDelete}>
+              Yes
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </>
   );
 }
