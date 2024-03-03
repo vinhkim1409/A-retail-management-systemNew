@@ -221,15 +221,26 @@ function CustomerBlackList() {
     TabButton.click();
   };
   const [currentTableData, setCurrentTableData] = useState(customerdatawebsite);
-  const unBan = (email) => {
-    console.log("unban: ", email);
+  const [customerUnban,setCustomerUnban] = useState({
+    id: 0,
+    lastname: "",
+    firstname: "",
+    email: "",
+    reason: " ",
+    status: " ",
+  })
+  const unBan = () => {
+    const newArray=currentTableData.filter((data)=>data.id !== customerUnban.id)
+    setCurrentTableData(newArray)
+    handleClose()
   };
   const totalPages = Math.ceil(currentTableData.length / 5);
 
   //Un ban
   const [open, setOpen] = useState(false);
-  const handleOpen = () => {
+  const handleOpen = (customer) => {
     setOpen(true);
+    setCustomerUnban(customer)
   };
   const handleClose = () => {
     setOpen(false);
@@ -352,7 +363,7 @@ function CustomerBlackList() {
                         <btn
                           className="btn"
                           onClick={() => {
-                            handleOpen()
+                            handleOpen(item)
                           }}
                         >
                           <FontAwesomeIcon icon={faUnlock} />
@@ -402,7 +413,7 @@ function CustomerBlackList() {
             Unban customer
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Do you want to unban this customer ?
+            Do you want to unban this {customerUnban.lastname} {customerUnban.firstname} with email {customerUnban.email} ?
           </Typography>
           <Box
             sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}
@@ -410,7 +421,7 @@ function CustomerBlackList() {
             <Button variant="contained" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="contained" color="error">
+            <Button variant="contained" color="error" onClick={unBan}>
               Yes
             </Button>
           </Box>

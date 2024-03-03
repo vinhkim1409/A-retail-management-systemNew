@@ -94,7 +94,7 @@ function CategoryM() {
       setIds([...ids, item.id]);
     }
   };
-  const categorys = [
+  const category = [
     {
       id: 1,
       name: "Ao thun",
@@ -116,6 +116,7 @@ function CategoryM() {
       numOfProducts: 3,
     },
   ];
+  const [categorys,setCategorys]=useState(category)
   //add products to category
   const [open, setOpen] = useState(false);
   const [idCatalog, setIdCatalog] = useState("");
@@ -134,7 +135,12 @@ function CategoryM() {
   const handleCloseDelete = () => {
     setOpenDelete(false);
   };
-console.log(ids.length)
+  const handleDelete=()=>{
+    const newArrayIds=categorys.filter((item)=>!ids.includes(item.id))
+    setCategorys(newArrayIds)
+    setOpenDelete(false)
+  }
+
   return (
     <>
       <div className="CategoryM-container">
@@ -203,7 +209,7 @@ console.log(ids.length)
             id="modal-modal-title"
             sx={{ fontWeight: 600, fontSize: 30 }}
           >
-            Delete Product
+            Delete Category
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Do you want to delete category?
@@ -214,7 +220,7 @@ console.log(ids.length)
             <Button variant="contained" onClick={handleCloseDelete}>
               Cancel
             </Button>
-            <Button variant="contained" color="error">
+            <Button variant="contained" color="error" onClick={handleDelete}>
               Yes
             </Button>
           </Box>

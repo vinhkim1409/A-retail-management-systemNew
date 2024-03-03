@@ -24,6 +24,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import shirt from "../../../assets/shirt.jpg";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function createData(pic, code, name, sell, buy, quantity) {
   return { pic, code, name, sell, buy, quantity };
@@ -92,7 +94,8 @@ const StyledTable = styled(Table)(() => ({
 function ProductM() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const totalProducts = rows.length;
+  const [products,setProducts]=useState(rows)
+  const totalProducts = products.length;
   const totalPages = Math.ceil(totalProducts / 5);
   const handleChangePage = (newPage) => {
     setPage(newPage);
@@ -114,17 +117,18 @@ function ProductM() {
     <>
       <div className="button">
         <button
-          className="btn trash"
+          className="trash"
           onClick={() => {
             handleOpenModal(row.code);
           }}
         >
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
-        <Link to="/customer">
+        <Link >
           <button className="btn edit">
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
+         
         </Link>
         {/* <Link to={`/business/product/detail/${row.code}`}>
           <button className="btn minus">
@@ -135,6 +139,20 @@ function ProductM() {
     </>
   );
   console.log(totalPages);
+        
+  //delete product
+  const handleDeleteProduct=()=>{
+    console.log(idDelete)
+    const updateArrayProduct=products.filter((n)=>n.code!=idDelete)
+    setProducts(updateArrayProduct)
+    //call api xoa
+    // tra ve status cua hanh dong xoa
+    notify()
+    //tat popup
+    setShowModal(false)
+
+  }
+  const notify = () => toast.success("Delete Successfully");
   return (
     <>
       <div className="ProductM-container">
@@ -220,7 +238,7 @@ function ProductM() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
+                {products
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
                     <TableRow key={index}>
@@ -319,12 +337,15 @@ function ProductM() {
             <Button variant="contained" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="contained" color="error">
+            <Button variant="contained" color="error" onClick={()=>{
+              handleDeleteProduct()}}>
               Yes
+              
             </Button>
           </Box>
         </Box>
       </Modal>
+      <ToastContainer />
     </>
   );
 }
