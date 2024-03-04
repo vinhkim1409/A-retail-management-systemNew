@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./CustomerBlacklist.scss";
+import "./CustomerBlacklist.scss"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUnlock,

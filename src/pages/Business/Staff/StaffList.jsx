@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./StaffList.scss";
+import "./StaffList.scss"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrashCan,
@@ -177,7 +177,7 @@ function StaffList() {
             overflow="auto"
             backgroundColor="white"
             paddingLeft={2}
-            minHeight={490}
+            minHeight={450}
           >
             <StyledTable>
               <TableHead>

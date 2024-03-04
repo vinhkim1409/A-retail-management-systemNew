@@ -16,7 +16,7 @@ import ForgotPassword from "./pages/Home/Password/Forgot";
 import ResetPassword from "./pages/Home/Password/ResetPassword";
 import VerifyCode from "./pages/Home/Password/VerifyCode";
 import FillSignUp from "./pages/Home/FillSignUp/FillSignUp";
-// import InfoDetail from './pages/Home/InfoDetail/InfoDetail'
+import InfoDetail from './pages/Home/InfoDetail/InfoDetail'
 import Payment from "./pages/Home/Payment/Payment";
 
 //admin page
@@ -73,6 +73,8 @@ function App() {
           <Route path="verifycode" element={<VerifyCode />} />
           <Route path="resetpass" element={<ResetPassword />} />
           <Route path="payment" element={<Payment />} />
+          <Route path="infodetail" element={<InfoDetail />} />
+
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardAdmin />} />
