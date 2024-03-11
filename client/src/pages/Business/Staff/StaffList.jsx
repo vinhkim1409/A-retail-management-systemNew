@@ -23,6 +23,8 @@ import {
 } from "@mui/material";
 import AddNewStaff from "../../../components/AddNewStaff/AddNewStaff/AddNewStaff";
 import EditStaff from "../../../components/EditStaff/EditStaff";
+import axios from "axios";
+import { api } from "../../../constant/constant";
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -55,16 +57,19 @@ function StaffList() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
- 
 
   const [openEdit, setOpenEdit] = useState(false);
+  const [idEdit, setIdEdit] = useState("");
 
+  const openEditStaff = async (id) => {
+    setIdEdit(id);
+  };
   const operationButton = (item) => (
     <div className="button">
       <button
         className="trash"
         onClick={() => {
-          handleOpenModal(item.id);
+          handleOpenModal(item);
         }}
       >
         <FontAwesomeIcon icon={faTrashCan} />
@@ -72,6 +77,7 @@ function StaffList() {
       <button
         className="btn"
         onClick={() => {
+          openEditStaff(item._id);
           setOpenEdit(true);
         }}
       >
@@ -88,88 +94,47 @@ function StaffList() {
       phone: "0383069904",
       position: "Sales Manager",
     },
-    {
-      id: 2,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phone: "0383069904",
-      position: "Sales",
-    },
-    {
-      id: 3,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phone: "0383069904",
-      position: "Sales",
-    },
-    {
-      id: 4,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phone: "0383069904",
-      position: "Sales",
-    },
-    {
-      id: 5,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phone: "0383069904",
-      position: "Sales",
-    },
-    {
-      id: 6,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phone: "0383069904",
-      position: "Sales",
-    },
-    {
-      id: 7,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phone: "0383069904",
-      position: "Sales",
-    },
-    {
-      id: 8,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phone: "0383069904",
-      position: "Sales",
-    },
   ];
-  const [stafflist,setStaffList]=useState(staffs)
+
+  const [stafflist, setStaffList] = useState([]);
+  const getAll = async () => {
+    const staff = await axios.get(`${api}staff`);
+    setStaffList(staff.data);
+  };
+  useEffect(() => {
+    getAll();
+  }, []);
   const totalpage = Math.ceil(stafflist.length / rowsPerPage);
 
   //delete staff
   const [showModal, setShowModal] = useState(false);
-  const [idDelete, setIdDelete] = useState("");
-  const handleOpenModal = (id) => {
-    setIdDelete(id);
+  const [idDelete, setIdDelete] = useState();
+  const handleOpenModal = (item) => {
+    setIdDelete(item);
     setShowModal(true);
   };
-  const deleteStaff = () => {
-    const newStaffArray=stafflist.filter((staff)=>staff.id!=idDelete)
-    setStaffList(newStaffArray);
-    handleClose()
+
+  const deleteStaff = async () => {
+    const responseDeleted = await axios.put(
+      `${api}staff/delete/${idDelete._id}`
+    );
+    if (responseDeleted.data.success) {
+      const newStaffArray = stafflist.filter(
+        (staff) => staff._id != idDelete._id
+      );
+      setStaffList(newStaffArray);
+    }
+    handleClose();
   };
   const handleClose = () => {
     setShowModal(false);
   };
-  
   return (
     <>
       <div className="StaffList-container">
         <h2 className="title">Staff List</h2>
         <div className="add">
-          <AddNewStaff />
+          <AddNewStaff stafflist={stafflist} setStaffList={setStaffList} />
         </div>
         <div className="table-product">
           <Box
@@ -177,7 +142,7 @@ function StaffList() {
             overflow="auto"
             backgroundColor="white"
             paddingLeft={2}
-            minHeight={490}
+            minHeight={450}
           >
             <StyledTable>
               <TableHead>
@@ -251,7 +216,7 @@ function StaffList() {
                         className="cell-content"
                         sx={{ maxWidth: 100 }}
                       >
-                        {item.phone}
+                        {item.phoneNumber}
                       </TableCell>
                       <TableCell
                         align="left"
@@ -267,26 +232,6 @@ function StaffList() {
                   ))}
               </TableBody>
             </StyledTable>
-
-            {/* <TablePagination
-              className="table-pagination"
-              page={page}
-              component="div"
-              rowsPerPage={rowsPerPage}
-              count={stafflist.length}
-              onPageChange={handleChangePage}
-              rowsPerPageOptions={[5, 10, 25]}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              // nextIconButtonProps={{ "aria-label": "Next Page" }}
-              // backIconButtonProps={{ "aria-label": "Previous Page" }}
-              sx={{
-                marginTop: "2%",
-                height: "70px",
-                ".MuiInputBase-root": {
-                  marginTop: "-1.5%",
-                },
-              }}
-            /> */}
           </Box>
           <div className="pages">
             <div className="pages-number">1-5 of {page + 1}</div>
@@ -307,10 +252,22 @@ function StaffList() {
           </div>
         </div>
       </div>
-      <EditStaff openEdit={openEdit} setOpenEdit={setOpenEdit} />
+      {idEdit ? (
+        <EditStaff
+          openEdit={openEdit}
+          setOpenEdit={setOpenEdit}
+          idEdit={idEdit}
+          setIdEdit={setIdEdit}
+          stafflist={stafflist}
+          setStaffList={setStaffList}
+        />
+      ) : (
+        <></>
+      )}
       <Modal
         open={showModal}
-        onClose={handleClose}
+        
+        disableEscapeKeyDown
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -322,7 +279,8 @@ function StaffList() {
             Delete Product
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Do you want to delete staff {idDelete} ?
+            Do you want to delete staff{" "}
+            {idDelete ? `${idDelete.firstname} ${idDelete.lastname}` : ``} ?
           </Typography>
           <Box
             sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}

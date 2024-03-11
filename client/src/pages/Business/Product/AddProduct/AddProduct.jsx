@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./AddProduct.scss";
 import {
   Card,
+  Checkbox,
   FormHelperText,
   Grid,
   InputLabel,
@@ -12,6 +13,9 @@ import {
 import UploadImg from "../../../../components/UploadImg/UploadImg";
 import SaleInfor from "../../../../components/ClassInfor/SaleInfor";
 import SelecIndustry from "../../../../components/SelecIndustry/SelecIndustry";
+import axios from "axios";
+import {api} from "../../../../constant/constant"
+
 const styles = {
   backgroundColor: "white",
 };
@@ -27,13 +31,29 @@ function AddProduct() {
     "Detail8",
     "Detail9",
   ]);
+  const [detailInfos, setDetailInfos] = useState([
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
+  const handleChangeDetailInfo = (event, index) => {
+    const newArray = [...detailInfos];
+    newArray[index] = event.target.value;
+    setDetailInfos(newArray);
+  };
   const [img, setImg] = useState([]);
   const [basicInfo, setBasicInfo] = useState({ name: "", decs: "" });
   const [errorName, setErrorName] = useState(false);
-  const [inds, setInds] = useState();
-  const [typeSale,setTypeSale] = useState(0)
-  const [saleInfor, setSaleInfor] = useState([])
-  const [singleInfor, setSingleInfor] = useState([])
+  const [inds, setInds] = useState("");
+  const [typeSale, setTypeSale] = useState(0);
+  const [saleInfor, setSaleInfor] = useState([]);
+  const [singleInfor, setSingleInfor] = useState([]);
   const handleChangeName = (event) => {
     const value = event.target.value;
     let newBasicInfo = basicInfo;
@@ -46,6 +66,25 @@ function AddProduct() {
       setErrorName(true);
     }
   };
+  const handleAddProduct= async ()=>{
+
+    const newProduct={
+      name:basicInfo.name,
+      industry:inds,
+      picture:img,
+      decsciption:basicInfo.decs,
+      detailInfo:detailInfos.map((infoDetail,index)=>{
+        return {
+          name:detailInfoLabel[index],
+          info:infoDetail,
+          status:true
+        }
+      }),
+      saleInfo:saleInfor
+    }
+    const addProductRes=await axios.post(`${api}product/add`,newProduct)
+    console.log(addProductRes.data)
+  }
   return (
     <>
       <div className="addproduct-container">
@@ -104,6 +143,9 @@ function AddProduct() {
                       size="small"
                       style={styles}
                       sx={{ boxShadow: 3 }}
+                      onChange={(event)=>{
+                        setInds(event.target.value)
+                      }}
                     />
                   </Stack>
                 </Grid>
@@ -134,137 +176,45 @@ function AddProduct() {
           <Paper style={{ marginTop: "3%", padding: "3% 3% 3% 3%" }}>
             <div className="title-small"> Detail Information</div>
             <Grid container spacing={4}>
-              <Grid container item spacing={5} xs={4}>
-                <Grid container item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="title" className="detail-title">
-                      {detailInfoLabel[0]}
-                    </InputLabel>
-                    <OutlinedInput
-                      rows={4}
-                      style={styles}
-                      sx={{ boxShadow: 3 }}
-                      size="small"
-                    />
-                  </Stack>
-                </Grid>
-                <Grid container item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="title" className="detail-title">
-                      {detailInfoLabel[1]}
-                    </InputLabel>
-                    <OutlinedInput
-                      rows={4}
-                      style={styles}
-                      sx={{ boxShadow: 3 }}
-                      size="small"
-                    />
-                  </Stack>
-                </Grid>
-                <Grid container item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="title" className="detail-title">
-                      {detailInfoLabel[2]}
-                    </InputLabel>
-                    <OutlinedInput
-                      rows={4}
-                      style={styles}
-                      sx={{ boxShadow: 3 }}
-                      size="small"
-                    />
-                  </Stack>
-                </Grid>
-              </Grid>
-              <Grid container item spacing={5} xs={4}>
-                <Grid container item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="title" className="detail-title">
-                      {detailInfoLabel[0]}
-                    </InputLabel>
-                    <OutlinedInput
-                      rows={4}
-                      style={styles}
-                      sx={{ boxShadow: 3 }}
-                      size="small"
-                    />
-                  </Stack>
-                </Grid>
-                <Grid container item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="title" className="detail-title">
-                      {detailInfoLabel[1]}
-                    </InputLabel>
-                    <OutlinedInput
-                      rows={4}
-                      style={styles}
-                      sx={{ boxShadow: 3 }}
-                      size="small"
-                    />
-                  </Stack>
-                </Grid>
-                <Grid container item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="title" className="detail-title">
-                      {detailInfoLabel[2]}
-                    </InputLabel>
-                    <OutlinedInput
-                      rows={4}
-                      style={styles}
-                      sx={{ boxShadow: 3 }}
-                      size="small"
-                    />
-                  </Stack>
-                </Grid>
-              </Grid>
-              <Grid container item spacing={5} xs={4}>
-                <Grid container item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="title" className="detail-title">
-                      {detailInfoLabel[0]}
-                    </InputLabel>
-                    <OutlinedInput
-                      rows={4}
-                      style={styles}
-                      sx={{ boxShadow: 3 }}
-                      size="small"
-                    />
-                  </Stack>
-                </Grid>
-                <Grid container item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="title" className="detail-title">
-                      {detailInfoLabel[1]}
-                    </InputLabel>
-                    <OutlinedInput
-                      rows={4}
-                      style={styles}
-                      sx={{ boxShadow: 3 }}
-                      size="small"
-                    />
-                  </Stack>
-                </Grid>
-                <Grid container item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="title" className="detail-title">
-                      {detailInfoLabel[2]}
-                    </InputLabel>
-                    <OutlinedInput
-                      rows={4}
-                      style={styles}
-                      sx={{ boxShadow: 3 }}
-                      size="small"
-                    />
-                  </Stack>
-                </Grid>
+              <Grid container item spacing={5} xs={12}>
+                {detailInfoLabel.map((label, index) => (
+                  <Grid container item xs={4} key={index} >
+                    <Stack spacing={1}>
+                      <InputLabel htmlFor="title" className="detail-title">
+                        {label}
+                      </InputLabel>
+                      <OutlinedInput
+                        rows={4}
+                        style={styles}
+                        sx={{ boxShadow: 3 }}
+                        size="small"
+                        onChange={(event) => {
+                          handleChangeDetailInfo(event, index);
+                        }}
+                      />
+                    </Stack>
+                  </Grid>
+                ))}
               </Grid>
             </Grid>
           </Paper>
         </div>
         <div className="class-info">
-          <SaleInfor setTypeSale={setTypeSale} setSaleInfor={setSaleInfor} setSingleInfor={setSingleInfor} />
+          <SaleInfor
+            setTypeSale={setTypeSale}
+            setSaleInfor={setSaleInfor}
+          />
         </div>
         <div className="btn-add">
-          <button className="btn" onClick={()=>{console.log(saleInfor,typeSale,singleInfor)}}>Add New Product</button>
+          <button
+            className="btn"
+            onClick={() => {
+              // console.log(saleInfor, typeSale);
+              handleAddProduct()
+            }}
+          >
+            Add New Product
+          </button>
         </div>
       </div>
       <SelecIndustry />

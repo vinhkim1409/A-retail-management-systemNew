@@ -1,11 +1,14 @@
-.signup-container {
+.login-form {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   background-color: white;
+  padding: 1% 1% 1% 1%;
+
   .form_container {
     width: 40%;
-    padding: 5px;
+    padding-top: 3%;
+    padding-bottom: 3%;
     border-radius: 25px;
     background-color: white;
     display: flex;
@@ -13,10 +16,12 @@
     align-items: center;
     flex-direction: column;
     text-align: center;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
   }
   .form_container1 {
     text-align: center;
-    width: 90%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,18 +38,54 @@
     display: inline-block;
     border-radius: 5px;
     margin-top: 5px;
-
   }
-  .form-control
-  {
-    width: 300px;
-    height: 30px;
+  .form-control {
+    width: 80%;
+    height: 5%;
     margin-top: 10px;
     border-radius: 5px;
     border: 1px solid gray;
     padding: 10px;
     margin-bottom: 10px;
   }
-  
-  
+  .btn-google {
+    width: 80%;
+    margin-bottom: 10px;
+  }
+  .or {
+    font-weight: 700;
+  }
+  .form-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .btn-google {
+    background-color: rgba(215, 215, 215, 0.5);
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .btn-google:hover {
+    background-color: rgba(215, 215, 215, 1);
+  }
+  .google {
+    width: 7%;
+    margin-right: 2%;
+  }
+  .title {
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: rgba(0, 0, 0, 1);
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+  }
+  .img{
+    width: 70%;
+    
+    margin-left: 10%;
+  }
 }

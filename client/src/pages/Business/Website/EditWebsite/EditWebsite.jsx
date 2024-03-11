@@ -2,25 +2,28 @@ import React, { useState } from "react";
 import "./EditWebsite.scss";
 import shirt from "../../../../assets/shirt.jpg";
 function EditWebsite() {
-  let businessImg = [];
-  let businessImgArray = [];
-  const [businessImgFile, setBusinessImgFile] = useState([
-    "https://img.itch.zone/aW1nLzQ4NDM1MTQucG5n/original/aq7izr.png",
-    "https://img.itch.zone/aW1nLzQ4NDM1MTQucG5n/original/aq7izr.png",
-    "https://img.itch.zone/aW1nLzQ4NDM1MTQucG5n/original/aq7izr.png",
-    "https://img.itch.zone/aW1nLzQ4NDM1MTQucG5n/original/aq7izr.png",
-  ]);
+  const [businessImgFile, setBusinessImgFile] = useState([]);
 
-  const uploadBusinessImgFiles = (e) => {
-    businessImg.push(e.target.files);
-    for (let i = 0; i < businessImg[0].length; i++) {
+  const uploadBusinessImgFiles = (event) => {
+    const files = event.target.files;
+    const newImages = [];
+    for (let i = 0; i < files.length; i++) {
       if (i >= 4) {
         break;
       }
-      businessImgArray.push(URL.createObjectURL(businessImg[0][i]));
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = reader.result;
+        newImages.push(base64String);
+        setBusinessImgFile(newImages);
+      };
+
+      reader.readAsDataURL(files[i]);
     }
-    setBusinessImgFile(businessImgArray);
+   // console.log(newImages);
   };
+
   const removeBusinessImage = (index) => {
     console.log("reomve");
     setBusinessImgFile([
@@ -33,24 +36,25 @@ function EditWebsite() {
     setBusinessImgFile([]);
   };
 
-  let featImg = [];
-  let featImgArray = [];
-  const [featImgFile, setFeatImgFile] = useState([shirt, shirt, shirt, shirt]);
+  const [featImgFile, setFeatImgFile] = useState([]);
 
-  const uploadFeatImgFiles = (e) => {
-    featImg.push(e.target.files);
-    for (let i = 0; i < featImg[0].length; i++) {
+  const uploadFeatImgFiles = (event) => {
+    const files = event.target.files;
+    const newImages = [];
+    for (let i = 0; i < files.length; i++) {
       if (i >= 4) {
         break;
       }
-      featImgArray.push(URL.createObjectURL(featImg[0][i]));
-    }
-    // if (featImg[0].length > 0) {
-    //   featImgArray.push(URL.createObjectURL(featImg[0][0]));
-    //   console.log(featImgArray);
-    // }
+      const reader = new FileReader();
 
-    setFeatImgFile(featImgArray);
+      reader.onload = () => {
+        const base64String = reader.result;
+        newImages.push(base64String);
+        setFeatImgFile(newImages);
+      };
+
+      reader.readAsDataURL(files[i]);
+    }
   };
   const removeFeatImage = (index) => {
     console.log("reomve");
@@ -63,7 +67,7 @@ function EditWebsite() {
     console.log("reomve");
     setFeatImgFile([]);
   };
-
+console.log(businessImgFile)
   return (
     <>
       <div className="Editwebsite-container">

@@ -20,6 +20,8 @@ import {
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import { api } from "../../constant/constant";
 const style = {
   position: "absolute",
   top: "50%",
@@ -31,7 +33,14 @@ const style = {
   p: 4,
   borderRadius: "10px",
 };
-export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
+export default function EditStaff({
+  openEdit,
+  setOpenEdit,
+  idEdit,
+  setIdEdit,
+  stafflist,
+  setStaffList
+}) {
   // const handleOpen = () => {
   //   // let newError = {
   //   //   firstname: false,
@@ -50,14 +59,25 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
   //   // };
   //   setOpenEdit(true);
   // };
-  const handleClose = () => setOpenEdit(false);
+  const handleClose = () => {
+    setIdEdit("");
+    setOpenEdit(false);
+  };
   const [basicInfo, setBasicInfo] = useState({
     firstname: "",
     lastname: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     position: "",
   });
+  const getStaff = async () => {
+    const staff = await axios.get(`${api}staff/${idEdit}`);
+    setBasicInfo(staff.data);
+    setAvatarEncode(staff.data.avatar);
+  };
+  useEffect(() => {
+    getStaff();
+  }, []);
   const [errorForm, setErrorForm] = useState({
     firstname: false,
     lastname: false,
@@ -71,7 +91,7 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
     if (item === "firstname") newBasicInfo.firstname = value;
     if (item === "lastname") newBasicInfo.lastname = value;
     if (item === "email") newBasicInfo.email = value;
-    if (item === "phone") newBasicInfo.phone = value;
+    if (item === "phone") newBasicInfo.phoneNumber= value;
     if (item === "position") newBasicInfo.position = value;
 
     setBasicInfo(newBasicInfo);
@@ -115,7 +135,7 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
         firstname: errorForm.firstname,
         lastname: errorForm.lastname,
         email: errorForm.email,
-        phonenumber: basicInfo.phone === "",
+        phonenumber: basicInfo.phoneNumber === "",
         position: errorForm.position,
       };
       setErrorForm(newError);
@@ -132,26 +152,49 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
       setErrorForm(newError);
     }
   };
-  let singleAvatar = [];
-  let singleAvatarArray = [];
-  const [avatar, setAvatar] = useState([]);
+  const [avatarEncode, setAvatarEncode] = useState("");
   const uploadAvatar = (e) => {
-    singleAvatar.push(e.target.files);
-
-    if (singleAvatar[0].length > 0) {
-      singleAvatarArray.push(URL.createObjectURL(singleAvatar[0][0]));
-      console.log(singleAvatarArray);
-      setAvatar(singleAvatarArray);
-    }
+    const data = new FileReader();
+    data.addEventListener("load", () => {
+      setAvatarEncode(data.result);
+    });
+    data.readAsDataURL(e.target.files[0]);
   };
+  const editStaff=async () => {
+    const newStaff=basicInfo
+    newStaff.avatar=avatarEncode
+    const responseEdit= await axios.put(`${api}staff/update/${idEdit}`,newStaff);
+    //co 1 edit tai trang FE
+    if(responseEdit.data.success){
+      console.log("success")
+      const newStafflist=stafflist.map((staff)=>{
+        if(staff._id===idEdit)
+        {
+          return {...staff,
+          firstname:newStaff.firstname,
+          lastname:newStaff.lastname,
+          phoneNumber:newStaff.phoneNumber,
+          email:newStaff.email,
+          position:newStaff.position,
+          avatar:newStaff.avatar
+          }
+        }
+        return staff
+      })
+      setStaffList(newStafflist)
+    }
+    else{console.log("error")}
+    setOpenEdit(false)
+  }
   return (
-    <div className="Addnewstaff-container">
+    <div className="Editnewstaff-container">
       <Modal
         open={openEdit}
-        onClose={handleClose}
+        
+        disableEscapeKeyDown
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        className="Addnewstaff-container"
+        className="Editnewstaff-container"
       >
         <Box sx={style}>
           <div className="title">Edit Staff</div>
@@ -170,6 +213,7 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
                     sx={{
                       boxShadow: 3,
                     }}
+                    value={basicInfo.firstname}
                     onChange={(event) => {
                       handleChangeInfo(event, "firstname");
                     }}
@@ -194,6 +238,7 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
                     sx={{
                       boxShadow: 3,
                     }}
+                    value={basicInfo.lastname}
                     onChange={(event) => {
                       handleChangeInfo(event, "lastname");
                     }}
@@ -218,6 +263,7 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
                     sx={{
                       boxShadow: 3,
                     }}
+                    value={basicInfo.email}
                     onChange={(event) => {
                       handleChangeInfo(event, "email");
                     }}
@@ -241,6 +287,7 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
                     sx={{
                       boxShadow: 3,
                     }}
+                    value={basicInfo.phoneNumber}
                     onChange={(event) => {
                       handleChangeInfo(event, "phone");
                     }}
@@ -258,20 +305,37 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="title-avatar"
                   >
-                    Avatar
+                    <div className="lable-input">Avatar</div>
+                    <div className="choose-button">
+                      <label htmlFor="avatar">
+                        <div className="choose-img">Choose Picture</div>
+                      </label>
+                      <input
+                        type="file"
+                        name="image-business"
+                        accept="image/*"
+                        id="avatar"
+                        hidden
+                        onChange={uploadAvatar}
+                      />
+                    </div>
                   </InputLabel>
                   <div className="avatar">
-                    {avatar.length === 1 ? (
+                    {avatarEncode.length > 1 ? (
                       <>
-                        <img src={avatar[0]} alt="" className="img" />
+                        <img src={avatarEncode} alt="" className="img" />
                       </>
                     ) : (
                       <>
                         <div className="input-avatar">
                           <label htmlFor="avatar">
                             <div className="label-box">
-                              <FontAwesomeIcon icon={faUpload} className="icon" />
+                              <FontAwesomeIcon
+                                icon={faUpload}
+                                className="icon"
+                              />
                             </div>
                           </label>
                           <input
@@ -301,6 +365,7 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
                     sx={{
                       boxShadow: 3,
                     }}
+                    value={basicInfo.position}
                     onChange={(event) => {
                       handleChangeInfo(event, "position");
                     }}
@@ -315,7 +380,7 @@ export default function EditStaff({openEdit,setOpenEdit,idStaff}) {
           </Grid>
           <div className="button">
             <div className="btn-box">
-              <button className="btn">Yes</button>
+              <button className="btn" onClick={editStaff}>Yes</button>
               <button className="btn" onClick={handleClose}>
                 Cancle
               </button>

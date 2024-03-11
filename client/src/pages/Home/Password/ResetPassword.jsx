@@ -1,33 +1,38 @@
 import React from "react";
-import "./Password.scss";
-
+import "./ResetPassword.scss";
+import background from "../../../assets/login-background.png"
 function ResetPasswordPage() {
   return (
     <>
-      <div className="password-container">
-        <div className="form_container ">
-          <h1 className="ms-5">Create a New Password</h1>
-          <h3 className="textdown">
-            Your new password must be unique from those previously used.{" "}
+      <div className="resetpass">
+        <div className="title">
+          <h1>Create a New Password!</h1>
+          <h3>
+          Your new password must be unique from those previously used.{" "}
           </h3>
-          <form className="form_container1 p-3 rounded bg-white text-center">
-            <div className="mb-2 mt-4">
+          <img src={background} alt="" className="img" />
+        </div>
+        <div className="form_container  rounded ">
+          <form className="form_container1">
+            <div className="form-box">
+            <label htmlFor="newpass" className="label"> New Password</label>
               <input
                 type="password"
                 placeholder="New Password"
                 className="form-control"
+                id="newpass"
               />
             </div>
-            <div className="mb-2">
+            <div className="form-box">
+            <label htmlFor="confirmpass" className="label"> Confirm Password</label>
               <input
                 type="password"
                 placeholder="Confirm Password"
                 className="form-control"
+                id="confrimpass"
               />
             </div>
-            <div className="d-grid mt-5">
-              <button className="btn btn-primary">Reset Password</button>
-            </div>
+            <button className="btn mb-2">Reset Password</button>
           </form>
         </div>
       </div>

@@ -77,8 +77,9 @@ function PaymentPage() {
             <div className="minileftbox ">
               <div className="inminileftbox">
                 <h3>Payment Method</h3>
-                <div className="form-check ">
+                <div className="form-checkmomo ">
                   <input
+                   className="form-check-input"
                     type="radio"
                     name="inlineRadioOptions"
                     id="inlineRadio1"
@@ -90,8 +91,9 @@ function PaymentPage() {
                   </label>
                 </div>
 
-                <div className="form-check ">
+                <div className="form-checkzalo">
                   <input
+                   className="form-check-input"
                     type="radio"
                     name="inlineRadioOptions"
                     id="inlineRadio2"

@@ -47,14 +47,33 @@ const AddProductCatalog = ({ open, handleClose, id }) => {
       id: 4,
       name: "Ao thun",
       price: 333,
-      quantity: 10, 
+      quantity: 10,
     },
   ];
-  useEffect(()=>{
-    const newArray=[]
-    setIds(newArray)
-  },[open])
+  useEffect(() => {
+    const newArray = [];
+    setIds(newArray);
+  }, [open]);
   const [ids, setIds] = useState([]);
+  const handleChange = () => {
+    let num = 0;
+    product.map((item) => {
+      if (ids.includes(item.id)) {
+        num = num + 1;
+      }
+    });
+    console.log(num);
+    if (num === 4) {
+      const newArray = [];
+      setIds(newArray);
+    } else {
+      let arrayIds = [];
+      product.map((item) => {
+        arrayIds.push(item.id);
+      });
+      setIds(arrayIds);
+    }
+  };
   const handleChangeCheck = (item) => {
     if (ids.includes(item.id)) {
       const updateIds = ids.filter((n) => n != item.id);
@@ -65,7 +84,7 @@ const AddProductCatalog = ({ open, handleClose, id }) => {
   };
 
   return (
-    <div className="Addproductcatalog-container">
+    <div >
       <Modal
         open={open}
         onClose={handleClose}
@@ -75,18 +94,18 @@ const AddProductCatalog = ({ open, handleClose, id }) => {
         <Box sx={style} className="Addproductcatalog-container">
           <div className="title">Add Product To Category</div>
           <div className="table">
-            <div className="lable">
-              <div className="name">
+            <div className="row">
+              <div className="name lable">
                 <Checkbox
-                  // value="checkedA"
-                  // checked={state.checkedA}
-                  // onChange={handleChange("checkedA")}
+                  
+                  checked={ids.length===product.length}
+                   onChange={handleChange}
                   inputProps={{ "aria-label": "primary checkbox" }}
                 />
                 Name
               </div>
-              <div className="num-product ">Price</div>
-              <div className="quantity ">Quantity</div>
+              <div className="num-product lable">Price</div>
+              <div className="quantity lable">Quantity</div>
             </div>
             <div className="content">
               {product.map((item) => (
@@ -94,8 +113,10 @@ const AddProductCatalog = ({ open, handleClose, id }) => {
                   <div className="row" key={item.id}>
                     <div className="name">
                       <Checkbox
-                          checked={ids.includes(item.id)}
-                          onChange={()=>{handleChangeCheck(item)}}
+                        checked={ids.includes(item.id)}
+                        onChange={() => {
+                          handleChangeCheck(item);
+                        }}
                         inputProps={{ "aria-label": "primary checkbox" }}
                       />
                       {item.name}
@@ -108,7 +129,7 @@ const AddProductCatalog = ({ open, handleClose, id }) => {
             </div>
           </div>
           <div className="btn-box">
-            <button className="btn cancel">Cancel</button>
+            <button className="btn cancel" onClick={handleClose}>Cancel</button>
             <button className="btn save">Save change</button>
           </div>
         </Box>

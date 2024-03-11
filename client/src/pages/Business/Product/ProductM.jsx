@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ProductM.scss";
 import {
   Box,
@@ -26,6 +26,9 @@ import { Link } from "react-router-dom";
 import shirt from "../../../assets/shirt.jpg";
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
+import {api} from "../../../constant/constant"
+
 
 function createData(pic, code, name, sell, buy, quantity) {
   return { pic, code, name, sell, buy, quantity };
@@ -94,7 +97,7 @@ const StyledTable = styled(Table)(() => ({
 function ProductM() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [products,setProducts]=useState(rows)
+  const [products,setProducts]=useState([])
   const totalProducts = products.length;
   const totalPages = Math.ceil(totalProducts / 5);
   const handleChangePage = (newPage) => {
@@ -119,7 +122,7 @@ function ProductM() {
         <button
           className="trash"
           onClick={() => {
-            handleOpenModal(row.code);
+            handleOpenModal(row._id);
           }}
         >
           <FontAwesomeIcon icon={faTrashCan} />
@@ -141,9 +144,16 @@ function ProductM() {
   console.log(totalPages);
         
   //delete product
-  const handleDeleteProduct=()=>{
+  const handleDeleteProduct=async()=>{
     console.log(idDelete)
-    const updateArrayProduct=products.filter((n)=>n.code!=idDelete)
+    const deleteProduct = await axios.put(
+      `${api}product/delete/${idDelete}`
+    );
+    if(deleteProduct.data.success)
+    {
+      console.log("Delete Product Success")
+    }
+    const updateArrayProduct=products.filter((n)=>n._id!=idDelete)
     setProducts(updateArrayProduct)
     //call api xoa
     // tra ve status cua hanh dong xoa
@@ -152,6 +162,13 @@ function ProductM() {
     setShowModal(false)
 
   }
+  const getAllProducts=async()=>{
+    const Products=await axios.get(`${api}product`);
+    setProducts(Products.data)
+  }
+  useEffect(()=>{
+    getAllProducts()
+  },[])
   // const notify = () => toast.success("Delete Successfully");
   return (
     <>
@@ -244,7 +261,7 @@ function ProductM() {
                     <TableRow key={index}>
                       <TableCell align="center">
                         <img
-                          src={shirt}
+                          src={row.picture[0]?row.picture[0]:shirt}
                           style={{
                             width: "60px",
                             height: "50px",
@@ -257,7 +274,7 @@ function ProductM() {
                         className="table-label"
                         sx={{ maxWidth: 100 }}
                       >
-                        {row.code}
+                        ABCS123
                       </TableCell>
                       <TableCell
                         align="left"
@@ -266,9 +283,9 @@ function ProductM() {
                       >
                         {row.name}
                       </TableCell>
-                      <TableCell align="center">{row.sell}</TableCell>
-                      <TableCell align="center">{row.buy}</TableCell>
-                      <TableCell align="center">{row.quantity}</TableCell>
+                      <TableCell align="center">{row.saleInfo[0].sellPrice}</TableCell>
+                      <TableCell align="center">{row.saleInfo[0].buyPrice}</TableCell>
+                      <TableCell align="center">{row.saleInfo[0].quantity}</TableCell>
                       <TableCell align="center">
                         {updateQuantityButton(row)}
                       </TableCell>
@@ -276,19 +293,6 @@ function ProductM() {
                   ))}
               </TableBody>
             </StyledTable>
-
-            {/* <TablePagination
-              sx={{ px: 2 }}
-              page={page}
-              component="div"
-              rowsPerPage={rowsPerPage}
-              count={rows.length}
-              onPageChange={handleChangePage}
-              rowsPerPageOptions={[5, 10, 25]}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              nextIconButtonProps={{ "aria-label": "Next Page" }}
-              backIconButtonProps={{ "aria-label": "Previous Page" }}
-            /> */}
           </Box>
           <div className="pages">
             <div className="pages-number">1-5 of {page + 1}</div>

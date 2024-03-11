@@ -156,8 +156,8 @@ function CategoryM() {
             <div className="name">
               <Checkbox
                 value="checkedA"
-                checked={state.checkedA}
-                onChange={handleChange("checkedA")}
+                checked={ids.length===categorys.length}
+                onChange={handleChange()}
                 inputProps={{ "aria-label": "primary checkbox" }}
               />
               Name
