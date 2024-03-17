@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const staffSchema = new mongoose.Schema({
   // tenantID: {
   //   type: mongoose.Schema.Types.ObjectId,
-  //   ref:'Business',
+  //   ref:'business',
   //   required: true,
   // },
   firstname: {

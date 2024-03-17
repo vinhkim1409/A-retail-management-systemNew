@@ -127,12 +127,13 @@ function ProductM() {
         >
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
-        <Link >
+        <a href={`/business/product/edit/${row._id}`}  >
           <button className="btn edit">
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
          
-        </Link>
+        </a>
+        
         {/* <Link to={`/business/product/detail/${row.code}`}>
           <button className="btn minus">
             <FontAwesomeIcon icon={faCircleInfo} />

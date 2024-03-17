@@ -1,60 +1,51 @@
 import React, { useEffect, useState } from "react";
-import "./SaleInfor.scss";
-import {
-  Button,
-  Card,
-  Grid,
-  InputLabel,
-  OutlinedInput,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import "./EditSaleInfor.scss";
+import { useParams } from "react-router";
+import { Grid, InputLabel, OutlinedInput, Paper, Stack } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMagnifyingGlass,
-  faPenToSquare,
-  faLessThan,
-  faGreaterThan,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import { api } from "../../constant/constant";
 
-function SaleInfor({ setTypeSale, setSaleInfor }) {
+function EditSaleInfor({ setTypeSale, setSaleInfor }) {
+  const { id } = useParams();
   const [numClass1, setNumClass1] = useState(0);
   const [numClass2, setNumClass2] = useState(0);
   const [class1s, setClass1] = useState([]);
   const [class2s, setClass2] = useState([]);
   const [saleInfo, setSaleInfo] = useState({
-    color: { id: 0, name: "" },
-    size: { id: 0, name: "" },
+    class1: { id: 0, name: "" },
+    class2: { id: 0, name: "" },
     buy: "",
     sell: "",
     quantity: "",
   });
   const [classSale, setClassSale] = useState([
     {
-      color: { id: 0, name: "" },
-      size: { id: 0, name: "" },
+      class1: { id: 0, name: "" },
+      class2: { id: 0, name: "" },
       buy: "",
       sell: "",
       quantity: "",
     },
   ]);
   const AddSingleInfo = (value, index) => {
-    
     const newArray = saleInfo;
-    if(index===0)
-    {newArray.buy=value}
-    if(index===1)
-    {newArray.sell=value}
-    if(index===1)
-    {newArray.quantity=value}
+    if (index === 0) {
+      newArray.buy = value;
+    }
+    if (index === 1) {
+      newArray.sell = value;
+    }
+    if (index === 1) {
+      newArray.quantity = value;
+    }
     setSaleInfo(newArray);
   };
   const AddClass1 = (event, index) => {
     const newClassSale = classSale.map((item) => {
-      if (item.color.id === index) {
-        return { ...item, color: { id: index, name: event.target.value } };
+      if (item.class1.id === index) {
+        return { ...item, class1: { id: index, name: event.target.value } };
       }
       return item;
     });
@@ -66,8 +57,8 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
   };
   const AddClass2 = (event, index) => {
     const newClassSale = classSale.map((item) => {
-      if (item.size.id === index) {
-        return { ...item, size: { id: index, name: event.target.value } };
+      if (item.class2.id === index) {
+        return { ...item, class2: { id: index, name: event.target.value } };
       }
       return item;
     });
@@ -79,7 +70,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
   };
   const AddBuyPrice = (event, index1, index2) => {
     const newClassSale = classSale.map((item) => {
-      if (item.color.id === index1 && item.size.id === index2) {
+      if (item.class1.id === index1 && item.class2.id === index2) {
         return { ...item, buy: event.target.value };
       }
       return item;
@@ -88,7 +79,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
   };
   const AddSellPrice = (event, index1, index2) => {
     const newClassSale = classSale.map((item) => {
-      if (item.color.id === index1 && item.size.id === index2) {
+      if (item.class1.id === index1 && item.class2.id === index2) {
         return { ...item, sell: event.target.value };
       }
       return item;
@@ -97,38 +88,112 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
   };
   const AddQuantity = (event, index1, index2) => {
     const newClassSale = classSale.map((item) => {
-      if (item.color.id === index1 && item.size.id === index2) {
+      if (item.class1.id === index1 && item.class2.id === index2) {
         return { ...item, quantity: event.target.value };
       }
       return item;
     });
     setClassSale(newClassSale);
   };
-
-  useEffect(() => {
-    let arrayClass = [];
-    let row = numClass1 > 0 ? numClass1 : 1;
+  const checkInSale = (array, id1, id2) => {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].class1.id === id1 && array[i].class2.id === id2) {
+        return true;
+      }
+    }
+    return false;
+  };
+  // doi qua su dung cai add number
+  const AddNumClass1 = () => {
+    setNumClass1(numClass1 + 1);
+    let arrayClass = classSale;
+    let row = numClass1 > 0 ? numClass1 + 1 : 1;
     let col = numClass2 > 0 ? numClass2 : 1;
     if (numClass1 > 0 || numClass2 > 0) {
       for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
           const element = {
-            color: { id: i, name: "" },
-            size: { id: j, name: "" },
+            class1: { id: i, name: "" },
+            class2: { id: j, name: "" },
             buy: "",
             sell: "",
             quantity: "",
           };
-          arrayClass.push(element);
+          if (!checkInSale(arrayClass, i, j)) {
+            arrayClass.push(element);
+          }
         }
       }
     }
     setClassSale(arrayClass);
-    const newClass1s = new Array(row).fill("");
-    setClass1(newClass1s);
-    const newClass2s = new Array(col).fill("");
-    setClass2(newClass2s);
-  }, [numClass1, numClass2]);
+  };
+  const AddNumClass2 = () => {
+    setNumClass2(numClass2 + 1);
+    let arrayClass = classSale;
+    let row = numClass1 > 0 ? numClass1 : 1;
+    let col = numClass2 > 0 ? numClass2 + 1 : 1;
+    if (numClass1 > 0 || numClass2 > 0) {
+      for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+          const element = {
+            class1: { id: i, name: "" },
+            class2: { id: j, name: "" },
+            buy: "",
+            sell: "",
+            quantity: "",
+          };
+          if (!checkInSale(arrayClass, i, j)) {
+            arrayClass.push(element);
+          }
+        }
+      }
+    }
+    setClassSale(arrayClass);
+  };
+  const getSaleInfo = async () => {
+    const product = await axios.get(`${api}product/${id}`);
+    const Infor = product.data.saleInfo;
+    const newNumclass1 = Infor[Infor.length-1].class1.id;
+    setNumClass1(newNumclass1);
+    const newNumclass2 = Infor[Infor.length-1].class2.id;
+    setNumClass2(newNumclass2);
+    const newClass1s=Infor.map((item)=>{
+      return item.class1.name
+    })
+    setClass1([...new Set(newClass1s)])
+    const newClass2s=Infor.map((item)=>{
+      return item.class2.name
+    })
+    setClass2([...new Set(newClass2s)])
+    setClassSale(product.data.saleInfo);
+  };
+  useEffect(() => {
+    getSaleInfo();
+  }, []);
+
+  // useEffect(() => {
+  //   let arrayClass = classSale;
+  //   let row = numClass1 > 0 ? numClass1 : 1;
+  //   let col = numClass2 > 0 ? numClass2 : 1;
+  //   if (numClass1 > 0 || numClass2 > 0) {
+  //     for (let i = 0; i < row; i++) {
+  //       for (let j = 0; j < col; j++) {
+  //         const element = {
+  //           class1: { id: i, name: "" },
+  //           class2: { id: j, name: "" },
+  //           buy: "",
+  //           sell: "",
+  //           quantity: "",
+  //         };
+  //         if (!checkInSale(arrayClass, i, j)) {
+  //           arrayClass.push(element);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   setClassSale(arrayClass);
+  // }, [numClass2]);
+
   useEffect(() => {
     if (numClass1 > 0 || numClass2 > 0) {
       setSaleInfor(classSale);
@@ -137,8 +202,9 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
       setSaleInfor(saleInfo);
     }
   }, [classSale, saleInfo]);
+
   return (
-    <div className="ClassInfor-container">
+    <div className="EditClassInfor-container">
       <Paper
         style={{ marginTop: "3%", padding: "3% 3% 3% 2%", marginBottom: "4%" }}
       >
@@ -153,7 +219,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                 <>
                   <button
                     onClick={() => {
-                      setNumClass1(numClass1 + 1);
+                      AddNumClass1();
                       setClass1([...class1s, ""]);
                       AddSingleInfo("", 0);
                       AddSingleInfo("", 1);
@@ -183,11 +249,11 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                             sx={{ boxShadow: 3 }}
                             value={
                               classSale.filter(
-                                (item) => item.color.id === index
+                                (item) => item.class1.id === index
                               )[0]
                                 ? classSale.filter(
-                                    (item) => item.color.id === index
-                                  )[0].color.name
+                                    (item) => item.class1.id === index
+                                  )[0].class1.name
                                 : ""
                             }
                             onChange={(event) => AddClass1(event, index)}
@@ -199,7 +265,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                       ))}
                       <button
                         onClick={() => {
-                          setNumClass1(numClass1 + 1);
+                          AddNumClass1();
                           setClass1([...class1s, ""]);
                         }}
                         className="btn"
@@ -217,7 +283,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                 <>
                   <button
                     onClick={() => {
-                      setNumClass2(numClass2 + 1);
+                      AddNumClass2();
                       setClass2([...class2s, ""]);
                       AddSingleInfo("", 0);
                       AddSingleInfo("", 1);
@@ -246,11 +312,11 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                             sx={{ boxShadow: 3 }}
                             value={
                               classSale.filter(
-                                (item) => item.size.id === index
+                                (item) => item.class2.id === index
                               )[0]
                                 ? classSale.filter(
-                                    (item) => item.size.id === index
-                                  )[0].size.name
+                                    (item) => item.class2.id === index
+                                  )[0].class2.name
                                 : ""
                             }
                             onChange={(event) => AddClass2(event, index)}
@@ -262,7 +328,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                       ))}
                       <button
                         onClick={() => {
-                          setNumClass2(numClass2 + 1);
+                          AddNumClass2();
                           setClass2([...class2s, ""]);
                         }}
                         className="btn"
@@ -378,14 +444,14 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                                           value={
                                             classSale.filter(
                                               (item) =>
-                                                item.color.id === index1 &&
-                                                item.size.id === index2
+                                                item.class1.id === index1 &&
+                                                item.class2.id === index2
                                             )[0]
                                               ? classSale.filter(
                                                   (item) =>
-                                                    item.color.id === index1 &&
-                                                    item.size.id === index2
-                                                )[0].buy
+                                                    item.class1.id === index1 &&
+                                                    item.class2.id === index2
+                                                )[0].buyPrice
                                               : ""
                                           }
                                           onChange={(event) => {
@@ -398,14 +464,14 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                                           value={
                                             classSale.filter(
                                               (item) =>
-                                                item.color.id === index1 &&
-                                                item.size.id === index2
+                                                item.class1.id === index1 &&
+                                                item.class2.id === index2
                                             )[0]
                                               ? classSale.filter(
                                                   (item) =>
-                                                    item.color.id === index1 &&
-                                                    item.size.id === index2
-                                                )[0].sell
+                                                    item.class1.id === index1 &&
+                                                    item.class2.id === index2
+                                                )[0].sellPrice
                                               : ""
                                           }
                                           onChange={(event) => {
@@ -418,13 +484,13 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                                           value={
                                             classSale.filter(
                                               (item) =>
-                                                item.color.id === index1 &&
-                                                item.size.id === index2
+                                                item.class1.id === index1 &&
+                                                item.class2.id === index2
                                             )[0]
                                               ? classSale.filter(
                                                   (item) =>
-                                                    item.color.id === index1 &&
-                                                    item.size.id === index2
+                                                    item.class1.id === index1 &&
+                                                    item.class2.id === index2
                                                 )[0].quantity
                                               : ""
                                           }
@@ -456,14 +522,14 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                                   value={
                                     classSale.filter(
                                       (item) =>
-                                        item.color.id === index1 &&
-                                        item.size.id === 0
+                                        item.class1.id === index1 &&
+                                        item.class2.id === 0
                                     )[0]
                                       ? classSale.filter(
                                           (item) =>
-                                            item.color.id === index1 &&
-                                            item.size.id === 0
-                                        )[0].buy
+                                            item.class1.id === index1 &&
+                                            item.class2.id === 0
+                                        )[0].buyPrice
                                       : ""
                                   }
                                   onChange={(event) => {
@@ -477,14 +543,14 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                                   value={
                                     classSale.filter(
                                       (item) =>
-                                        item.color.id === index1 &&
-                                        item.size.id === 0
+                                        item.class1.id === index1 &&
+                                        item.class2.id === 0
                                     )[0]
                                       ? classSale.filter(
                                           (item) =>
-                                            item.color.id === index1 &&
-                                            item.size.id === 0
-                                        )[0].sell
+                                            item.class1.id === index1 &&
+                                            item.class2.id === 0
+                                        )[0].sellPrice
                                       : ""
                                   }
                                   onChange={(event) => {
@@ -497,13 +563,13 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                                   value={
                                     classSale.filter(
                                       (item) =>
-                                        item.color.id === index1 &&
-                                        item.size.id === 0
+                                        item.class1.id === index1 &&
+                                        item.class2.id === 0
                                     )[0]
                                       ? classSale.filter(
                                           (item) =>
-                                            item.color.id === index1 &&
-                                            item.size.id === 0
+                                            item.class1.id === index1 &&
+                                            item.class2.id === 0
                                         )[0].quantity
                                       : ""
                                   }
@@ -533,14 +599,14 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                               value={
                                 classSale.filter(
                                   (item) =>
-                                    item.color.id === 0 &&
-                                    item.size.id === index2
+                                    item.class1.id === 0 &&
+                                    item.class2.id === index2
                                 )[0]
                                   ? classSale.filter(
                                       (item) =>
-                                        item.color.id === 0 &&
-                                        item.size.id === index2
-                                    )[0].buy
+                                        item.class1.id === 0 &&
+                                        item.class2.id === index2
+                                    )[0].buyPrice
                                   : ""
                               }
                               onChange={(event) => {
@@ -554,14 +620,14 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                               value={
                                 classSale.filter(
                                   (item) =>
-                                    item.color.id === 0 &&
-                                    item.size.id === index2
+                                    item.class1.id === 0 &&
+                                    item.class2.id === index2
                                 )[0]
                                   ? classSale.filter(
                                       (item) =>
-                                        item.color.id === 0 &&
-                                        item.size.id === index2
-                                    )[0].sell
+                                        item.class1.id === 0 &&
+                                        item.class2.id === index2
+                                    )[0].sellPrice
                                   : ""
                               }
                               onChange={(event) => {
@@ -574,13 +640,13 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                               value={
                                 classSale.filter(
                                   (item) =>
-                                    item.color.id === 0 &&
-                                    item.size.id === index2
+                                    item.class1.id === 0 &&
+                                    item.class2.id === index2
                                 )[0]
                                   ? classSale.filter(
                                       (item) =>
-                                        item.color.id === 0 &&
-                                        item.size.id === index2
+                                        item.class1.id === 0 &&
+                                        item.class2.id === index2
                                     )[0].quantity
                                   : ""
                               }
@@ -599,16 +665,16 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
           </div>
         </div>
       </Paper>
-      {/* <button
+      <button
         onClick={() => {
-          console.log(class1s);
+          console.log(classSale);
           //AddSaleInfo();
         }}
       >
         +
-      </button> */}
+      </button>
     </div>
   );
 }
 
-export default SaleInfor;
+export default EditSaleInfor;

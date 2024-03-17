@@ -10,36 +10,30 @@ import "./UploadImg.scss";
 const UploadImg = ({ setImg }) => {
   const [multipleFile, setMultipleFile] = useState([]);
 
-  const uploadMultipleFiles = (event) => {
+  const uploadMultipleFiles = async (event) => {
+    console.log(event.target.files);
     const files = event.target.files;
     const newImages = [];
     for (let i = 0; i < files.length; i++) {
       if (i >= 6) {
         break;
       }
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        const base64String = reader.result;
-        newImages.push(base64String);
-        setMultipleFile(newImages);
-      };
-
-      reader.readAsDataURL(files[i]);
+      const base64 = await readFile(files[i]);
+      newImages.push(base64);
     }
-    
+    setMultipleFile(newImages)
   };
-
-  // console.log(multipleFileArray?.[0]);
-
-  // const uploadFiles = (e) => {
-  //   e.preventDefault();
-  //   // console.log(multipleFile);
-  // };
-
-  const removeImage = (index) => {
-    // console.log("reomve");
-    // console.log(index);
+  const readFile = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+    const removeImage = (index) => {
     setMultipleFile([
       ...multipleFile.slice(0, index),
       ...multipleFile.slice(index + 1, multipleFile.length),
@@ -70,7 +64,6 @@ const UploadImg = ({ setImg }) => {
                 type="file"
                 name="myfile"
                 id="upload"
-                
                 multiple
                 hidden
                 onChange={uploadMultipleFiles}

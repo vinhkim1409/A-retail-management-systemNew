@@ -24,8 +24,12 @@ app.use(express.json());
 // Routes
 const productRoutes = require('./routes/productRoutes');
 const staffRoutes=require('./routes/staffRoutes')
+const websiteRoutes = require('./routes/wesiteRoutes')
+const categoryRoutes = require('./routes/categoryRoutes')
 app.use('/product', productRoutes);
 app.use('/staff', staffRoutes);
+app.use('/website', websiteRoutes);
+app.use('/category', categoryRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

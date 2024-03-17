@@ -1,31 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./CategoryM.scss";
 import {
   Box,
   Button,
   Checkbox,
-  FormControl,
-  Icon,
-  IconButton,
-  InputAdornment,
-  MenuItem,
   Modal,
-  Paper,
-  Select,
   Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TextField,
   Typography,
   styled,
 } from "@mui/material";
 
 import AddNewCategory from "../../../../components/AddNewCategory/AddNewCategory";
 import AddProductCatalog from "../AddProductCatalog/AddProductCatalog";
+import axios from "axios";
+import { api } from "../../../../constant/constant";
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -59,64 +47,42 @@ function CategoryM() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const [state, setState] = useState({
-    checkedA: false,
-  });
   const [ids, setIds] = useState([]);
-  const handleChange = (name) => (event) => {
-    if (name === "checkedA")
-      setState({ ...state, [name]: event.target.checked });
+  const handleChange = () => {
     let num = 0;
     categorys.map((item) => {
-      if (ids.includes(item.id)) {
+      if (ids.includes(item._id)) {
         num = num + 1;
       }
     });
-    console.log(num)
-    if (num === 4) {
-      const newArray=[]
-      setIds(newArray)
-      
+    console.log(num);
+    if (num === categorys.length) {
+      const newArray = [];
+      setIds(newArray);
     } else {
       let arrayIds = [];
       categorys.map((item) => {
-        arrayIds.push(item.id);
+        arrayIds.push(item._id);
       });
       setIds(arrayIds);
-     
     }
   };
   const handleChangeCheck = (item) => {
-    if (ids.includes(item.id)) {
-      const updateIds = ids.filter((n) => n != item.id);
+    if (ids.includes(item._id)) {
+      const updateIds = ids.filter((n) => n != item._id);
       setIds(updateIds);
     } else {
-      setIds([...ids, item.id]);
+      setIds([...ids, item._id]);
     }
   };
-  const category = [
-    {
-      id: 1,
-      name: "Ao thun",
-      numOfProducts: 333,
-    },
-    {
-      id: 2,
-      name: "Ao thun",
-      numOfProducts: 3,
-    },
-    {
-      id: 3,
-      name: "Ao thun",
-      numOfProducts: 3,
-    },
-    {
-      id: 4,
-      name: "Ao thun",
-      numOfProducts: 3,
-    },
-  ];
-  const [categorys,setCategorys]=useState(category)
+  const getCatergory = async () => {
+    const Category = await axios.get(`${api}category`);
+    setCategorys(Category.data);
+  };
+  useEffect(() => {
+    getCatergory();
+  }, []);
+  const [categorys, setCategorys] = useState([]);
   //add products to category
   const [open, setOpen] = useState(false);
   const [idCatalog, setIdCatalog] = useState("");
@@ -135,29 +101,33 @@ function CategoryM() {
   const handleCloseDelete = () => {
     setOpenDelete(false);
   };
-  const handleDelete=()=>{
-    const newArrayIds=categorys.filter((item)=>!ids.includes(item.id))
-    setCategorys(newArrayIds)
-    setOpenDelete(false)
-  }
+  const handleDelete = () => {
+    const newArrayIds = categorys.filter((item) => !ids.includes(item.id));
+    setCategorys(newArrayIds);
+    setOpenDelete(false);
+  };
 
   return (
     <>
       <div className="CategoryM-container">
         <div className="title">Product Category</div>
         <div className="btn-box">
-          <button className={`${ids.length==0?"disabled":"delete-btn"}`} onClick={handleOpenDelete} disabled={ids.length==0}>
+          <button
+            className={`${ids.length == 0 ? "disabled" : "delete-btn"}`}
+            onClick={handleOpenDelete}
+            disabled={ids.length == 0}
+          >
             Delete
           </button>
           <AddNewCategory />
         </div>
         <div className="table">
           <div className="lable">
-            <div className="name">
+            <div className="name lable-name">
               <Checkbox
                 value="checkedA"
-                checked={ids.length===categorys.length}
-                onChange={handleChange()}
+                checked={ids.length === categorys.length}
+                onChange={handleChange}
                 inputProps={{ "aria-label": "primary checkbox" }}
               />
               Name
@@ -168,10 +138,10 @@ function CategoryM() {
           <div className="content">
             {categorys.map((item) => (
               <>
-                <div className="row-category" key={item.id}>
+                <div className="row-category" key={item._id}>
                   <div className="name">
                     <Checkbox
-                      checked={ids.includes(item.id)}
+                      checked={ids.includes(item._id)}
                       onChange={() => {
                         handleChangeCheck(item);
                       }}
@@ -179,12 +149,14 @@ function CategoryM() {
                     />
                     {item.name}
                   </div>
-                  <div className="num-product">{item.numOfProducts}</div>
+                  <div className="num-product">
+                    {item.product ? item.product.length : ""}
+                  </div>
                   <div className="action">
                     <button
                       className="btn"
                       onClick={() => {
-                        handleOpen(item.id);
+                        handleOpen(item._id);
                       }}
                     >
                       Add Product
@@ -196,7 +168,7 @@ function CategoryM() {
           </div>
         </div>
       </div>
-      <AddProductCatalog open={open} handleClose={handleClose} id={idCatalog} />
+      <AddProductCatalog open={open} handleClose={handleClose} id={idCatalog} categorys={categorys} setCategorys={setCategorys} />
 
       <Modal
         open={openDelete}

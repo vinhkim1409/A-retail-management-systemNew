@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
-import "./AddProductCatalog.scss";
-import { Box, Checkbox, Modal } from "@mui/material";
+import "./ChooseFeatProduct.scss";
+import {
+  Box,
+  Checkbox,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  Modal,
+  OutlinedInput,
+  Stack,
+  styled,
+} from "@mui/material";
 import axios from "axios";
-import { api } from "../../../../constant/constant";
+import { api } from "../../constant/constant";
 
 const style = {
   position: "absolute",
@@ -16,7 +26,7 @@ const style = {
   border: "1px solid white",
 };
 
-const AddProductCatalog = ({ open, handleClose, id,categorys,setCategorys }) => {
+const ChooseFeatProduct = ({ open, handleClose, setFeatProduct }) => {
   const [product, setProduct] = useState([]);
   useEffect(() => {
     const newArray = [];
@@ -29,7 +39,6 @@ const AddProductCatalog = ({ open, handleClose, id,categorys,setCategorys }) => 
   useEffect(() => {
     getProduct();
   }, [open]);
-
   const [ids, setIds] = useState([]);
   const handleChange = () => {
     let num = 0;
@@ -50,7 +59,6 @@ const AddProductCatalog = ({ open, handleClose, id,categorys,setCategorys }) => 
       setIds(arrayIds);
     }
   };
-
   const handleChangeCheck = (item) => {
     if (ids.includes(item._id)) {
       const updateIds = ids.filter((n) => n != item._id);
@@ -59,40 +67,19 @@ const AddProductCatalog = ({ open, handleClose, id,categorys,setCategorys }) => 
       setIds([...ids, item._id]);
     }
   };
-
-  const handleChooseProduct = async () => {
-    const listProduct={
-      product:ids
-    }
-    const addProduct=await axios.put(`${api}category/add-product/${id}`,listProduct)
-    console.log(addProduct)
-    setCategorys(categorys.map((category)=>{
-      if(category._id===id){
-        return {
-          ...category,
-          product:ids
-        }
-      }
-      return category
-    }))
+  const handleChooseProduct = () => {
+    const featProduct = product.filter((item) => ids.includes(item._id));
+    setFeatProduct(featProduct);
     handleClose();
   };
   return (
     <div>
       <Modal open={open} disableEscapeKeyDown>
-        <Box sx={style} className="Addproductcatalog-container">
-          <div className="title">Add Product To Category</div>
+        <Box sx={style} className="Choosefeatproduct-container">
+          <div className="title">Add Feature Product</div>
           <div className="table">
             <div className="row">
-              <div className="name lable">
-                <Checkbox
-                  value="checkedA"
-                  checked={ids.length === product.length}
-                  onChange={handleChange}
-                  inputProps={{ "aria-label": "primary checkbox" }}
-                />
-                Name
-              </div>
+              <div className="name-lable lable">Name</div>
               <div className="num-product lable">Price</div>
               <div className="quantity lable">Quantity</div>
             </div>
@@ -139,4 +126,4 @@ const AddProductCatalog = ({ open, handleClose, id,categorys,setCategorys }) => 
     </div>
   );
 };
-export default AddProductCatalog;
+export default ChooseFeatProduct;

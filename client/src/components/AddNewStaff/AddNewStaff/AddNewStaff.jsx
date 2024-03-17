@@ -1,17 +1,9 @@
 import * as React from "react";
 import "./AddNewStaff.scss";
 import {
-  Button,
-  Checkbox,
-  FormControlLabel,
   Grid,
-  Icon,
-  Radio,
-  RadioGroup,
-  styled,
   Box,
   Modal,
-  TextField,
   FormHelperText,
   OutlinedInput,
   InputLabel,
@@ -21,7 +13,7 @@ import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import {api} from "../../../constant/constant"
+import { api } from "../../../constant/constant";
 
 const style = {
   position: "absolute",
@@ -35,7 +27,7 @@ const style = {
   borderRadius: "10px",
 };
 
-export default function AddNewStaff({stafflist,setStaffList}) {
+export default function AddNewStaff({ stafflist, setStaffList }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -150,31 +142,27 @@ export default function AddNewStaff({stafflist,setStaffList}) {
     data.readAsDataURL(e.target.files[0]);
   };
   const addStaff = async () => {
-    const haveerror=Object.values(errorForm).includes(true);
-   
+    const haveerror = Object.values(errorForm).includes(true);
+
     const newStaff = {
       lastname: basicInfo.lastname,
       firstname: basicInfo.firstname,
       email: basicInfo.email,
       phoneNumber: basicInfo.phone,
-      avatar:avatarEncode,
-      position:basicInfo.position,
-      isDelete:false
+      avatar: avatarEncode,
+      position: basicInfo.position,
+      isDelete: false,
     };
     //check newstaff nhanh hon
     try {
-      const responce = await axios.post(
-        `${api}staff/add`,
-        newStaff
-      );
-      console.log(responce)
-      setStaffList([...stafflist,newStaff])
-      handleClose()
+      const responce = await axios.post(`${api}staff/add`, newStaff);
+      console.log(responce);
+      setStaffList([...stafflist, newStaff]);
+      handleClose();
     } catch (err) {
       console.log("false");
     }
   };
-
 
   return (
     <div className="Addnewstaff-container">
@@ -297,7 +285,7 @@ export default function AddNewStaff({stafflist,setStaffList}) {
                     Avatar
                   </InputLabel>
                   <div className="avatar">
-                    {avatarEncode.length >1 ? (
+                    {avatarEncode.length > 1 ? (
                       <>
                         <img src={avatarEncode} alt="" className="img" />
                       </>

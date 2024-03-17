@@ -10,6 +10,9 @@ import {
   Stack,
   styled,
 } from "@mui/material";
+import axios from "axios"
+import {api} from "../../constant/constant"
+
 
 const style = {
   position: "absolute",
@@ -33,6 +36,12 @@ const AddNewCategory = () => {
   const handleCancel = () => {
     handleClose();
   };
+  const handleAddNewCategory = async ()=>{
+    const newCategory={name:name}
+    const addNewCategory= await axios.post(`${api}category`,newCategory)
+    console.log(addNewCategory)
+    handleClose()
+  }
   return (
     <div className="addnewcategory-container">
       <button onClick={handleOpen} className="addcatalog-btn">
@@ -69,7 +78,7 @@ const AddNewCategory = () => {
           </Grid>
           <div className="btn-box">
             <button className="btn cancel" onClick={handleCancel}>Cancel</button>
-            <button className="btn save">Save change</button>
+            <button className="btn save" onClick={handleAddNewCategory}>Save change</button>
           </div>
         </Box>
       </Modal>
