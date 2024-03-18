@@ -1,13 +1,20 @@
 import React from "react";
 import "./FillSignUp.scss";
-
+import background from "../../../assets/login-background.png";
 function FillSignUpPage() {
   return (
     <>
       <div className="Fillsignup-form">
-        <div className="40-w p-5 rounded bg-white">
+      <div className="title">
+          <h1>Welcome to your Business!</h1>
+          <h3>
+            Create an account to run wild through our curated experiences.
+          </h3>
+          <img src={background} alt="" className="img" />
+        </div>
+        <div className="fill-box">
           <h2>Fill in business information</h2>
-          <form className>
+          <form >
             <div className="form-element">
               <label htmlFor="name"> Name</label>
               <input

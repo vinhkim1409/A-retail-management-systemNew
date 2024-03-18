@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Grid, ImageList, ImageListItem } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,68 +7,71 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./UploadImg.scss";
 
-const UploadImg = ({setImg}) => {
-  var multipleFileObj = [];
-  var multipleFileArray = [];
-
+const UploadImg = ({ setImg }) => {
   const [multipleFile, setMultipleFile] = useState([]);
 
-  const uploadMultipleFiles = (e) => {
-    multipleFileObj.push(e.target.files);
-    for (let i = 0; i < multipleFileObj[0].length; i++) {
-      if(i>=6) break;
-      multipleFileArray.push(URL.createObjectURL(multipleFileObj[0][i]));
+  const uploadMultipleFiles = async (event) => {
+    console.log(event.target.files);
+    const files = event.target.files;
+    const newImages = [];
+    for (let i = 0; i < files.length; i++) {
+      if (i >= 6) {
+        break;
+      }
+      const base64 = await readFile(files[i]);
+      newImages.push(base64);
     }
-    setMultipleFile(multipleFileArray);
-    setImg(multipleFileArray)
+    setMultipleFile(newImages)
   };
-
-  // console.log(multipleFileArray?.[0]);
-
-  // const uploadFiles = (e) => {
-  //   e.preventDefault();
-  //   // console.log(multipleFile);
-  // };
-
-  const removeImage = (index) => {
-    // console.log("reomve");
-    // console.log(index);
+  const readFile = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+    const removeImage = (index) => {
     setMultipleFile([
-      ...multipleFileArray.slice(0, index),
-      ...multipleFileArray.slice(index + 1, multipleFileArray.length),
+      ...multipleFile.slice(0, index),
+      ...multipleFile.slice(index + 1, multipleFile.length),
     ]);
   };
+  useEffect(() => {
+    setImg(multipleFile);
+  }, [multipleFile]);
 
   return (
     <>
       <form>
-        <div className="Upload-container" >
+        <div className="Upload-container">
           {multipleFile.length != 0 &&
             multipleFile.map((url, index) => (
               <div key={url} className="img-frame ">
                 <img className="img" src={url} alt="..." />
-                {console.log(index)}
               </div>
             ))}
 
-        { multipleFile.length !=6 ? <div className="upload-button">
-          <label htmlFor="upload">
-            <FontAwesomeIcon
-              icon={faUpload}
-              className="icon"
-            />
-            
-          </label>
-          <input
-            accept="image/*"
-            type="file"
-            name="myfile"
-            id="upload"
-            onChange={uploadMultipleFiles}
-            multiple
-            hidden
-          />
-        </div> :<></>}
+          {multipleFile.length != 6 ? (
+            <div className="upload-button">
+              <label htmlFor="upload">
+                <FontAwesomeIcon icon={faUpload} className="icon" />
+              </label>
+              <input
+                accept="image/*"
+                type="file"
+                name="myfile"
+                id="upload"
+                multiple
+                hidden
+                onChange={uploadMultipleFiles}
+              />
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </form>
     </>

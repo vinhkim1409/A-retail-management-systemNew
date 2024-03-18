@@ -47,7 +47,7 @@ const style = {
   width: 400,
   bgcolor: "background.paper",
   boxShadow: 24,
-  borderRadius:2,
+  borderRadius: 2,
   p: 4,
 };
 
@@ -232,16 +232,13 @@ function CustomerList() {
   const [currentTableData, setCurrentTableData] = useState(customerdatawebsite);
   const totalPages = Math.ceil(currentTableData.length / 5);
 
-
-  const [open,setOpen]=useState(false)
-  const handleOpen=()=>{
-    setOpen(true)
-  }
-  const handleClose=()=>{
-    setOpen(false)
-  }
-
-
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <>
@@ -276,7 +273,7 @@ function CustomerList() {
             width="100%"
             overflow="auto"
             backgroundColor="white"
-            minHeight={350}
+            minHeight={450}
           >
             <StyledTable>
               <TableHead>
@@ -296,16 +293,16 @@ function CustomerList() {
                     Tên
                   </TableCell>
                   <TableCell
-                    align="center"
+                    align="left"
                     className="table-label"
-                    sx={{ minWidth: 100 }}
+                    sx={{ minWidth: 120 }}
                   >
                     Email
                   </TableCell>
                   <TableCell
                     align="left"
                     className="table-label"
-                    sx={{ minWidth: 100 }}
+                    sx={{ minWidth: 120 }}
                   >
                     Số điện thoại
                   </TableCell>
@@ -341,7 +338,7 @@ function CustomerList() {
                         {item.firstname}
                       </TableCell>
                       <TableCell
-                        align="center"
+                        align="left"
                         className="cell-content"
                         sx={{ maxWidth: 100 }}
                       >
@@ -350,7 +347,9 @@ function CustomerList() {
                       <TableCell align="left">{item.phone}</TableCell>
                       <TableCell align="left">{item.status}</TableCell>
                       <TableCell align="left">
-                        <FontAwesomeIcon icon={faBan} onClick={handleOpen}/>
+                        <button className="btn">
+                          <FontAwesomeIcon icon={faBan} onClick={handleOpen} />
+                        </button>
                       </TableCell>
                     </TableRow>
                   ))}

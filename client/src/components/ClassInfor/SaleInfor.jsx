@@ -19,57 +19,124 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 
-function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
+function SaleInfor({ setTypeSale, setSaleInfor }) {
   const [numClass1, setNumClass1] = useState(0);
   const [numClass2, setNumClass2] = useState(0);
   const [class1s, setClass1] = useState([]);
   const [class2s, setClass2] = useState([]);
-  const [saleInfo, setSaleInfo] = useState(["","",""])
-  const AddSingleInfo=(value,index)=>{
-    const newArray=[...saleInfo]
-    newArray[index]=value
-    setSaleInfo(newArray)
-  }
+  const [saleInfo, setSaleInfo] = useState({
+    color: { id: 0, name: "" },
+    size: { id: 0, name: "" },
+    buy: "",
+    sell: "",
+    quantity: "",
+  });
+  const [classSale, setClassSale] = useState([
+    {
+      color: { id: 0, name: "" },
+      size: { id: 0, name: "" },
+      buy: "",
+      sell: "",
+      quantity: "",
+    },
+  ]);
+  const AddSingleInfo = (value, index) => {
+    
+    const newArray = saleInfo;
+    if(index===0)
+    {newArray.buy=value}
+    if(index===1)
+    {newArray.sell=value}
+    if(index===1)
+    {newArray.quantity=value}
+    setSaleInfo(newArray);
+  };
   const AddClass1 = (event, index) => {
+    const newClassSale = classSale.map((item) => {
+      if (item.color.id === index) {
+        return { ...item, color: { id: index, name: event.target.value } };
+      }
+      return item;
+    });
+    setClassSale(newClassSale);
+
     const newArray = [...class1s];
     newArray[index] = event.target.value;
     setClass1(newArray);
   };
   const AddClass2 = (event, index) => {
+    const newClassSale = classSale.map((item) => {
+      if (item.size.id === index) {
+        return { ...item, size: { id: index, name: event.target.value } };
+      }
+      return item;
+    });
+    setClassSale(newClassSale);
+
     const newArray = [...class2s];
     newArray[index] = event.target.value;
     setClass2(newArray);
   };
   const AddBuyPrice = (event, index1, index2) => {
-    arrayClass[index1][index2]["buy"]=event.target.value;
-   
+    const newClassSale = classSale.map((item) => {
+      if (item.color.id === index1 && item.size.id === index2) {
+        return { ...item, buy: event.target.value };
+      }
+      return item;
+    });
+    setClassSale(newClassSale);
   };
   const AddSellPrice = (event, index1, index2) => {
-    arrayClass[index1][index2]["sell"]=event.target.value;
-    
+    const newClassSale = classSale.map((item) => {
+      if (item.color.id === index1 && item.size.id === index2) {
+        return { ...item, sell: event.target.value };
+      }
+      return item;
+    });
+    setClassSale(newClassSale);
   };
   const AddQuantity = (event, index1, index2) => {
-    arrayClass[index1][index2]["quantity"]=event.target.value;
-    
+    const newClassSale = classSale.map((item) => {
+      if (item.color.id === index1 && item.size.id === index2) {
+        return { ...item, quantity: event.target.value };
+      }
+      return item;
+    });
+    setClassSale(newClassSale);
   };
-  let arrayClass = [];
-  let row = numClass1 > 0 ? numClass1 : 1;
-  let col = numClass2 > 0 ? numClass2 : 1;
 
-  for (let i = 0; i < row; i++) {
-    arrayClass[i] = new Array(col).fill({});
-  }
-  if (numClass1 > 0 || numClass2 > 0) {
-    for (let i = 0; i < row; i++) {
-      for (let j = 0; j < col; j++) {
-        arrayClass[i][j] = { color: class1s[i], size: class2s[j],buy:"",sell:"",quantity:"" };
+  useEffect(() => {
+    let arrayClass = [];
+    let row = numClass1 > 0 ? numClass1 : 1;
+    let col = numClass2 > 0 ? numClass2 : 1;
+    if (numClass1 > 0 || numClass2 > 0) {
+      for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+          const element = {
+            color: { id: i, name: "" },
+            size: { id: j, name: "" },
+            buy: "",
+            sell: "",
+            quantity: "",
+          };
+          arrayClass.push(element);
+        }
       }
     }
-  }
-  useEffect(()=>{
-    setSingleInfor(saleInfo)
-    console.log("haha")
-  },[saleInfo])
+    setClassSale(arrayClass);
+    const newClass1s = new Array(row).fill("");
+    setClass1(newClass1s);
+    const newClass2s = new Array(col).fill("");
+    setClass2(newClass2s);
+  }, [numClass1, numClass2]);
+  useEffect(() => {
+    if (numClass1 > 0 || numClass2 > 0) {
+      setSaleInfor(classSale);
+      setTypeSale(1);
+    } else {
+      setSaleInfor(saleInfo);
+    }
+  }, [classSale, saleInfo]);
   return (
     <div className="ClassInfor-container">
       <Paper
@@ -88,9 +155,9 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                     onClick={() => {
                       setNumClass1(numClass1 + 1);
                       setClass1([...class1s, ""]);
-                      AddSingleInfo("",0)
-                      AddSingleInfo("",1)
-                      AddSingleInfo("",2)
+                      AddSingleInfo("", 0);
+                      AddSingleInfo("", 1);
+                      AddSingleInfo("", 2);
                     }}
                     className="btn add"
                   >
@@ -114,6 +181,15 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                               marginRight: "8%",
                             }}
                             sx={{ boxShadow: 3 }}
+                            value={
+                              classSale.filter(
+                                (item) => item.color.id === index
+                              )[0]
+                                ? classSale.filter(
+                                    (item) => item.color.id === index
+                                  )[0].color.name
+                                : ""
+                            }
                             onChange={(event) => AddClass1(event, index)}
                           />
                           <button className="btn">
@@ -125,7 +201,6 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                         onClick={() => {
                           setNumClass1(numClass1 + 1);
                           setClass1([...class1s, ""]);
-                          
                         }}
                         className="btn"
                       >
@@ -144,9 +219,9 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                     onClick={() => {
                       setNumClass2(numClass2 + 1);
                       setClass2([...class2s, ""]);
-                      AddSingleInfo("",0)
-                      AddSingleInfo("",1)
-                      AddSingleInfo("",2)
+                      AddSingleInfo("", 0);
+                      AddSingleInfo("", 1);
+                      AddSingleInfo("", 2);
                     }}
                     className="btn add"
                   >
@@ -169,6 +244,15 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                               marginRight: "8%",
                             }}
                             sx={{ boxShadow: 3 }}
+                            value={
+                              classSale.filter(
+                                (item) => item.size.id === index
+                              )[0]
+                                ? classSale.filter(
+                                    (item) => item.size.id === index
+                                  )[0].size.name
+                                : ""
+                            }
                             onChange={(event) => AddClass2(event, index)}
                           />
                           <button className="btn">
@@ -206,7 +290,9 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                           sx={{
                             boxShadow: 3,
                           }}
-                          onChange={(event)=>{AddSingleInfo(event.target.value,0)}}
+                          onChange={(event) => {
+                            AddSingleInfo(event.target.value, 0);
+                          }}
                         />
                       </Stack>
                     </Grid>
@@ -220,7 +306,9 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                           sx={{
                             boxShadow: 3,
                           }}
-                          onChange={(event)=>{AddSingleInfo(event.target.value,1)}}
+                          onChange={(event) => {
+                            AddSingleInfo(event.target.value, 1);
+                          }}
                         />
                       </Stack>
                     </Grid>
@@ -234,7 +322,9 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                           sx={{
                             boxShadow: 3,
                           }}
-                          onChange={(event)=>{AddSingleInfo(event.target.value,2)}}
+                          onChange={(event) => {
+                            AddSingleInfo(event.target.value, 2);
+                          }}
                         />
                       </Stack>
                     </Grid>
@@ -262,9 +352,7 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                     )}
                     <div className="lable-mini">Buy</div>
                     <div className="lable-mini">Sell</div>
-                    <div className="lable-mini border-end">
-                      Quantity
-                    </div>
+                    <div className="lable-mini border-end">Quantity</div>
                   </div>
                   {numClass1 > 0 ? (
                     <>
@@ -287,14 +375,39 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                                         <OutlinedInput
                                           size="small"
                                           className="buy-box1"
+                                          value={
+                                            classSale.filter(
+                                              (item) =>
+                                                item.color.id === index1 &&
+                                                item.size.id === index2
+                                            )[0]
+                                              ? classSale.filter(
+                                                  (item) =>
+                                                    item.color.id === index1 &&
+                                                    item.size.id === index2
+                                                )[0].buy
+                                              : ""
+                                          }
                                           onChange={(event) => {
                                             AddBuyPrice(event, index1, index2);
                                           }}
                                         />
-
                                         <OutlinedInput
                                           size="small"
                                           className="sell-box1"
+                                          value={
+                                            classSale.filter(
+                                              (item) =>
+                                                item.color.id === index1 &&
+                                                item.size.id === index2
+                                            )[0]
+                                              ? classSale.filter(
+                                                  (item) =>
+                                                    item.color.id === index1 &&
+                                                    item.size.id === index2
+                                                )[0].sell
+                                              : ""
+                                          }
                                           onChange={(event) => {
                                             AddSellPrice(event, index1, index2);
                                           }}
@@ -302,6 +415,19 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                                         <OutlinedInput
                                           size="small"
                                           className="quantity-box1"
+                                          value={
+                                            classSale.filter(
+                                              (item) =>
+                                                item.color.id === index1 &&
+                                                item.size.id === index2
+                                            )[0]
+                                              ? classSale.filter(
+                                                  (item) =>
+                                                    item.color.id === index1 &&
+                                                    item.size.id === index2
+                                                )[0].quantity
+                                              : ""
+                                          }
                                           onChange={(event) => {
                                             AddQuantity(event, index1, index2);
                                           }}
@@ -327,6 +453,19 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                                 <OutlinedInput
                                   size="small"
                                   className="option2-box"
+                                  value={
+                                    classSale.filter(
+                                      (item) =>
+                                        item.color.id === index1 &&
+                                        item.size.id === 0
+                                    )[0]
+                                      ? classSale.filter(
+                                          (item) =>
+                                            item.color.id === index1 &&
+                                            item.size.id === 0
+                                        )[0].buy
+                                      : ""
+                                  }
                                   onChange={(event) => {
                                     AddBuyPrice(event, index1, 0);
                                   }}
@@ -335,6 +474,19 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                                 <OutlinedInput
                                   size="small"
                                   className="option2-box"
+                                  value={
+                                    classSale.filter(
+                                      (item) =>
+                                        item.color.id === index1 &&
+                                        item.size.id === 0
+                                    )[0]
+                                      ? classSale.filter(
+                                          (item) =>
+                                            item.color.id === index1 &&
+                                            item.size.id === 0
+                                        )[0].sell
+                                      : ""
+                                  }
                                   onChange={(event) => {
                                     AddSellPrice(event, index1, 0);
                                   }}
@@ -342,6 +494,19 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                                 <OutlinedInput
                                   size="small"
                                   className="option2-box"
+                                  value={
+                                    classSale.filter(
+                                      (item) =>
+                                        item.color.id === index1 &&
+                                        item.size.id === 0
+                                    )[0]
+                                      ? classSale.filter(
+                                          (item) =>
+                                            item.color.id === index1 &&
+                                            item.size.id === 0
+                                        )[0].quantity
+                                      : ""
+                                  }
                                   onChange={(event) => {
                                     AddQuantity(event, index1, 0);
                                   }}
@@ -354,40 +519,79 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
                     </>
                   ) : (
                     <>
-                          {/* Chi 2*/}
-                          {class2s.map((class2, index2) => (
-                            <>
-                              <div className="option-2" key={index2}>
-                                <div className="attribute-box">
-                                  <div className="">{class2}</div>
-                                </div>
+                      {/* Chi 2*/}
+                      {class2s.map((class2, index2) => (
+                        <>
+                          <div className="option-2" key={index2}>
+                            <div className="attribute-box">
+                              <div className="">{class2}</div>
+                            </div>
 
-                                <OutlinedInput
-                                  size="small"
-                                  className="option2-box"
-                                  onChange={(event) => {
-                                    AddBuyPrice(event, 0, index2);
-                                  }}
-                                />
+                            <OutlinedInput
+                              size="small"
+                              className="option2-box"
+                              value={
+                                classSale.filter(
+                                  (item) =>
+                                    item.color.id === 0 &&
+                                    item.size.id === index2
+                                )[0]
+                                  ? classSale.filter(
+                                      (item) =>
+                                        item.color.id === 0 &&
+                                        item.size.id === index2
+                                    )[0].buy
+                                  : ""
+                              }
+                              onChange={(event) => {
+                                AddBuyPrice(event, 0, index2);
+                              }}
+                            />
 
-                                <OutlinedInput
-                                  size="small"
-                                  className="option2-box"
-                                  onChange={(event) => {
-                                    AddSellPrice(event, 0, index2);
-                                  }}
-                                />
-                                <OutlinedInput
-                                  size="small"
-                                  className="option2-box"
-                                  onChange={(event) => {
-                                    AddQuantity(event, 0, index2);
-                                  }}
-                                />
-                              </div>
-                            </>
-                          ))}
+                            <OutlinedInput
+                              size="small"
+                              className="option2-box"
+                              value={
+                                classSale.filter(
+                                  (item) =>
+                                    item.color.id === 0 &&
+                                    item.size.id === index2
+                                )[0]
+                                  ? classSale.filter(
+                                      (item) =>
+                                        item.color.id === 0 &&
+                                        item.size.id === index2
+                                    )[0].sell
+                                  : ""
+                              }
+                              onChange={(event) => {
+                                AddSellPrice(event, 0, index2);
+                              }}
+                            />
+                            <OutlinedInput
+                              size="small"
+                              className="option2-box"
+                              value={
+                                classSale.filter(
+                                  (item) =>
+                                    item.color.id === 0 &&
+                                    item.size.id === index2
+                                )[0]
+                                  ? classSale.filter(
+                                      (item) =>
+                                        item.color.id === 0 &&
+                                        item.size.id === index2
+                                    )[0].quantity
+                                  : ""
+                              }
+                              onChange={(event) => {
+                                AddQuantity(event, 0, index2);
+                              }}
+                            />
+                          </div>
                         </>
+                      ))}
+                    </>
                   )}
                 </div>
               </>
@@ -395,8 +599,13 @@ function SaleInfor({setTypeSale,setSaleInfor,setSingleInfor}) {
           </div>
         </div>
       </Paper>
-      {/* <button onClick={()=>{console.log(saleInfo)}}>
-                                    +
+      {/* <button
+        onClick={() => {
+          console.log(class1s);
+          //AddSaleInfo();
+        }}
+      >
+        +
       </button> */}
     </div>
   );

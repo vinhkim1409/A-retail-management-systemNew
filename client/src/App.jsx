@@ -55,6 +55,7 @@ import Review from "./pages/Customer/Review/AddNewReview/AddNewReview"
 
 //Error
 import Error from "./pages/Error/Error";
+import EditProduct from "./pages/Business/Product/EditProduct/EditProduct";
 
 
 function App() {
@@ -91,6 +92,7 @@ function App() {
           <Route path="warehouse" element={<Warehouse />} />
           <Route path="product" element={<ProductM />} />
           <Route path="product/add" element={<AddProduct />} />
+          <Route path="product/edit/:id" element={<EditProduct />} />
           <Route path="product/detail/:id" element={<DetailProduct />} />
           <Route path="customer-information" element={<CustomerInformation />} />
           <Route path="order" element={<OrderBusiness />} />

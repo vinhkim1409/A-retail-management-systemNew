@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./AddProductCatalog.scss";
-import {
-  Box,
-  Checkbox,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  Modal,
-  OutlinedInput,
-  Stack,
-  styled,
-} from "@mui/material";
+import { Box, Checkbox, Modal } from "@mui/material";
+import axios from "axios";
+import { api } from "../../../../constant/constant";
 
 const style = {
   position: "absolute",
@@ -21,95 +13,126 @@ const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
+  border: "1px solid white",
 };
 
-const AddProductCatalog = ({ open, handleClose, id }) => {
-  const product = [
-    {
-      id: 1,
-      name: "Ao thun",
-      price: 333,
-      quantity: 10,
-    },
-    {
-      id: 2,
-      name: "Ao thun",
-      price: 333,
-      quantity: 10,
-    },
-    {
-      id: 3,
-      name: "Ao thun",
-      price: 333,
-      quantity: 10,
-    },
-    {
-      id: 4,
-      name: "Ao thun",
-      price: 333,
-      quantity: 10, 
-    },
-  ];
-  useEffect(()=>{
-    const newArray=[]
-    setIds(newArray)
-  },[open])
+const AddProductCatalog = ({ open, handleClose, id,categorys,setCategorys }) => {
+  const [product, setProduct] = useState([]);
+  useEffect(() => {
+    const newArray = [];
+    setIds(newArray);
+  }, [open]);
+  const getProduct = async () => {
+    const productList = await axios.get(`${api}product`);
+    setProduct(productList.data);
+  };
+  useEffect(() => {
+    getProduct();
+  }, [open]);
+
   const [ids, setIds] = useState([]);
-  const handleChangeCheck = (item) => {
-    if (ids.includes(item.id)) {
-      const updateIds = ids.filter((n) => n != item.id);
-      setIds(updateIds);
+  const handleChange = () => {
+    let num = 0;
+    product.map((item) => {
+      if (ids.includes(item._id)) {
+        num = num + 1;
+      }
+    });
+    console.log(num);
+    if (num === product.length) {
+      const newArray = [];
+      setIds(newArray);
     } else {
-      setIds([...ids, item.id]);
+      let arrayIds = [];
+      product.map((item) => {
+        arrayIds.push(item._id);
+      });
+      setIds(arrayIds);
     }
   };
 
+  const handleChangeCheck = (item) => {
+    if (ids.includes(item._id)) {
+      const updateIds = ids.filter((n) => n != item._id);
+      setIds(updateIds);
+    } else {
+      setIds([...ids, item._id]);
+    }
+  };
+
+  const handleChooseProduct = async () => {
+    const listProduct={
+      product:ids
+    }
+    const addProduct=await axios.put(`${api}category/add-product/${id}`,listProduct)
+    console.log(addProduct)
+    setCategorys(categorys.map((category)=>{
+      if(category._id===id){
+        return {
+          ...category,
+          product:ids
+        }
+      }
+      return category
+    }))
+    handleClose();
+  };
   return (
-    <div className="Addproductcatalog-container">
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+    <div>
+      <Modal open={open} disableEscapeKeyDown>
         <Box sx={style} className="Addproductcatalog-container">
           <div className="title">Add Product To Category</div>
           <div className="table">
-            <div className="lable">
-              <div className="name">
+            <div className="row">
+              <div className="name lable">
                 <Checkbox
-                  // value="checkedA"
-                  // checked={state.checkedA}
-                  // onChange={handleChange("checkedA")}
+                  value="checkedA"
+                  checked={ids.length === product.length}
+                  onChange={handleChange}
                   inputProps={{ "aria-label": "primary checkbox" }}
                 />
                 Name
               </div>
-              <div className="num-product ">Price</div>
-              <div className="quantity ">Quantity</div>
+              <div className="num-product lable">Price</div>
+              <div className="quantity lable">Quantity</div>
             </div>
             <div className="content">
-              {product.map((item) => (
-                <>
-                  <div className="row" key={item.id}>
-                    <div className="name">
-                      <Checkbox
-                          checked={ids.includes(item.id)}
-                          onChange={()=>{handleChangeCheck(item)}}
-                        inputProps={{ "aria-label": "primary checkbox" }}
-                      />
-                      {item.name}
+              {product.map((item, index) => (
+                <div className="row" key={index}>
+                  <div className="name">
+                    <Checkbox
+                      checked={ids.includes(item._id)}
+                      onChange={() => {
+                        handleChangeCheck(item);
+                      }}
+                      inputProps={{ "aria-label": "primary checkbox" }}
+                    />
+                    {item.name}
+                    <div className="img-product">
+                      <img src={item.picture[0]} alt="" className="img" />
                     </div>
-                    <div className="num-product">{item.price}</div>
-                    <div className="quantity">{item.quantity}</div>
                   </div>
-                </>
+
+                  <div className="num-product">
+                    {item.saleInfo[0].sellPrice}
+                  </div>
+                  <div className="quantity">{item.saleInfo[0].quantity}</div>
+                </div>
               ))}
             </div>
           </div>
           <div className="btn-box">
-            <button className="btn cancel">Cancel</button>
-            <button className="btn save">Save change</button>
+            <button className="btn cancel" onClick={handleClose}>
+              Cancel
+            </button>
+            <button
+              className="btn save"
+              onClick={() => {
+                handleChooseProduct();
+              }}
+            >
+              Save change
+            </button>
           </div>
         </Box>
       </Modal>

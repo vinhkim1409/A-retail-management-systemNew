@@ -1,6 +1,7 @@
 import React from "react";
 import "./Login.scss";
 import google from "../../../assets/google.png";
+import background from "../../../assets/login-background.png"
 function LoginPage() {
   return (
     <>
@@ -10,6 +11,7 @@ function LoginPage() {
           <h3>
             Create an account to run wild through our curated experiences.
           </h3>
+          <img src={background} alt="" className="img" />
         </div>
         <div className="form_container  rounded ">
           <form className="form_container1">

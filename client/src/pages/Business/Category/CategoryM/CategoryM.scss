@@ -54,6 +54,9 @@
     padding-left: 0.1%;
    
   }
+  .lable-name{
+    margin-left: 0.15%;
+  }
   .mt1 {
     margin-top: 1%;
   }
@@ -61,6 +64,9 @@
     width: 30%;
    
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .content {
     padding: 0% 0% 1% 0.1%;

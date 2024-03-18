@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./Shop.scss";
 import shirt from "../../../assets/shirt.jpg";
 import { Checkbox, MenuItem, OutlinedInput, Select } from "@mui/material";
+import axios from "axios";
+import { api } from "../../../constant/constant";
 
 const typecheckbox = ["Jacket", "Jean", "Cotons", "Excool"];
 function Shop() {
@@ -16,7 +18,7 @@ function Shop() {
     price: "$29",
     typ:`${index%2==0 ?"Jacket":"Jean"}`
   }));
-  const [productTable,setProductTable] = useState(products)
+  const [productTable,setProductTable] = useState([])
   const indexOfLastProduct = currentPage * productsPerPage * productsPerRow;
   const indexOfFirstProduct =
     indexOfLastProduct - productsPerPage * productsPerRow;
@@ -47,21 +49,26 @@ function Shop() {
     }
 
   };
-  useEffect(()=>{
-    if(typ.length!==0)
-    {
-      const newProducts=products.filter(item=>typ.includes(item.typ));
-      setProductTable(newProducts)
+  // useEffect(()=>{
+  //   if(typ.length!==0)
+  //   {
+  //     const newProducts=products.filter(item=>typ.includes(item.typ));
+  //     setProductTable(newProducts)
       
       
-    }
-    else
-    {
-      setProductTable(products)
-    }
-  },[typ])
- 
-
+  //   }
+  //   else
+  //   {
+  //     setProductTable(products)
+  //   }
+  // },[typ])
+ const getProduct=async()=>{
+  const products= await axios.get(`${api}product`)
+  setProductTable(products.data)
+}
+useEffect(()=>{
+  getProduct()
+},[])
   return (
     <div className="Shop-container">
       <div className="title">Coolmate</div>
@@ -93,7 +100,7 @@ function Shop() {
             <div className="lable-box">
               <div className="lable">Filters</div>
               <div className="results">
-                <div className="total-product">{54} Products</div>
+                <div className="total-product">{productTable.length} Products</div>
                 {typ.length > 0 ? (
                   <div className="clear" onClick={() => { setTyp([]) }}>Clear Filter</div>
                 ) : (
@@ -143,11 +150,11 @@ function Shop() {
                     (rowIndex + 1) * productsPerRow
                   )
                   .map((product,index) => (
-                    <div key={product.id} className={`${index<2?"detail-product mr":"detail-product mr-end"}`}>
+                    <div key={product._id} className={`${index<2?"detail-product mr":"detail-product mr-end"}`}>
                       <div className="image-product">
                         <img
-                          src={shirt}
-                          alt={`shirt ${product.id}`}
+                          src={product.picture[0]}
+                          alt={`shirt ${product._id}`}
                           style={{
                             width: "100%",
                             height: "100%",
@@ -156,7 +163,7 @@ function Shop() {
                         />
                       </div>
                       <div className="name-product">{product.name}</div>
-                      <div className="price-product">{product.price}</div>
+                      <div className="price-product">{product.saleInfo[0].sellPrice}</div>
                     </div>
                   ))}
               </div>

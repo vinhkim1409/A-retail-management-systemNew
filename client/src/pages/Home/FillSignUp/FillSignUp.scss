@@ -1,12 +1,24 @@
 .Fillsignup-form {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   background-color: white;
   .form-element{
-    display: grid;
-    grid-template-columns: auto auto ;
-    grid-row: auto auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .title{
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: rgba(0, 0, 0, 1);
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+    
+  }
+  .img{
+    width: 70%;
+    
+    margin-left: 10%;
   }
   .form_container {
     width: 40%;
@@ -42,15 +54,13 @@
   }
   .form-control
   {
-    width: 300px;
+    width: 100%;
     height: 30px;
     margin-top: 10px;
     border-radius: 5px;
     border: 1px solid gray;
     padding: 10px;
     margin-bottom: 10px;
-    grid-row: 2;
-    grid-column: 1;
   }
   .btn-google{
     width: 66%;
@@ -75,5 +85,11 @@
   }
   .text-center{
     text-align: center;
+  }
+  .fill-box{
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 1% 1% 1% 1%;
+    border-radius: 10px;
   }
 }

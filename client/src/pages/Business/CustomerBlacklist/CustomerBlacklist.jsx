@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./CustomerBlacklist.scss";
+import "./CustomerBlacklist.scss"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUnlock,
@@ -274,9 +274,9 @@ function CustomerBlackList() {
             Shopee
           </button>
         </div>
-        <div className="add">
+        {/* <div className="add">
           <div className="add-button">Add</div>
-        </div>
+        </div> */}
         <div className="table-product">
           <Box
             width="100%"
@@ -322,7 +322,7 @@ function CustomerBlackList() {
                   >
                     Tình trạng
                   </TableCell>
-                  <TableCell align="Center" className="table-label"></TableCell>
+                  <TableCell align="left" className="table-label">Unban</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -333,7 +333,7 @@ function CustomerBlackList() {
                       <TableCell
                         align="left"
                         className="table-label"
-                        sx={{ maxWidth: 80 }}
+                        sx={{ maxWidth: 100 }}
                       >
                         {item.lastname}
                       </TableCell>
@@ -359,7 +359,7 @@ function CustomerBlackList() {
                         {item.reason}
                       </TableCell>
                       <TableCell align="left">{item.status}</TableCell>
-                      <TableCell align="center">
+                      <TableCell align="left">
                         <btn
                           className="btn"
                           onClick={() => {

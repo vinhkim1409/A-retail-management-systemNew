@@ -1,17 +1,9 @@
 import * as React from "react";
 import "./AddNewStaff.scss";
 import {
-  Button,
-  Checkbox,
-  FormControlLabel,
   Grid,
-  Icon,
-  Radio,
-  RadioGroup,
-  styled,
   Box,
   Modal,
-  TextField,
   FormHelperText,
   OutlinedInput,
   InputLabel,
@@ -20,6 +12,9 @@ import {
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import { api } from "../../../constant/constant";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -31,9 +26,13 @@ const style = {
   p: 4,
   borderRadius: "10px",
 };
-export default function AddNewStaff() {
+
+export default function AddNewStaff({ stafflist, setStaffList }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
     let newError = {
       firstname: false,
       lastname: false,
@@ -50,9 +49,9 @@ export default function AddNewStaff() {
       position: "",
     };
     setBasicInfo(newBasicInfo);
-    setOpen(true);
+    setAvatarEncode("");
+    setOpen(false);
   };
-  const handleClose = () => setOpen(false);
   const [basicInfo, setBasicInfo] = useState({
     firstname: "",
     lastname: "",
@@ -134,18 +133,37 @@ export default function AddNewStaff() {
       setErrorForm(newError);
     }
   };
-  let singleAvatar = [];
-  let singleAvatarArray = [];
-  const [avatar, setAvatar] = useState([]);
+  const [avatarEncode, setAvatarEncode] = useState("");
   const uploadAvatar = (e) => {
-    singleAvatar.push(e.target.files);
+    const data = new FileReader();
+    data.addEventListener("load", () => {
+      setAvatarEncode(data.result);
+    });
+    data.readAsDataURL(e.target.files[0]);
+  };
+  const addStaff = async () => {
+    const haveerror = Object.values(errorForm).includes(true);
 
-    if (singleAvatar[0].length > 0) {
-      singleAvatarArray.push(URL.createObjectURL(singleAvatar[0][0]));
-      console.log(singleAvatarArray);
-      setAvatar(singleAvatarArray);
+    const newStaff = {
+      lastname: basicInfo.lastname,
+      firstname: basicInfo.firstname,
+      email: basicInfo.email,
+      phoneNumber: basicInfo.phone,
+      avatar: avatarEncode,
+      position: basicInfo.position,
+      isDelete: false,
+    };
+    //check newstaff nhanh hon
+    try {
+      const responce = await axios.post(`${api}staff/add`, newStaff);
+      console.log(responce);
+      setStaffList([...stafflist, newStaff]);
+      handleClose();
+    } catch (err) {
+      console.log("false");
     }
   };
+
   return (
     <div className="Addnewstaff-container">
       <button className="btn" onClick={handleOpen}>
@@ -153,10 +171,10 @@ export default function AddNewStaff() {
       </button>
       <Modal
         open={open}
-        onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         className="Addnewstaff-container"
+        disableEscapeKeyDown
       >
         <Box sx={style}>
           <div className="title">Add New Staff</div>
@@ -267,16 +285,19 @@ export default function AddNewStaff() {
                     Avatar
                   </InputLabel>
                   <div className="avatar">
-                    {avatar.length === 1 ? (
+                    {avatarEncode.length > 1 ? (
                       <>
-                        <img src={avatar[0]} alt="" className="img" />
+                        <img src={avatarEncode} alt="" className="img" />
                       </>
                     ) : (
                       <>
                         <div className="input-avatar">
                           <label htmlFor="avatar">
                             <div className="label-box">
-                              <FontAwesomeIcon icon={faUpload} className="icon" />
+                              <FontAwesomeIcon
+                                icon={faUpload}
+                                className="icon"
+                              />
                             </div>
                           </label>
                           <input
@@ -320,9 +341,16 @@ export default function AddNewStaff() {
           </Grid>
           <div className="button">
             <div className="btn-box">
-              <button className="btn">Yes</button>
               <button className="btn" onClick={handleClose}>
                 Cancle
+              </button>
+              <button
+                className="btn"
+                onClick={() => {
+                  addStaff();
+                }}
+              >
+                Yes
               </button>
             </div>
           </div>
