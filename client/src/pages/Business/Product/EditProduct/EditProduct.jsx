@@ -13,9 +13,7 @@ import UploadImg from "../../../../components/UploadImg/UploadImg";
 import SaleInfor from "../../../../components/ClassInfor/SaleInfor";
 import SelecIndustry from "../../../../components/SelecIndustry/SelecIndustry";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUpload,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUpload,faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { api } from "../../../../constant/constant";
 import EditSaleInfor from "../../../../components/EditSaleInfor/EditSaleInfor";
@@ -57,6 +55,7 @@ function EditProduct() {
       setErrorName(true);
     }
   };
+
   const handleUpdateProduct = async () => {
     const newProduct = {
       name: basicInfo.name,
@@ -71,11 +70,16 @@ function EditProduct() {
         };
       }),
       saleInfo: saleInfor,
-      isDeleted:false
+      isDeleted: false,
     };
-    const addProductRes = await axios.put(`${api}product/edit/${id}`, newProduct);
+    const addProductRes = await axios.put(
+      `${api}product/edit/${id}`,
+      newProduct
+    );
     console.log(addProductRes.data);
   };
+
+
   const getProduct = async () => {
     const product = await axios.get(`${api}product/${id}`);
     console.log(product.data);
@@ -88,7 +92,6 @@ function EditProduct() {
     setMultipleFile(initalPicture);
     setInds(product.data.industry);
     setDetailInfos(product.data.detailInfo);
-   
   };
   useEffect(() => {
     getProduct();
@@ -101,7 +104,7 @@ function EditProduct() {
     const files = event.target.files;
     const newImages = [];
     for (let i = 0; i < files.length; i++) {
-      if (i >= 6) {
+      if (i >= 5) {
         break;
       }
       const base64 = await readFile(files[i]);
@@ -119,7 +122,7 @@ function EditProduct() {
       reader.readAsDataURL(file);
     });
   };
-  const removeImage = (index) => {
+  const handleDeleteImg = (index) => {
     setMultipleFile([
       ...multipleFile.slice(0, index),
       ...multipleFile.slice(index + 1, multipleFile.length),
@@ -146,12 +149,15 @@ function EditProduct() {
                     <div className="Upload-container">
                       {multipleFile.length != 0 &&
                         multipleFile.map((url, index) => (
-                          <div key={url} className="img-frame ">
+                          <div key={url} className="img-frame">
+                            <span class="close" onClick={()=>handleDeleteImg(index)}>
+                              <FontAwesomeIcon icon={faTrashCan} />
+                            </span>
                             <img className="img" src={url} alt="..." />
                           </div>
                         ))}
 
-                      {multipleFile.length != 6 ? (
+                      {multipleFile.length != 5 ? (
                         <div className="upload-button">
                           <label htmlFor="upload">
                             <FontAwesomeIcon icon={faUpload} className="icon" />
@@ -272,7 +278,10 @@ function EditProduct() {
           </Paper>
         </div>
         <div className="class-info">
-          <EditSaleInfor setTypeSale={setTypeSale} setSaleInfor={setSaleInfor} />
+          <EditSaleInfor
+            setTypeSale={setTypeSale}
+            setSaleInfor={setSaleInfor}
+          />
         </div>
         <div className="btn-add">
           <button
