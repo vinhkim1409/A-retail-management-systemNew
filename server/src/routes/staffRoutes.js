@@ -1,37 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const staffController = require("../controllers/staffController");
+
 //load model
 const Staff = require("../models/staffModel");
+const [getAllStaff,addNewStaff] =require("../controllers/staffController")
 
-//test get all
-router.get("/", async (req, res, next) => {
-  try {
-    const staffs = await Staff.find({isDelete:false});
-    res.json(staffs);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-//[POST] /staff/add
-router.post("/add", async (req, res) => {
-  try {
-    const { firstname, lastname, email, phone, avatar, position } = req.body;
+router.get("/", getAllStaff);
+router.post("/add", addNewStaff);
 
-    const staffExist = await Staff.findOne({ email });
-    if (staffExist) {
-      res.status(400);
-      res.json({ success: false, error: "Email is already in use" });
-      return;
-    }
-    const newStaff = new Staff(req.body);
-    await newStaff.save();
-    res.json({ success: true, staff: newStaff }); // khi co mk phai xoa mk trc khi respone
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-//[DELETE] /staff/delete/:id
 router.put("/delete/:id", async (req, res, next) => {
   // const tenantId=req.tenantID
 

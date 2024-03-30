@@ -9,22 +9,12 @@ import {
 import {
   Box,
   Button,
-  FormControl,
-  Icon,
-  IconButton,
-  InputAdornment,
-  MenuItem,
   Modal,
-  Paper,
-  Select,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
-  TextField,
   Typography,
   styled,
 } from "@mui/material";
@@ -69,7 +59,7 @@ function CustomerList() {
       firstname: "Hung",
       email: "minhhung@gmail.com",
       phone: "0123456789",
-      status: "Bình thường",
+      status: "Bình Thường",
     },
     {
       id: 2,
@@ -77,7 +67,7 @@ function CustomerList() {
       firstname: "Hung",
       email: "minhhung@gmail.com",
       phone: "0123456789",
-      status: "Bình thường",
+      status: "Bình Thường",
     },
     {
       id: 3,
@@ -344,8 +334,12 @@ function CustomerList() {
                       >
                         {item.email}
                       </TableCell>
-                      <TableCell align="left">{item.phone}</TableCell>
-                      <TableCell align="left">{item.status}</TableCell>
+                      <TableCell align="left" className="cell-content">
+                        {item.phone}
+                      </TableCell>
+                      <TableCell align="left" className="cell-content">
+                        {item.status}
+                      </TableCell>
                       <TableCell align="left">
                         <button className="btn">
                           <FontAwesomeIcon icon={faBan} onClick={handleOpen} />
@@ -355,19 +349,6 @@ function CustomerList() {
                   ))}
               </TableBody>
             </StyledTable>
-
-            {/* <TablePagination
-            sx={{ px: 2 }}
-            page={page}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            count={currentTableData.length}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ "aria-label": "Next Page" }}
-            backIconButtonProps={{ "aria-label": "Previous Page" }}
-          /> */}
           </Box>
           <div className="pages">
             <div className="pages-number">1-5 of {page + 1}</div>
