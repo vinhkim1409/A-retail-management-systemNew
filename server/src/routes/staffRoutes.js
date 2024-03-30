@@ -36,7 +36,7 @@ router.put("/delete/:id", async (req, res, next) => {
   // const tenantId=req.tenantID
 
   try {
-    const StaffDeleteCondition = { _id: req.params.id }; // tenantId:tenantId
+    const StaffDeleteCondition = { email: req.params.id }; // tenantId:tenantId
     const deletStaff = await Staff.findOneAndUpdate(StaffDeleteCondition,{$set:{isDelete:true}});
     if (!deletStaff) {
       return res
@@ -72,18 +72,20 @@ router.put("/update/:id", async (req, res, next) => {
         .status(401)
         .json({ success: false, message: "Staff not found" });
     }
+    else{
     res.json({
       success: true,
       message: "Staff updated successfully",
       staff: updateSatff,
     });
+  }
     
   } catch (error) {}
 });
 //[GET]"/staff/:id"
 router.get("/:id", async (req, res, next) => {
   try {
-    const staff = await Staff.findOne({_id: req.params.id});
+    const staff = await Staff.findOne({email: req.params.id});
     res.json(staff);
   } catch (err) {
     res.status(500).json({ message: err.message });

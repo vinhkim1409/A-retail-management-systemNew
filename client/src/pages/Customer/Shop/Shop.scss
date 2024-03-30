@@ -29,23 +29,24 @@
   .row-product {
     display: flex;
     margin-bottom: 20px;
-   // border: 1px solid gray;
+    // border: 1px solid gray;
   }
   .detail-product {
-    width: 30%;
+    width: 31%;
     display: flex;
     flex-direction: column;
     background-color: white;
     padding: 8px;
     height: auto;
-    border-radius: 5px;
-   // border: 1px solid gray;
-   
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
   }
-  .mr{
-    margin-right: 7%;
+  .mr {
+    margin-right: 3%;
   }
-  .mr-end{
+  .mr-end {
     margin-right: -1%;
   }
   .name-product {
@@ -53,7 +54,10 @@
     font-weight: 500;
   }
   .image-product {
-margin-bottom: 2%;
+    height: 80%;
+    margin-bottom: 2%;
+    border: 1px solid lightgray;
+    border-radius: 6px;
   }
   .price-product {
     font-weight: bold;
@@ -76,34 +80,30 @@ margin-bottom: 2%;
   .filter {
     min-width: 20%;
     margin-right: 5%;
-    
+
     padding: 1% 1% 1% 1%;
     .lable {
       font-size: 22px;
       font-weight: bold;
       margin-bottom: 5%;
-      
     }
-    .lable-box
-    {
-        border-bottom:1px solid gray ;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        
+    .lable-box {
+      border-bottom: 1px solid gray;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .results {
-        display: flex;
-        justify-content: space-between;
-        font-weight: 500;
-        margin-bottom: 3%;
-        .clear{
-            cursor: pointer;
-            
-        }
-        .clear:hover{
-            color: blue;
-        }
+      display: flex;
+      justify-content: space-between;
+      font-weight: 500;
+      margin-bottom: 3%;
+      .clear {
+        cursor: pointer;
+      }
+      .clear:hover {
+        color: blue;
+      }
     }
     .type {
       .type-lable {
@@ -111,7 +111,6 @@ margin-bottom: 2%;
         font-weight: bold;
         margin-bottom: 5%;
         color: gray;
-        
       }
     }
     .filter-price {
@@ -163,8 +162,8 @@ margin-bottom: 2%;
       font-weight: 500;
       color: gray;
     }
-    .sort-box{
-        border-radius: 20px;
+    .sort-box {
+      border-radius: 20px;
     }
   }
 }

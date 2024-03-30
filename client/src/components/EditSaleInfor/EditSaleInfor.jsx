@@ -71,7 +71,7 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
   const AddBuyPrice = (event, index1, index2) => {
     const newClassSale = classSale.map((item) => {
       if (item.class1.id === index1 && item.class2.id === index2) {
-        return { ...item, buy: event.target.value };
+        return { ...item, buyPrice: event.target.value };
       }
       return item;
     });
@@ -80,7 +80,7 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
   const AddSellPrice = (event, index1, index2) => {
     const newClassSale = classSale.map((item) => {
       if (item.class1.id === index1 && item.class2.id === index2) {
-        return { ...item, sell: event.target.value };
+        return { ...item, sellPrice: event.target.value };
       }
       return item;
     });
@@ -116,8 +116,8 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
           const element = {
             class1: { id: i, name: "" },
             class2: { id: j, name: class2s[j] },
-            buy: "",
-            sell: "",
+            buyPrice: "",
+            sellPrice: "",
             quantity: "",
           };
 
@@ -141,8 +141,8 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
           const element = {
             class1: { id: i, name: class1s[i] },
             class2: { id: j, name: "" },
-            buy: "",
-            sell: "",
+            buyPrice: "",
+            sellPrice: "",
             quantity: "",
           };
           if (!checkInSale(arrayClass, i, j)) {
@@ -160,10 +160,9 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
           return {
             ...sale,
             class1: { ...sale.class1, name: "" },
-            buyPrice:"",
-            sellPrice:"",
+            buyPrice: "",
+            sellPrice: "",
             quantity: "",
-
           };
         return sale;
       });
@@ -197,8 +196,8 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
           return {
             ...sale,
             class2: { ...sale.class2, name: "" },
-            buyPrice:"",
-            sellPrice:"",
+            buyPrice: "",
+            sellPrice: "",
             quantity: "",
           };
         return sale;
@@ -377,7 +376,12 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
                             }
                             onChange={(event) => AddClass2(event, index)}
                           />
-                          <button className="btn" onClick={()=>{DeleteClass2(index)}}>
+                          <button
+                            className="btn"
+                            onClick={() => {
+                              DeleteClass2(index);
+                            }}
+                          >
                             <FontAwesomeIcon icon={faTrashCan} />
                           </button>
                         </div>
@@ -456,7 +460,9 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
             ) : (
               <>
                 <div className="list-class">
-                  <div className="title-small">List of product categories</div>
+                  <div className="title-small">
+                    List of product categories {"(Currency unit is VND)"}{" "}
+                  </div>
                   <div className="lable">
                     {numClass1 !== 0 ? (
                       <>
@@ -721,14 +727,14 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
           </div>
         </div>
       </Paper>
-      <button
+      {/* <button
         onClick={() => {
           console.log(classSale);
           //AddSaleInfo();
         }}
       >
         +
-      </button>
+      </button> */}
     </div>
   );
 }

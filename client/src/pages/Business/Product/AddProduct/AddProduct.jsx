@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import "./AddProduct.scss";
 import {
-  Card,
-  Checkbox,
   FormHelperText,
   Grid,
   InputLabel,
@@ -14,23 +12,15 @@ import UploadImg from "../../../../components/UploadImg/UploadImg";
 import SaleInfor from "../../../../components/ClassInfor/SaleInfor";
 import SelecIndustry from "../../../../components/SelecIndustry/SelecIndustry";
 import axios from "axios";
-import {api} from "../../../../constant/constant"
+import {api,Industry} from "../../../../constant/constant"
+import { useNavigate } from "react-router-dom";
 
 const styles = {
   backgroundColor: "white",
 };
 function AddProduct() {
-  const [detailInfoLabel, setDetailInfoLabel] = useState([
-    "Detail1",
-    "Detail2",
-    "Detail3",
-    "Detail4",
-    "Detail5",
-    "Detail6",
-    "Detail7",
-    "Detail8",
-    "Detail9",
-  ]);
+  const navigate = useNavigate();
+  const [detailInfoLabel, setDetailInfoLabel] = useState(Industry["industry2"]);
   const [detailInfos, setDetailInfos] = useState([
     "",
     "",
@@ -61,9 +51,19 @@ function AddProduct() {
     setBasicInfo(newBasicInfo);
     checkErrorName();
   };
+  const handleChangeDesc=(event)=>{
+    const value = event.target.value;
+    let newBasicInfo = basicInfo;
+    newBasicInfo.decs = value;
+    setBasicInfo(newBasicInfo);
+   
+  }
   const checkErrorName = () => {
     if (basicInfo.name === "") {
       setErrorName(true);
+    }
+    else{
+      setErrorName(false);
     }
   };
   const handleAddProduct= async ()=>{
@@ -165,6 +165,7 @@ function AddProduct() {
                       rows={4}
                       style={styles}
                       sx={{ boxShadow: 3 }}
+                      onChange={handleChangeDesc}
                     />
                   </Stack>
                 </Grid>
@@ -211,6 +212,7 @@ function AddProduct() {
             onClick={() => {
               // console.log(saleInfor, typeSale);
               handleAddProduct()
+              navigate("/business/product");
             }}
           >
             Add New Product

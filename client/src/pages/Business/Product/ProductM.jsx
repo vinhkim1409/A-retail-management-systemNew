@@ -22,10 +22,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
 import shirt from "../../../assets/shirt.jpg";
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { api } from "../../../constant/constant";
 
@@ -112,6 +109,7 @@ function ProductM() {
   };
   useEffect(() => {
     getAllProducts();
+    console.log("re-render");
   }, []);
   return (
     <>
@@ -235,29 +233,44 @@ function ProductM() {
                         </TableCell>
                         <TableCell align="left">
                           <div className="saleInfo">
-                          {row.saleInfo.map((sale,index) => (
-                            <>
-                              <div className={`${index===0?"salefirst":"sale"}`}>{sale.sellPrice}</div>
-                            </>
-                          ))}
+                            {row.saleInfo.map((sale, index) => (
+                              <div
+                                className={`${
+                                  index === 0 ? "salefirst" : "sale"
+                                }`}
+                                key={index}
+                              >
+                                {new Intl.NumberFormat('en-US').format(sale.sellPrice)} VND
+                              </div>
+                            ))}
                           </div>
                         </TableCell>
                         <TableCell align="left">
-                        <div className="saleInfo">
-                          {row.saleInfo.map((sale,index) => (
-                            <>
-                              <div className={`${index===0?"salefirst":"sale"}`}>{sale.buyPrice}</div>
-                            </>
-                          ))}
+                          <div className="saleInfo">
+                            {row.saleInfo.map((sale, index) => (
+                              <div
+                                className={`${
+                                  index === 0 ? "salefirst" : "sale"
+                                }`}
+                                key={index}
+                              >
+                                {new Intl.NumberFormat('en-US').format(sale.buyPrice)} VND
+                              </div>
+                            ))}
                           </div>
                         </TableCell>
                         <TableCell align="left">
-                        <div className="saleInfo">
-                          {row.saleInfo.map((sale,index) => (
-                            <>
-                              <div className={`${index===0?"salefirst":"sale"}`}>{sale.quantity}</div>
-                            </>
-                          ))}
+                          <div className="saleInfo">
+                            {row.saleInfo.map((sale, index) => (
+                              <div
+                                className={`${
+                                  index === 0 ? "salefirst" : "sale"
+                                }`}
+                                key={index}
+                              >
+                                {new Intl.NumberFormat('en-US').format(sale.quantity)} 
+                              </div>
+                            ))}
                           </div>
                         </TableCell>
                         <TableCell align="center">

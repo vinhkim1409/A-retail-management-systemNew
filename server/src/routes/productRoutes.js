@@ -34,7 +34,7 @@ router.post("/add", async (req, res) => {
     name: name,
     industry: industry,
     picture: picture,
-    decsciption: "decsciption",
+    decsciption: decsciption,
     detailInfo: detailInfo,
     saleInfo: saleInfoProduct,
     isDeleted: false,

@@ -4,9 +4,10 @@ import shirt from "../../../assets/shirt.jpg";
 import { Checkbox, MenuItem, OutlinedInput, Select } from "@mui/material";
 import axios from "axios";
 import { api } from "../../../constant/constant";
-
+import { useNavigate } from "react-router-dom";
 const typecheckbox = ["Jacket", "Jean", "Cotons", "Excool"];
 function Shop() {
+  const navigate = useNavigate();
   const productsPerPage = 3;
   const productsPerRow = 3;
   const totalProducts = 50;
@@ -150,7 +151,9 @@ useEffect(()=>{
                     (rowIndex + 1) * productsPerRow
                   )
                   .map((product,index) => (
-                    <div key={product._id} className={`${index<2?"detail-product mr":"detail-product mr-end"}`}>
+                    <div key={product._id} className={`${index<2?"detail-product mr":"detail-product mr-end"}`} onClick={()=>{
+                      navigate(`/customer/detail-product/${product._id}`)
+                    }}>
                       <div className="image-product">
                         <img
                           src={product.picture[0]}
@@ -158,12 +161,12 @@ useEffect(()=>{
                           style={{
                             width: "100%",
                             height: "100%",
-                            borderRadius: "10px",
+                            borderRadius: "5px",
                           }}
                         />
                       </div>
                       <div className="name-product">{product.name}</div>
-                      <div className="price-product">{product.saleInfo[0].sellPrice}</div>
+                      <div className="price-product">{new Intl.NumberFormat('en-US').format(product.saleInfo[0].sellPrice)} VND</div>
                     </div>
                   ))}
               </div>

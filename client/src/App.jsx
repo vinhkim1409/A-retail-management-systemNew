@@ -103,7 +103,7 @@ function App() {
 
         <Route path="/customer" element={<CustomerLayout />}>
           <Route index element={<Home />} />
-          <Route path="detail-product" element={<DetailProductCustomer />} />
+          <Route path="detail-product/:id" element={<DetailProductCustomer />} />
           <Route path="address" element={<Address />} />
           <Route path="address-edit" element={<AddressEdit />} />
           <Route path="checkout" element={<Checkout />} />

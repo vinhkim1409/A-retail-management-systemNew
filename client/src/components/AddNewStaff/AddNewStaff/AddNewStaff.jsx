@@ -8,6 +8,8 @@ import {
   OutlinedInput,
   InputLabel,
   Stack,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
@@ -74,7 +76,6 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
     if (item === "email") newBasicInfo.email = value;
     if (item === "phone") newBasicInfo.phone = value;
     if (item === "position") newBasicInfo.position = value;
-
     setBasicInfo(newBasicInfo);
     checkErrorName(item);
   };
@@ -143,7 +144,6 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
   };
   const addStaff = async () => {
     const haveerror = Object.values(errorForm).includes(true);
-
     const newStaff = {
       lastname: basicInfo.lastname,
       firstname: basicInfo.firstname,
@@ -156,9 +156,9 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
     //check newstaff nhanh hon
     try {
       const responce = await axios.post(`${api}staff/add`, newStaff);
-      console.log(responce);
       setStaffList([...stafflist, newStaff]);
       handleClose();
+      
     } catch (err) {
       console.log("false");
     }
@@ -322,16 +322,22 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   >
                     Position
                   </InputLabel>
-                  <OutlinedInput
-                    size="small"
-                    sx={{
-                      boxShadow: 3,
-                    }}
-                    onChange={(event) => {
-                      handleChangeInfo(event, "position");
-                    }}
-                    error={errorForm.position}
-                  />
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={basicInfo.position}
+                    label="Position"
+                    onChange={(event) => handleChangeInfo(event, "position")}
+                  >
+                    <MenuItem value={"Sales Associate"}>
+                      Sales Associate
+                    </MenuItem>
+                    <MenuItem value={"Cashier"}>Cashier</MenuItem>
+                    <MenuItem value={"Manager"}>Manager</MenuItem>
+                    <MenuItem value={"Warehouse Staff"}>
+                      Warehouse Staff
+                    </MenuItem>
+                  </Select>
                   <FormHelperText error={errorForm.position}>
                     {errorForm.position ? "Please enter a Position" : ""}
                   </FormHelperText>

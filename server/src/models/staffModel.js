@@ -28,6 +28,8 @@ const staffSchema = new mongoose.Schema({
     required: true,
   },
   isDelete: { type: Boolean, required: true},
+},{
+  timestamps: true,
 });
 
 const Staff = mongoose.model("staffs", staffSchema);

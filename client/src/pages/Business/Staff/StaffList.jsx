@@ -16,7 +16,6 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
   styled,
@@ -59,10 +58,10 @@ function StaffList() {
   };
 
   const [openEdit, setOpenEdit] = useState(false);
-  const [idEdit, setIdEdit] = useState("");
+  const [emailEdit, setEmailEdit] = useState("");
 
-  const openEditStaff = async (id) => {
-    setIdEdit(id);
+  const openEditStaff = async (email) => {
+    setEmailEdit(email);
   };
   const operationButton = (item) => (
     <div className="button">
@@ -77,7 +76,7 @@ function StaffList() {
       <button
         className="btn"
         onClick={() => {
-          openEditStaff(item._id);
+          openEditStaff(item.email);
           setOpenEdit(true);
         }}
       >
@@ -85,17 +84,6 @@ function StaffList() {
       </button>
     </div>
   );
-  const staffs = [
-    {
-      id: 1,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phone: "0383069904",
-      position: "Sales Manager",
-    },
-  ];
-
   const [stafflist, setStaffList] = useState([]);
   const getAll = async () => {
     const staff = await axios.get(`${api}staff`);
@@ -116,11 +104,11 @@ function StaffList() {
 
   const deleteStaff = async () => {
     const responseDeleted = await axios.put(
-      `${api}staff/delete/${idDelete._id}`
+      `${api}staff/delete/${idDelete.email}`
     );
     if (responseDeleted.data.success) {
       const newStaffArray = stafflist.filter(
-        (staff) => staff._id != idDelete._id
+        (staff) => staff.email != idDelete.email
       );
       setStaffList(newStaffArray);
     }
@@ -252,12 +240,12 @@ function StaffList() {
           </div>
         </div>
       </div>
-      {idEdit ? (
+      {emailEdit ? (
         <EditStaff
           openEdit={openEdit}
           setOpenEdit={setOpenEdit}
-          idEdit={idEdit}
-          setIdEdit={setIdEdit}
+          emailEdit={emailEdit}
+          setEmailEdit={setEmailEdit}
           stafflist={stafflist}
           setStaffList={setStaffList}
         />

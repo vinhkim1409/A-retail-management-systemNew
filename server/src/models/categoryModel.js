@@ -9,6 +9,8 @@ const categorySchema = new mongoose.Schema({
   },
 //   tenantID:{ type: mongoose.Schema.Types.ObjectId, ref: "Business", required: true},
 isDeleted:{type:Boolean, required: true}
+},{
+  timestamps: true,
 });
 
 const Category = mongoose.model("categorys", categorySchema);

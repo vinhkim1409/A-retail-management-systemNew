@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Grid, ImageList, ImageListItem } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowUpFromBracket,
-  faUpload,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUpload,faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "./UploadImg.scss";
 
 const UploadImg = ({ setImg }) => {
@@ -15,13 +12,13 @@ const UploadImg = ({ setImg }) => {
     const files = event.target.files;
     const newImages = [];
     for (let i = 0; i < files.length; i++) {
-      if (i >= 6) {
+      if (i >= 5) {
         break;
       }
       const base64 = await readFile(files[i]);
       newImages.push(base64);
     }
-    setMultipleFile(newImages)
+    setMultipleFile(newImages);
   };
   const readFile = (file) => {
     return new Promise((resolve, reject) => {
@@ -33,7 +30,7 @@ const UploadImg = ({ setImg }) => {
       reader.readAsDataURL(file);
     });
   };
-    const removeImage = (index) => {
+  const handleDeleteImg = (index) => {
     setMultipleFile([
       ...multipleFile.slice(0, index),
       ...multipleFile.slice(index + 1, multipleFile.length),
@@ -50,11 +47,14 @@ const UploadImg = ({ setImg }) => {
           {multipleFile.length != 0 &&
             multipleFile.map((url, index) => (
               <div key={url} className="img-frame ">
+                <span class="close" onClick={() => handleDeleteImg(index)}>
+                  <FontAwesomeIcon icon={faTrashCan} />
+                </span>
                 <img className="img" src={url} alt="..." />
               </div>
             ))}
 
-          {multipleFile.length != 6 ? (
+          {multipleFile.length != 5 ? (
             <div className="upload-button">
               <label htmlFor="upload">
                 <FontAwesomeIcon icon={faUpload} className="icon" />

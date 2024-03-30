@@ -7,6 +7,8 @@ const websiteSchema = new mongoose.Schema({
     // required: true,
   },
  //   tenantID:{ type: mongoose.Schema.Types.ObjectId, ref: "Business", required: true},
+},{
+  timestamps: true,
 });
 
 const Website = mongoose.model("websites", websiteSchema);

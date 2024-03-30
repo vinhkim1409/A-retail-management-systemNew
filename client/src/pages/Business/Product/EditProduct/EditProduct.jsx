@@ -8,20 +8,34 @@ import {
   OutlinedInput,
   Paper,
   Stack,
+  Modal,
+  Box,
 } from "@mui/material";
-import UploadImg from "../../../../components/UploadImg/UploadImg";
-import SaleInfor from "../../../../components/ClassInfor/SaleInfor";
 import SelecIndustry from "../../../../components/SelecIndustry/SelecIndustry";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload,faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faUpload, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { api } from "../../../../constant/constant";
 import EditSaleInfor from "../../../../components/EditSaleInfor/EditSaleInfor";
+import { useNavigate } from "react-router-dom";
 
 const styles = {
   backgroundColor: "white",
 };
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "background.paper",
+  borderRadius: 2,
+  p: 4,
+  outline:"None"
+}; 
 function EditProduct() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [detailsInfo, setDetailInfos] = useState([]);
   const { id } = useParams();
   const [multipleFile, setMultipleFile] = useState([]);
@@ -57,6 +71,7 @@ function EditProduct() {
   };
 
   const handleUpdateProduct = async () => {
+    setLoading(true);
     const newProduct = {
       name: basicInfo.name,
       industry: inds,
@@ -77,8 +92,8 @@ function EditProduct() {
       newProduct
     );
     console.log(addProductRes.data);
+    navigate("/business/product");
   };
-
 
   const getProduct = async () => {
     const product = await axios.get(`${api}product/${id}`);
@@ -150,7 +165,10 @@ function EditProduct() {
                       {multipleFile.length != 0 &&
                         multipleFile.map((url, index) => (
                           <div key={url} className="img-frame">
-                            <span class="close" onClick={()=>handleDeleteImg(index)}>
+                            <span
+                              class="close"
+                              onClick={() => handleDeleteImg(index)}
+                            >
                               <FontAwesomeIcon icon={faTrashCan} />
                             </span>
                             <img className="img" src={url} alt="..." />
@@ -296,6 +314,18 @@ function EditProduct() {
         </div>
       </div>
       <SelecIndustry />
+      <Modal
+        open={loading}
+        disableEscapeKeyDown
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style} className="editproduct-container">
+          <div className="loading">
+            <span className="loader"></span>
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 }
