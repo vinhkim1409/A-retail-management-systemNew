@@ -12,8 +12,13 @@ import UploadImg from "../../../../components/UploadImg/UploadImg";
 import SaleInfor from "../../../../components/ClassInfor/SaleInfor";
 import SelecIndustry from "../../../../components/SelecIndustry/SelecIndustry";
 import axios from "axios";
-import {api,Industry} from "../../../../constant/constant"
+import { api, Industry } from "../../../../constant/constant";
 import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { imageDB } from "../../../../firebase/firebaseConfig";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { v4 } from "uuid";
 
 const styles = {
   backgroundColor: "white",
@@ -39,11 +44,13 @@ function AddProduct() {
   };
   const [img, setImg] = useState([]);
   const [basicInfo, setBasicInfo] = useState({ name: "", decs: "" });
+  const [decsciption, setDecsciption] = useState("");
   const [errorName, setErrorName] = useState(false);
   const [inds, setInds] = useState("");
   const [typeSale, setTypeSale] = useState(0);
   const [saleInfor, setSaleInfor] = useState([]);
   const [singleInfor, setSingleInfor] = useState([]);
+  const [imgLinkFireBase, setImgLinkFireBase] = useState([]);
   const handleChangeName = (event) => {
     const value = event.target.value;
     let newBasicInfo = basicInfo;
@@ -51,40 +58,69 @@ function AddProduct() {
     setBasicInfo(newBasicInfo);
     checkErrorName();
   };
-  const handleChangeDesc=(event)=>{
-    const value = event.target.value;
+  const handleChangeDesc = (content) => {
+    const value = content;
     let newBasicInfo = basicInfo;
     newBasicInfo.decs = value;
     setBasicInfo(newBasicInfo);
-   
-  }
+  };
   const checkErrorName = () => {
     if (basicInfo.name === "") {
       setErrorName(true);
-    }
-    else{
+    } else {
       setErrorName(false);
     }
   };
-  const handleAddProduct= async ()=>{
+  const handleAddProduct = async () => {
 
-    const newProduct={
-      name:basicInfo.name,
-      industry:inds,
-      picture:img,
-      decsciption:basicInfo.decs,
-      detailInfo:detailInfos.map((infoDetail,index)=>{
+    // const newLinkFireBase=[]
+    // if (img.length > 0) {
+    //   img.map(async (AvatarString) => {
+    //     const imgRef = ref(imageDB, `files/${v4()}`);
+    //     const snapshot = await uploadString(
+    //       imgRef,
+    //       AvatarString,
+    //       "data_url"
+    //     );
+    //     const url = await getDownloadURL(snapshot.ref);
+    //     newLinkFireBase.push(url);
+    //   });
+    // }
+    
+    const newProduct = {
+      name: basicInfo.name,
+      industry: inds,
+      picture: imgLinkFireBase,
+      decsciption: basicInfo.decsciption,
+      detailInfo: detailInfos.map((infoDetail, index) => {
         return {
-          name:detailInfoLabel[index],
-          info:infoDetail,
-          status:true
-        }
+          name: detailInfoLabel[index],
+          info: infoDetail,
+          status: true,
+        };
       }),
-      saleInfo:saleInfor
+      saleInfo: saleInfor,
+    };
+    // const addProductRes = await axios.post(`${api}product/add`, newProduct);
+    console.log(newProduct);
+  };
+
+  const addLinkFirebase = () => {
+    const newLinkArray = [];
+    if (img.length > 0) {
+      img.map(async (AvatarString) => {
+        const imgRef = ref(imageDB, `files/${v4()}`);
+        const snapshot = await uploadString(
+          imgRef,
+          AvatarString,
+          "data_url"
+        );
+        const url = await getDownloadURL(snapshot.ref);
+        newLinkArray.push(url);
+      });
+      return newLinkArray;
     }
-    const addProductRes=await axios.post(`${api}product/add`,newProduct)
-    console.log(addProductRes.data)
-  }
+  };
   return (
     <>
       <div className="addproduct-container">
@@ -143,8 +179,8 @@ function AddProduct() {
                       size="small"
                       style={styles}
                       sx={{ boxShadow: 3 }}
-                      onChange={(event)=>{
-                        setInds(event.target.value)
+                      onChange={(event) => {
+                        setInds(event.target.value);
                       }}
                     />
                   </Stack>
@@ -160,12 +196,17 @@ function AddProduct() {
                     >
                       Decsciption
                     </InputLabel>
-                    <OutlinedInput
+                    {/* <OutlinedInput
                       multiline
                       rows={4}
                       style={styles}
                       sx={{ boxShadow: 3 }}
-                      onChange={handleChangeDesc}
+                      onChange={handleChangeDesc} 
+                    /> */}
+                    <ReactQuill
+                      theme="snow"
+                      value={decsciption}
+                      onChange={setDecsciption}
                     />
                   </Stack>
                 </Grid>
@@ -179,7 +220,7 @@ function AddProduct() {
             <Grid container spacing={4}>
               <Grid container item spacing={5} xs={12}>
                 {detailInfoLabel.map((label, index) => (
-                  <Grid container item xs={4} key={index} >
+                  <Grid container item xs={4} key={index}>
                     <Stack spacing={1}>
                       <InputLabel htmlFor="title" className="detail-title">
                         {label}
@@ -201,21 +242,30 @@ function AddProduct() {
           </Paper>
         </div>
         <div className="class-info">
-          <SaleInfor
-            setTypeSale={setTypeSale}
-            setSaleInfor={setSaleInfor}
-          />
+          <SaleInfor setTypeSale={setTypeSale} setSaleInfor={setSaleInfor} />
         </div>
         <div className="btn-add">
           <button
             className="btn"
             onClick={() => {
-              // console.log(saleInfor, typeSale);
-              handleAddProduct()
-              navigate("/business/product");
+              addLinkFirebase();
+              handleAddProduct();
+              // navigate("/business/product");
+              // console.log(decsciption);
             }}
           >
             Add New Product
+          </button>
+          <button
+            className="btn"
+            onClick={() => {
+              console.log(imgLinkFireBase[0])
+              // handleAddProduct();
+              // navigate("/business/product");
+              // console.log(decsciption);
+            }}
+          >
+            Show
           </button>
         </div>
       </div>

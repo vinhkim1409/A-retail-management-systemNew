@@ -3,6 +3,8 @@ import "./AddNewReview.scss";
 import { Grid, InputLabel, OutlinedInput, Rating, Stack } from "@mui/material";
 function AddNewReview() {
   const [stars, setStars] = useState(0);
+  const [title,setTitle] = useState("");
+  const [desc,setDesc] = useState("")
   return (
     <>
       <div className="Addnewreview-container">
@@ -33,6 +35,9 @@ function AddNewReview() {
                 placeholder="3000 characters remaining "
                 multiline
                 sx={{ boxShadow: 3 }}
+                onChange={(event)=>{
+                  setTitle(event.target.value)
+                }}
               />
             </Stack>
           </Grid>
@@ -51,13 +56,18 @@ function AddNewReview() {
                 multiline
                 rows={10}
                 sx={{ boxShadow: 3 }}
+                onChange={(event)=>{
+                  setDesc(event.target.value)
+                }}
               />
             </Stack>
           </Grid>
         </div>
 
         <div className="btn-box">
-          <button className="btn">Review</button>
+          <button className="btn" onClick={()=>{
+            console.log(title,desc)
+          }}>Review</button>
         </div>
       </div>
     </>

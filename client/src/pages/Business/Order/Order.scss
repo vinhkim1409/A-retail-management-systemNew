@@ -1,132 +1,145 @@
-.Order-container{
+.Order-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .header {
+    padding: 10px 0;
+  }
+  .pages {
+    width: 16%;
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    .title{
-        font-size: 30px;
-        font-weight: bold;
-    }
-    .header{
-        padding: 10px 0;
-    }
-    .tab{
-        height: 15%;
-        background-color: white;
-        margin-top: 10px;
-    }
-    .content{
-        margin-top: 20px;
-        display: flex;
-        justify-content: space-between;
-        background-color: white;
-        padding: 20px 0;
-    }
-    
-    .tab button {
-        background-color: inherit;
-        float: left;
-        border: none;
-        cursor: pointer;
-        padding: 14px 16px;
-        transition: 0.3s;
-        width: 20%;
-        font-size: 16px;
-    }
-    .tab button:hover {
-        background-color: #ddd; 
-    }
-    
-    .tab button.active {
-        background-color: rgb(24, 0, 179);
-        color: white;
-    }
-    .tabcontent {
-        display: none;
-        padding: 6px 12px;
-        border-top: none;
-        width: 100%;
-    }
-    .tabcontent.active {
-        display: block;
-    }
-    .username{
-        border-bottom: solid 1.5px black;
-        margin-bottom: 16px;
-        font-weight: bold;
-        margin: 0 16px;
-    }
-    .username-content{
-        padding-bottom: 5px;
-    }
-    .book-detail{
-        display: flex;
-        margin: 16px;
-        justify-content: space-between;
-        font-weight: bold;
-        padding-bottom: 8px;
-        border-bottom: solid 1.5px black;
-    }
-    .book-info{
-        display: flex;
-        justify-content: space-between;
-    }
-    .image{
-        margin-right: 16px;
-    }
-    .name-count{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    .price{
-        float: right;
-        width: 9rem;
-        display: flex;
-        justify-content: space-between;
-    }
-    .initial-price{
-        color: #808080;
-        text-decoration-line: line-through;
-    }
-    .last-price{
-        color: #c00000;
-    }
-    .horizontal-line {
-        margin-top: -10px;
-        border-top: 2px solid #808080;
-    }
-    .total{
-        margin: 0 16px;
-        display: flex;
-        flex-direction: column;
-        float: right;
-    }
-    .sumprice{
-        width: 10rem;
-        text-align: right;
-        font-weight: bold;
-        display: flex;
-        justify-content: space-between;
-    }
-    .sum{
-        color: #808080;
-    }
-    .total-price{
-        color: #c00000;
-    }
-    .repurchase{
-        width: 10rem;
-    }
-    .button-repurchase{
-        width: 5rem;
-        height: 2rem;
-        cursor: pointer;
-        border-radius: 6px;
-        border: none;
-        background-color: #c00000;
-        color: white;
-        text-align: center;
-        margin-top: 16px;
-        float: right;
-    }
+    align-items: center;
+    margin-left: auto;
+    margin-right: 2%;
+  }
+  .pages-number,
+  .icon-back,
+  .icon-next {
+    color: #808080;
+  }
+  .button-back {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .button-next {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .active {
+    color: black;
+  }
+  .active-tag {
+    background-color: black;
+    color: white;
+  }
+  .list-contaniner {
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+  }
+  .order-id {
+    padding-left: 4%;
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
+  }
+  .customer {
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
+  }
+  .date {
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
+  }
+  .payment {
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
+  }
+  .total {
+    width: 10%;
+    // border: 1px solid lightgray;
+    text-transform: none;
+  }
+  .order-status {
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
+  }
+  .lable-order {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 550;
+  }
+  .content-order {
+    color: #475569;
+    font-size: 14px;
+  }
+  .order-body {
+    cursor: pointer;
+  }
+  .order-body:hover {
+    background-color: #f5f5f5;
+  }
+  .paidTag {
+    border-radius: 10px;
+    background-color: #198754;
+    color: white;
+    width: 30%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .select-status-box {
+    width: 20%;
+    height: 60%;
+    border-radius: 8px;
+    border: 1px solid lightgray;
+  }
+  .select-status-box:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0d6efd;
+    border: 1px solid white;
+  }
+  .select-status-box:hover {
+    box-shadow: 0 0 5px #0d6efd;
+    border: 1px solid white;
+  }
+  .select-status-box:focus {
+    outline: none;
+    box-shadow: 0 0 5px #0d6efd;
+    border: 1px solid white;
+  }
+  .status {
+    display: flex;
+    padding-left: 4%;
+    align-items: center;
+    height: 60px;
+  }
+  .lable-status {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 550;
+    margin-right: 1%;
+  }
+  .blue{
+    color:#0d6efd;
+    font-weight: 400;
+  }
 }

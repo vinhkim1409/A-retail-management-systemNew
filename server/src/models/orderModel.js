@@ -49,6 +49,7 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     shipPrice: { type: String, required: true },
+    orderID:{ type: String}
   },
   {
     timestamps: true,

@@ -3,7 +3,7 @@
   flex-direction: row;
   .img{
     width: 100%;
-    height: 240px;
+    height: 100%;
     border: 1px solid lightgrey;
   }
   .img-frame{
@@ -37,8 +37,8 @@
     box-shadow: 0 0 5px #e03444;
   }
   .upload-button{
-    width: 18%;
-    height: 240px;
+    width: 150px;
+    height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;

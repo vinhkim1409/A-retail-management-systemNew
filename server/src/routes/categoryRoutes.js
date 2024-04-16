@@ -13,6 +13,15 @@ router.get("/", async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 });
+router.get("/:id", async (req, res, next) => {
+  try {
+
+    const categorys = await Category.find({ isDeleted: false,_id:req.params.id }).populate("products");
+    res.json(categorys);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 router.post("/", async (req, res, next) => {
   try {
     const newCategorys = new Category({ ...req.body, isDeleted: false });

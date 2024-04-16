@@ -25,6 +25,8 @@ const productSchema = new mongoose.Schema(
     detailInfo: { type: [detailInfoProduct], required: true },
     saleInfo: { type: [saleInfoProduct], required: true },
     isDeleted: { type: Boolean, required: true },
+    //reviews: { type: mongoose.Schema.Types.ObjectId,ref: "reviews", },
+    
   },
   {
     timestamps: true,

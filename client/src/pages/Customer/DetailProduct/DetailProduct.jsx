@@ -383,7 +383,8 @@ function DetailProduct() {
                 </tr>
               </table>
               <div className="spec_descrip">
-                <ReadMore>{BookList[0].description}</ReadMore>
+              {/* dangerouslySetInnerHTML={{ __html: content }} */}
+                <ReadMore >{BookList[0].description}</ReadMore>
               </div>
             </div>
           </div>

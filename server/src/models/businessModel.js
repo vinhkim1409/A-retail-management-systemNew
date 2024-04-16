@@ -16,7 +16,8 @@ const businessSchema = new mongoose.Schema({
             endDate:{type: Date, required: true},
         },
     },
-    customersWeb:{ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "customers" }] }
+    customersWeb:{ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "customers" }] },
+    status:{type:String}
     // customersThird
     
 },{

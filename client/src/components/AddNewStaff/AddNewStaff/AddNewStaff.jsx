@@ -16,6 +16,9 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { api } from "../../../constant/constant";
+import {imageDB} from "../../../firebase/firebaseConfig"
+import {getDownloadURL, ref, uploadBytes} from "firebase/storage"
+import {v4} from "uuid"
 
 const style = {
   position: "absolute",
@@ -135,13 +138,19 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
     }
   };
   const [avatarEncode, setAvatarEncode] = useState("");
-  const uploadAvatar = (e) => {
+  const [avatar,setAvatar] = useState("")
+  const uploadAvatar = async (e) => {
     const data = new FileReader();
     data.addEventListener("load", () => {
       setAvatarEncode(data.result);
     });
     data.readAsDataURL(e.target.files[0]);
+    const imgRef =ref(imageDB,`files/${v4()}`)
+  const snapshot= await uploadBytes(imgRef,e.target.files[0],"data_url")
+  const url=await getDownloadURL(snapshot.ref)
+  setAvatar(url)
   };
+
   const addStaff = async () => {
     const haveerror = Object.values(errorForm).includes(true);
     const newStaff = {
@@ -163,7 +172,9 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
       console.log("false");
     }
   };
-
+const testDelete=async(imgurl)=>{
+  
+}
   return (
     <div className="Addnewstaff-container">
       <button className="btn" onClick={handleOpen}>
@@ -185,6 +196,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     First Name
                   </InputLabel>
@@ -209,6 +221,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Last Name
                   </InputLabel>
@@ -233,6 +246,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Email
                   </InputLabel>
@@ -256,6 +270,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Phone Number
                   </InputLabel>
@@ -281,6 +296,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Avatar
                   </InputLabel>
@@ -319,6 +335,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Position
                   </InputLabel>
@@ -353,7 +370,8 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
               <button
                 className="btn"
                 onClick={() => {
-                  addStaff();
+                  // addStaff();
+                  console.log(avatar)
                 }}
               >
                 Yes

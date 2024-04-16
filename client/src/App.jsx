@@ -111,7 +111,7 @@ function App() {
           <Route path="detail-order" element={<DetailOrder />} />
           <Route path="cart" element={<Cart />} />
           <Route path="shop" element={<Shop />} />
-          <Route path="review" element={<Review />} />
+          <Route path="review/:id" element={<Review />} />
         </Route>
 
         <Route path="/*" element={<Error />} />

@@ -180,35 +180,35 @@ function StaffList() {
                     <TableRow key={index}>
                       <TableCell
                         align="left"
-                        className="table-label "
+                        className="table-label non-tranform"
                         sx={{ maxWidth: 80 }}
                       >
                         {item.lastname}
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="table-label"
+                        className="table-label non-tranform"
                         sx={{ maxWidth: 50 }}
                       >
                         {item.firstname}
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="cell-content"
+                        className="cell-content non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
                         {item.email}
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="cell-content"
+                        className="cell-content non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
                         {item.phoneNumber}
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="cell-content"
+                        className="cell-content non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
                         {item.position}

@@ -16,6 +16,7 @@ const customerSchema = new mongoose.Schema({
   membershipPoint: { type: Number, required: true },
   tenantID:{ type: mongoose.Schema.Types.ObjectId, ref: "business" },
   email: {type: String, trim: true, required: true},
+  banStatus:{ type: String,}
 },{
     timestamps:true
 });
