@@ -3,11 +3,12 @@ import './SidebarBusiness.scss';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartSimple, faShirt, faBook, faList, faPeopleGroup, faBan, faUsers, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
 
 const SidebarAdmin = () => {
     const [activeTab, setActiveTab] = useState(null);
     const [activeSubTabs, setActiveSubTabs] = useState({});
-
+    const tenantURL=useSelector((state)=>state.authBusiness.login?.tenantURL)
     const handleTabClick = (tab) => {
         if (activeTab === tab) {
             setActiveTab(null);
@@ -26,7 +27,7 @@ const SidebarAdmin = () => {
     const tabs = [
         {
             name: 'Dashboard',
-            path: '/business',
+            path: `/${tenantURL}/business`,
             icon: faChartSimple,
             subTabs: []
         },
@@ -47,43 +48,43 @@ const SidebarAdmin = () => {
         // },
         {
             name: 'Product',
-            path: '/business/product',
+            path: `/${tenantURL}/business/product`,
             icon: faShirt,
             subTabs: []
         },
         {
             name: 'Category',
-            path: '/business/category',
+            path: `/${tenantURL}/business/category`,
             icon: faList,
             subTabs: []
         },
         {
             name: 'Order',
-            path: '/business/order',
+            path: `/${tenantURL}/business/order`,
             icon: faBook,
             subTabs: []
         },
         {
             name: 'Customer',
-            path: '/business/customer',
+            path: `/${tenantURL}/business/customer`,
             icon: faPeopleGroup,
             subTabs: []
         },
         {
             name: 'Customer Blacklist',
-            path: '/business/customer-blacklist',
+            path: `/${tenantURL}/business/customer-blacklist`,
             icon: faBan,
             subTabs: []
         },
         {
             name: 'Staff',
-            path: '/business/employee',
+            path: `/${tenantURL}/business/employee`,
             icon: faUsers,
             subTabs: []
         },
         {
             name: 'Website',
-            path: '/business/website',
+            path: `/${tenantURL}/business/website`,
             icon: faGlobe,
             subTabs: []
         },

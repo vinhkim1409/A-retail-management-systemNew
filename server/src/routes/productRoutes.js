@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/productModel");
-
+const authMiddlewares=require("../middlewares/authMiddlewares")
 // Route để lấy toàn bộ dữ liệu sản phẩm
-router.get("/", async (req, res) => {
+router.get("/",authMiddlewares.verifyToken, async (req, res) => {
   try {
-    const products = await Product.find({ isDeleted: false });
-    res.json(products);
+
+    // const products = await Product.find({ isDeleted: false });
+    res.json(req.user);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -52,6 +52,8 @@ import DetailOrder from "./pages/Customer/DetailOrder/DetailOrder";
 import Cart from "./pages/Customer/Cart/Cart";
 import Shop from "./pages/Customer/Shop/Shop";
 import Review from "./pages/Customer/Review/AddNewReview/AddNewReview"
+import LoginCustomer from "./pages/Customer/LoginCustomer/LoginCustomer";
+import SignupCustomer from "./pages/Customer/SignupCustomer/SignupCustomer";
 
 //Error
 import Error from "./pages/Error/Error";
@@ -83,7 +85,7 @@ function App() {
           <Route path="business" element={<Business />} />
         </Route>
 
-        <Route path="/business" element={<BusinessLayout />}>
+        <Route path="/:tennatURL/business" element={<BusinessLayout />}>
           <Route index element={<BusinessHome />} />
           <Route path="item" element={<DashboardAdmin />} />
           <Route path="transaction" element={<DashboardAdmin />} />
@@ -112,6 +114,8 @@ function App() {
           <Route path="cart" element={<Cart />} />
           <Route path="shop" element={<Shop />} />
           <Route path="review/:id" element={<Review />} />
+          <Route path="login" element={<LoginCustomer />} />
+          <Route path="signup" element={<SignupCustomer />} />
         </Route>
 
         <Route path="/*" element={<Error />} />

@@ -3,14 +3,11 @@ import "./Order.scss";
 import { getPriceExpr } from "../../../utils/getPriceRepr";
 import {
   Box,
-  Button,
-  Modal,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Typography,
   styled,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

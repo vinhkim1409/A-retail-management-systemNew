@@ -19,6 +19,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -73,8 +74,14 @@ export default function EditStaff({
     phoneNumber: "",
     position: "",
   });
+  const userBusiness=useSelector((state)=>state.authBusiness.login?.currentUser)
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
   const getStaff = async () => {
-    const staff = await axios.get(`${api}staff/${emailEdit}`);
+    const staff = await axios.get(`${api}staff/${emailEdit}`,config);
     console.log(staff);
     setBasicInfo(staff.data);
     setAvatarEncode(staff.data.avatar);
@@ -169,7 +176,7 @@ export default function EditStaff({
     newStaff.avatar = avatarEncode;
     const responseEdit = await axios.put(
       `${api}staff/update/${basicInfo._id}`,
-      newStaff
+      newStaff,config
     );
     console.log(responseEdit)
     //co 1 edit tai trang FE
@@ -282,6 +289,7 @@ export default function EditStaff({
                   </FormHelperText>
                 </Stack>
               </Grid>
+              
               <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel
@@ -331,7 +339,7 @@ export default function EditStaff({
                     </div>
                   </InputLabel>
                   <div className="avatar">
-                    {avatarEncode.length > 1 ? (
+                    {avatarEncode && avatarEncode.length > 1 ? (
                       <>
                         <img src={avatarEncode} alt="" className="img" />
                       </>
@@ -376,6 +384,7 @@ export default function EditStaff({
                     label="Position"
                     onChange={(event) => handleChangeInfo(event, "position")}
                   >
+                    <MenuItem value={"Admin"}>Admin</MenuItem>
                     <MenuItem value={"Sales Associate"}>
                       Sales Associate
                     </MenuItem>

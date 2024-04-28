@@ -19,7 +19,10 @@ import {
   TableRow,
   Typography,
   styled,
+  Snackbar,
+  Alert,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import AddNewStaff from "../../../components/AddNewStaff/AddNewStaff/AddNewStaff";
 import EditStaff from "../../../components/EditStaff/EditStaff";
 import axios from "axios";
@@ -60,6 +63,15 @@ function StaffList() {
   const [openEdit, setOpenEdit] = useState(false);
   const [emailEdit, setEmailEdit] = useState("");
 
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+
   const openEditStaff = async (email) => {
     setEmailEdit(email);
   };
@@ -85,8 +97,9 @@ function StaffList() {
     </div>
   );
   const [stafflist, setStaffList] = useState([]);
+
   const getAll = async () => {
-    const staff = await axios.get(`${api}staff`);
+    const staff = await axios.get(`${api}staff`, config);
     setStaffList(staff.data);
   };
   useEffect(() => {
@@ -104,7 +117,9 @@ function StaffList() {
 
   const deleteStaff = async () => {
     const responseDeleted = await axios.put(
-      `${api}staff/delete/${idDelete.email}`
+      `${api}staff/delete/${idDelete.email}`,
+      idDelete.email,
+      config
     );
     if (responseDeleted.data.success) {
       const newStaffArray = stafflist.filter(
@@ -112,60 +127,96 @@ function StaffList() {
       );
       setStaffList(newStaffArray);
     }
+    else{
+      setError(responseDeleted.data.data)
+      setOpenWrongConfirm(true)
+    }
     handleClose();
   };
   const handleClose = () => {
     setShowModal(false);
   };
+  //error
+  const [openWrongCofirm, setOpenWrongConfirm] = useState(false);
+  const [error,setError]=useState("")
+  const handleCloseError = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenWrongConfirm(false);
+  };
+
   return (
     <>
       <div className="StaffList-container">
-        <h2 className="title">Staff List</h2>
-        <div className="add">
-          <AddNewStaff stafflist={stafflist} setStaffList={setStaffList} />
+        <div className="header">
+          <div className="title">Staff List</div>
         </div>
-        <div className="table-product">
+        <div className="list-container">
+          <div className="tool">
+            <div className="position-sort">
+              <div className="lable-position-sort">Status</div>
+              <select
+                name="selectStatusShipp"
+                id=""
+                // value={activeTab}
+                // onChange={handleTabClick}
+                className="select-status-box"
+              >
+                <option value="All">All</option>
+                <option value="Admin">Admin</option>
+                <option value="Saler">Saler</option>
+              </select>
+            </div>
+            <div className="add">
+              <AddNewStaff stafflist={stafflist} setStaffList={setStaffList} />
+            </div>
+          </div>
+
           <Box
             width="100%"
             overflow="auto"
             backgroundColor="white"
-            paddingLeft={2}
             minHeight={450}
           >
             <StyledTable>
               <TableHead>
-                <TableRow>
+                <TableRow
+                  sx={{
+                    backgroundColor: "#F5F5F5",
+                  }}
+                >
                   <TableCell
                     align="left"
-                    className="table-label "
+                    className="first-name table-label "
                     sx={{ minWidth: 100 }}
                   >
                     First Name
                   </TableCell>
                   <TableCell
                     align="left"
-                    className="table-label"
+                    className="last-name table-label"
                     sx={{ minWidth: 80 }}
                   >
                     Last Name
                   </TableCell>
                   <TableCell
                     align="left"
-                    className="table-label"
+                    className="email table-label"
                     sx={{ minWidth: 120 }}
                   >
                     Email
                   </TableCell>
                   <TableCell
                     align="left"
-                    className="table-label"
+                    className="phone table-label"
                     sx={{ minWidth: 120 }}
                   >
                     Phone
                   </TableCell>
                   <TableCell
                     align="left"
-                    className="table-label"
+                    className="position table-label"
                     sx={{ minWidth: 120 }}
                   >
                     Position
@@ -180,35 +231,35 @@ function StaffList() {
                     <TableRow key={index}>
                       <TableCell
                         align="left"
-                        className="table-label non-tranform"
+                        className="first-name table-label non-tranform"
                         sx={{ maxWidth: 80 }}
                       >
                         {item.lastname}
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="table-label non-tranform"
+                        className="last-name table-label non-tranform"
                         sx={{ maxWidth: 50 }}
                       >
                         {item.firstname}
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="cell-content non-tranform"
+                        className="email cell-content non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
                         {item.email}
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="cell-content non-tranform"
+                        className="phone cell-content non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
                         {item.phoneNumber}
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="cell-content non-tranform"
+                        className="position cell-content non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
                         {item.position}
@@ -222,7 +273,12 @@ function StaffList() {
             </StyledTable>
           </Box>
           <div className="pages">
-            <div className="pages-number">1-5 of {page + 1}</div>
+            <div className="pages-number">
+              {" "}
+              {1 * (page * 5 + 1)}-
+              {page == totalpage - 1 ? stafflist.length : 5 * (page + 1)} of{" "}
+              {stafflist.length}
+            </div>
             <button
               className="button-back"
               onClick={() => handleChangePage(page - 1)}
@@ -240,6 +296,7 @@ function StaffList() {
           </div>
         </div>
       </div>
+
       {emailEdit ? (
         <EditStaff
           openEdit={openEdit}
@@ -252,9 +309,9 @@ function StaffList() {
       ) : (
         <></>
       )}
+
       <Modal
         open={showModal}
-        
         disableEscapeKeyDown
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -289,6 +346,21 @@ function StaffList() {
           </Box>
         </Box>
       </Modal>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openWrongCofirm}
+        autoHideDuration={2000}
+        onClose={handleCloseError}
+      >
+        <Alert
+          onClose={handleCloseError}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {error}!!
+        </Alert>
+      </Snackbar>
     </>
   );
 }

@@ -26,9 +26,9 @@ const porductCart = new mongoose.Schema({
 
 const cartSchema = new mongoose.Schema(
   {
-    // customerID:{type: mongoose.Schema.Types.ObjectId, ref: "customers", required:true}
+    customerID:{type: mongoose.Schema.Types.ObjectId, ref: "customers", required:true},
     //  tennatID:{type: mongoose.Schema.Types.ObjectId, ref: "businesses", required:true}
-    products: { type: [porductCart]},
+    products: { type: [porductCart], default:[]},
   },
   {
     timestamps: true,

@@ -17,7 +17,7 @@ const businessSchema = new mongoose.Schema({
         },
     },
     customersWeb:{ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "customers" }] },
-    status:{type:String}
+    status:{type:String} // status: active, ban, pending
     // customersThird
     
 },{

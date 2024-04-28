@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
   try {
     const website = await Website.find({
       _id: "65f46182d5b409e1e06b8960",
-    }).populate("featureProduct");
+    })
     res.json(website);
   } catch (error) {
     res.status(500).json({ message: error.message });
