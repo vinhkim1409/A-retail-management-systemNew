@@ -49,4 +49,7 @@ async function deleteProductFromCart(conditionCart, idProductInCart) {
     console.error("Lỗi khi cố gắng xóa sản phẩm khỏi giỏ hàng:", error);
   }
 }
+router.post("/notify_payment",async (req, res)=>{
+  console.log("hhaha")
+})
 module.exports = router;

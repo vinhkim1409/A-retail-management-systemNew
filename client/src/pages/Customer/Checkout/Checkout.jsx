@@ -3,69 +3,79 @@ import images from "../../../images/index";
 import AddButton from "../../../components/AddButton/AddButton";
 import "./Checkout.scss";
 import { getPriceExpr } from "../../../utils/getPriceRepr";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import {api} from '../../../constant/constant'
+import { api } from "../../../constant/constant";
+import { useSelector } from "react-redux";
 
 const Checkout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const customer = useSelector(
+    (state) => state.authCustomer.login?.currentUser
+  );
+  const { tenantURL } = useParams();
+
   useEffect(() => {
+    if (!customer) {
+      navigate(`/${tenantURL}/customer/login`);
+    }
     console.log(location.state);
-    setOrder(location.state)
+    setOrder(location.state);
   }, []);
   const expressDeliveryProvinces = ["TPHCM", "Hà Nội", "Đà Nẵng"];
 
-  const userAddresses = [
-    {
-      id: "0",
-      fname: "Hưng",
-      lname: "Nguyễn Minh",
-      phone: "0123456789",
-      province: "TPHCM",
-      district: "Quận 1",
-      ward: "Phường 1",
-      addr: "123 John Doe",
-    },
-    {
-      id: "1",
-      fname: "A",
-      lname: "Nguyễn Văn",
-      phone: "0987654321",
-      province: "Hà Nội",
-      district: "Quận Hà Đông",
-      ward: "Phường 1",
-      addr: "100 Albert Einstein",
-    },
-    {
-      id: "2",
-      fname: "B",
-      lname: "Lê Thị",
-      phone: "0123789456",
-      province: "Thanh Hóa",
-      district: "Huyện Quảng Xương",
-      ward: "Xã ABC",
-      addr: "456 Alan Turing",
-    },
-  ];
-  const [order,setOrder]=useState([])
-//   const order = [
-//     {
-//       id: "checkoutBook1",
-//       name: "Thay đổi cuộc sống với nhân số học",
-//       image: images.checkoutBook1,
-//       price: 248000,
-//       discount: 20,
-//       count: 1,
-//     },
-//     {
-//       id: "checkoutBook2",
-//       name: "Hiểu Về Trái Tim (Tái Bản 2023)",
-//       image: images.checkoutBook2,
-//       price: 158000,
-//       discount: 25,
-//       count: 2,
-//     },
-//   ];
+  // const [customer.resCustomer.address, setUserAddress] = useState([
+  //   {
+  //     id: "0",
+  //     fname: "Hưng",
+  //     lname: "Nguyễn Minh",
+  //     phone: "0123456789",
+  //     province: "TPHCM",
+  //     district: "Quận 1",
+  //     ward: "Phường 1",
+  //     addr: "123 John Doe",
+  //   },
+  //   {
+  //     id: "1",
+  //     fname: "A",
+  //     lname: "Nguyễn Văn",
+  //     phone: "0987654321",
+  //     province: "Hà Nội",
+  //     district: "Quận Hà Đông",
+  //     ward: "Phường 1",
+  //     addr: "100 Albert Einstein",
+  //   },
+  //   {
+  //     id: "2",
+  //     fname: "B",
+  //     lname: "Lê Thị",
+  //     phone: "0123789456",
+  //     province: "Thanh Hóa",
+  //     district: "Huyện Quảng Xương",
+  //     ward: "Xã ABC",
+  //     addr: "456 Alan Turing",
+  //   },
+  // ]);
+  const [order, setOrder] = useState([]);
+  //   const order = [
+  //     {
+  //       id: "checkoutBook1",
+  //       name: "Thay đổi cuộc sống với nhân số học",
+  //       image: images.checkoutBook1,
+  //       price: 248000,
+  //       discount: 20,
+  //       count: 1,
+  //     },
+  //     {
+  //       id: "checkoutBook2",
+  //       name: "Hiểu Về Trái Tim (Tái Bản 2023)",
+  //       image: images.checkoutBook2,
+  //       price: 158000,
+  //       discount: 25,
+  //       count: 2,
+  //     },
+  //   ];
 
   const getTotalPrice = (deliveryFee = 0) =>
     getPriceExpr(
@@ -83,11 +93,13 @@ const Checkout = () => {
 
   useEffect(() => {
     setName(
-      `${userAddresses[addressChoice].lname} ${userAddresses[addressChoice].fname}`
+      `${customer.resCustomer.address[addressChoice].firstName} ${customer.resCustomer.address[addressChoice].lastName}`
     );
-    setPhone(userAddresses[addressChoice].phone);
+    setPhone(customer.resCustomer.address[addressChoice].phoneNumber);
     setHasExpress(
-      expressDeliveryProvinces.includes(userAddresses[addressChoice].province)
+      expressDeliveryProvinces.includes(
+        customer.resCustomer.address[addressChoice].province
+      )
     );
   }, [addressChoice]);
 
@@ -122,19 +134,26 @@ const Checkout = () => {
     },
   ];
 
-const handleOrder= async ()=>{
-    const orderInfo={
-        products:order,
-        address:`${userAddresses[addressChoice].addr}, ${userAddresses[addressChoice].ward}, ${userAddresses[addressChoice].district}, ${userAddresses[addressChoice].province}`,
-        statusPayment:false,
-        totalPrice:getTotalPrice(15000),
-        shipMethod:deliveryMethods[deliveryMethod],
-        paymentType:paymentMethods[paymentMethod].text,
-        shipPrice:"15000"
+  const handleOrder = async () => {
+    const orderInfo = {
+      products: order,
+      address: `${customer.resCustomer.address[addressChoice].detail}, ${customer.resCustomer.address[addressChoice].ward}, ${customer.resCustomer.address[addressChoice].district}, ${customer.resCustomer.address[addressChoice].province}`,
+      statusPayment: false,
+      totalPrice: Number(getTotalPrice(15000)) * 1000,
+      shipMethod: deliveryMethods[deliveryMethod],
+      paymentType: paymentMethods[paymentMethod].text,
+      shipPrice: "15000",
+    };
+    if (paymentMethods[paymentMethod].text == "Ví Momo") {
+      const paymentMomo = await axios.post(`${api}payment/payMomo`, orderInfo);
+      if (paymentMomo) {
+        window.open(paymentMomo.data.payUrl, "_self");
+      }
+      console.log(paymentMomo.data);
     }
-    const createOrder = await axios.post(`${api}order/createOrder`,orderInfo)
-    console.log(createOrder.data)
-}
+    // const createOrder = await axios.post(`${api}order/createOrder`,orderInfo)
+    // console.log(createOrder.data)
+  };
 
   return (
     <>
@@ -175,11 +194,13 @@ const handleOrder= async ()=>{
                   setAddressChoice(e.target.value);
                   setDeliveryMethod(0);
                 }}
-                value={0}
+                value={addressChoice}
               >
-                {userAddresses.map((address) => (
-                  <option key={address.id} value={parseInt(address.id)}>
-                    {`${address.addr}, ${address.ward}, ${address.district}, ${address.province}`}
+                {customer.resCustomer.address.map((address, index) => (
+                  <option key={index} value={parseInt(index)}>
+                    {`${address.detail}, ${address.ward.split("//")[0]}, ${
+                      address.district.split("//")[0]
+                    }, ${address.province.split("//")[0]}`}
                   </option>
                 ))}
               </select>
@@ -292,9 +313,7 @@ const handleOrder= async ()=>{
                     <div>{item.quantity}</div>
                   </td>
                   <td className="total-check">
-                    <div>
-                      {getPriceExpr(item.price * item.quantity, 20)}
-                    </div>
+                    <div>{getPriceExpr(item.price * item.quantity, 20)}</div>
                   </td>
                 </tr>
               ))}
@@ -320,7 +339,21 @@ const handleOrder= async ()=>{
               </div>
               <div className="address-confirm">
                 <p>Địa chỉ nhận hàng:</p>
-                <p className="text-confirm">{`${userAddresses[addressChoice].addr}, ${userAddresses[addressChoice].ward}, ${userAddresses[addressChoice].district}, ${userAddresses[addressChoice].province}`}</p>
+                <p className="text-confirm">{`${
+                  customer.resCustomer.address[addressChoice].detail
+                }, ${
+                  customer.resCustomer.address[addressChoice].ward.split(
+                    "//"
+                  )[0]
+                }, ${
+                  customer.resCustomer.address[addressChoice].district.split(
+                    "//"
+                  )[0]
+                }, ${
+                  customer.resCustomer.address[addressChoice].province.split(
+                    "//"
+                  )[0]
+                }`}</p>
               </div>
               <div className="delivery-confirm">
                 <p>Phương thức vận chuyển:</p>
@@ -356,7 +389,9 @@ const handleOrder= async ()=>{
           </div>
           <div className="button-confirm">
             <button className="button-return">Quay lại giỏ hàng</button>
-            <button className="button-order" onClick={handleOrder}>Xác nhận đặt hàng</button>
+            <button className="button-order" onClick={handleOrder}>
+              Xác nhận đặt hàng
+            </button>
           </div>
         </div>
       </div>

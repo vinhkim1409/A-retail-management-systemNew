@@ -38,6 +38,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const authBusinessRoutes = require("./routes/authBusinessRoutes");
+const customerRoutes = require("./routes/customerRoutes");
 const paymentRoutes = require("./routes/paymentRoutes")
 app.use("/product", productRoutes);
 app.use("/staff", staffRoutes);
@@ -47,6 +48,7 @@ app.use("/cart", cartRoutes);
 app.use("/order", orderRoutes);
 app.use("/business", authBusinessRoutes);
 app.use("/payment", paymentRoutes);
+app.use("/customer", customerRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

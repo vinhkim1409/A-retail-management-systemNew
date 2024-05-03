@@ -4,10 +4,11 @@ import images from "../../../images/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { getPriceExpr } from "../../../utils/getPriceRepr";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { api } from "../../../constant/constant";
 const Cart = () => {
+  const {tenantURL}=useParams()
   const navigate = useNavigate();
   const [book, setBook] = useState([]);
 
@@ -128,7 +129,7 @@ const Cart = () => {
       selectedItems.includes(item._id)
     );
 
-    navigate("/customer/checkout", { state: selectedProducts });
+    navigate(`/${tenantURL}/customer/checkout`, { state: selectedProducts });
   };
   return (
     <div className="Cart-container">

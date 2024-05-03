@@ -4,7 +4,7 @@
   .inner{
     font-family: 'Josefin Sans', sans-serif;
     width: 780px;
-    height: 900px;
+    
     border-radius: 20px;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     display: flex;
@@ -81,9 +81,13 @@
 }
 .inputFile:valid + .fileDummy  .fileDefault {
     display: none;
-}
+} 
 
 .iconProgess{
     margin-top: 1px;
+}
+.mr-2
+{
+    margin-right: 2%;
 }
 }

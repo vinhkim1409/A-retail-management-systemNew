@@ -1,5 +1,29 @@
 const mongoose = require("mongoose");
 
+const addressSchema = new mongoose.Schema({
+  firstName:{
+    type: String,required:true
+  },
+  lastName:{
+    type: String,required:true
+  },
+  phoneNumber:{
+    type: String,required:true
+  },
+  province:{
+    type: String,required:true
+  },
+  district:{
+    type: String,required:true
+  },
+  ward:{
+    type: String,required:true
+  },
+  detail:{
+    type: String,required:true
+  },
+})
+
 const customerSchema = new mongoose.Schema(
   {
     firstName: { type: String, required: true },
@@ -13,7 +37,7 @@ const customerSchema = new mongoose.Schema(
       required: true,
     },
     address: {
-      type: [{ type: String, required: true }],
+      type: [addressSchema],
       default:[]
     },
     order: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }] },

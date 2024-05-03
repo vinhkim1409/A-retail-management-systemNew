@@ -10,13 +10,13 @@ const MonoController = {
       const lang = "vi";
       const requestType = "linkWallet";
       const orderInfo = "Thanh toán qua ví MoMo";
-      const ipnUrl = process.env.IPN_URL_ORDER;
+      const ipnUrl = "http://localhost:3001/order/notify_payment";
       const redirectUrl = process.env.REDIRECT_URL_ORDER;
       const partnerClientId = process.env.PARTNER_CLIENT_ID;
-
       const data = {
         buyer: "657342ee8e03b1440287e216",
-        ...req.body,
+        address:req.body.address,
+        totalPrice:req.body.totalPrice.toString()
       };
       const deliveryFee =  0;
       const extraData = Buffer.from(JSON.stringify(data)).toString("base64");
@@ -25,7 +25,7 @@ const MonoController = {
         "accessKey=" +
         accessKey +
         "&amount=" +
-        (123456 + deliveryFee) +
+        (req.body.totalPrice) +
         "&extraData=" +
         extraData +
         "&ipnUrl=" +
@@ -51,7 +51,7 @@ const MonoController = {
         partnerCode: partnerCode,
         partnerClientId: partnerClientId,
         requestId: requestId,
-        amount: 123456 + deliveryFee,
+        amount: req.body.totalPrice,
         orderId: requestId,
         orderInfo: orderInfo,
         redirectUrl: redirectUrl,

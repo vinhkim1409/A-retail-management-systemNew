@@ -51,7 +51,8 @@ const authMiddlewares={
                 {
                     return res.json("You are not authenticated")
                 }
-                req.user=await Customer.find({_id:user.CustomerID,tenantID:user.tenantID}).select('-password')
+                
+                req.user=await Customer.find({_id:user.customerID,tenantID:user.tenantID}).select('-password')
                 req.tenantID=user.tenantID
                 next()
             })

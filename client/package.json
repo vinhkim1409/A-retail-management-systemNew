@@ -36,6 +36,7 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.4",
     "redux": "^5.0.1",
+    "redux-persist": "^6.0.0",
     "styled-components": "^6.1.1",
     "typeface-exo": "^1.1.13",
     "typeface-oswald": "^1.1.13",

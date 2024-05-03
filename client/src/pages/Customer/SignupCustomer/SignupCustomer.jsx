@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SignupCustomer.scss";
 import background from "../../../assets/login-background.png";
 import {
@@ -9,7 +9,51 @@ import {
   createTheme,
   ThemeProvider,
 } from "@mui/material";
+import { useParams } from "react-router-dom";
+import axios from "axios"
+import {api} from "../../../constant/constant"
+
 function SignupCustomer() {
+  const { tenantURL } = useParams();
+  const [customerInfo, setCustomerInfo] = useState({
+    email:"",
+    password:"",
+    firstName:"",
+    lastName:"",
+    phoneNumber:"",
+  });
+  const [confirmPassword,setConfirmPassword]=useState("")
+  const [openWrongCofirm, setOpenWrongConfirm] = useState(false);
+  const handleChangeInfo=(event,attribute)=>{
+    setCustomerInfo({ ...customerInfo, [`${attribute}`]: event.target.value });
+  }
+  const handleChangeConfirmPassword=(event)=>{
+setConfirmPassword(event.target.value)
+  }
+  const handleSignupCustomer= async (e)=>{
+    e.preventDefault();
+    if (customerInfo.password != confirmPassword) {
+      setOpenWrongConfirm(true);
+      return;
+    }
+    const newCustomer={
+      email:customerInfo.email,
+      password:customerInfo.password,
+      firstName:customerInfo.firstName,
+      lastName:customerInfo.lastName,
+      phoneNumber:customerInfo.phoneNumber,
+      tenantURL:tenantURL
+    }
+    const resRegister= await axios.post(`${api}customer/signup`,newCustomer)
+    if(resRegister.data.success) {
+      console.log(resRegister.data.data);
+    }
+    else{
+      console.log(resRegister.data.message);
+    }
+
+  }
+
   return (
     <div className="signupCustomer-form">
       <div className={"inner"}>
@@ -30,18 +74,16 @@ function SignupCustomer() {
 
         <Divider variant="middle" theme={theme} />
         <ThemeProvider theme={theme}>
-          <p className="lable">
-            Thông tin tài khoản
-          </p>
+          <p className="lable">Thông tin tài khoản</p>
           <TextField
             name="email"
-            label="Nhập Email / Tên đăng nhập"
+            label="Nhập Email"
             size="small"
             fullWidth
             color="bkbook"
-            // onChange={(e) =>
-            //   setValues({ ...values, [e.target.name]: e.target.value })
-            // }
+            onChange={(event)=>{
+              handleChangeInfo(event,"email")
+            }}
           />
 
           <div className="">
@@ -51,11 +93,11 @@ function SignupCustomer() {
               type="password"
               variant="outlined"
               color="bkbook"
-              className="flex-1"
+              className="flex-1 mr-2"
               size="small"
-              // onChange={(e) =>
-              //   setValues({ ...values, [e.target.name]: e.target.value })
-              // }
+              onChange={(event)=>{
+                handleChangeInfo(event,"password")
+              }}
             />
 
             <TextField
@@ -65,17 +107,13 @@ function SignupCustomer() {
               variant="outlined"
               color="bkbook"
               size="small"
-              className="flex-1"
-              // onChange={(e) =>
-              //   setValues({ ...values, [e.target.name]: e.target.value })
-              // }
+              className="flex-1 "
+              onChange={handleChangeConfirmPassword}
             />
           </div>
 
           <Divider variant="middle" className="!py-1 !my-2" />
-          <p className="lable">
-            Thông tin cá nhân
-          </p>
+          <p className="lable">Thông tin cá nhân</p>
           <TextField
             name="name"
             label="Họ"
@@ -83,9 +121,9 @@ function SignupCustomer() {
             color="bkbook"
             fullWidth
             size="small"
-            // onChange={(e) =>
-            //   setValues({ ...values, [e.target.name]: e.target.value })
-            // }
+            onChange={(event)=>{
+              handleChangeInfo(event,"firstName")
+            }}
           />
           <TextField
             name="name"
@@ -94,9 +132,9 @@ function SignupCustomer() {
             color="bkbook"
             fullWidth
             size="small"
-            // onChange={(e) =>
-            //   setValues({ ...values, [e.target.name]: e.target.value })
-            // }
+            onChange={(event)=>{
+              handleChangeInfo(event,"lastName")
+            }}
           />
 
           <TextField
@@ -106,38 +144,18 @@ function SignupCustomer() {
             color="bkbook"
             size="small"
             fullWidth
-            // onChange={(e) =>
-            //   setValues({ ...values, [e.target.name]: e.target.value })
-            // }
+            onChange={(event)=>{
+              handleChangeInfo(event,"phoneNumber")
+            }}
           />
-          <div className="fileArea">
-            <label for="images" className="text-base">
-              Ảnh đại diện
-            </label>
-            <input
-              className="inputFile"
-              type="file"
-              name="images"
-              id="images"
-              required="required"
-              multiple="multiple"
-              // onChange={(e) => uploadFile(e.target.files[0])}
-            />
-            <div className="fileDummy">
-              <div className="fileSuccess text-sm">
-                Ảnh đại diện đã được chọn
-              </div>
-              <div className="fileDefault  text-sm">
-                Click để chọn ảnh đại diện của bạn
-              </div>
-            </div>
-          </div>
-
           <Button
             style={{ marginLeft: "auto", marginTop: 10, width: 120 }}
             variant="contained"
             size="large"
             color="bkbook"
+            onClick={(event)=>{
+              handleSignupCustomer(event)
+            }}
           >
             ĐĂNG KÝ
           </Button>

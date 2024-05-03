@@ -66,11 +66,11 @@ const businessController = {
       });
 
       if (!user) {
-        return res.json("Wrong email or password!");
+        return res.status(404).json({sucess:false,message:"Wrong email or password!"});
       }
-      const validPassword = bcrypt.compare(req.body.password, user.password);
+      const validPassword = await bcrypt.compare(req.body.password, user.password);
       if (!validPassword) {
-        return res.json("Wrong email or password!");
+        return res.status(404).json({sucess:false,message:"Wrong email or password!"});
       }
       if (user ) {
         const accessToken = jwt.sign(

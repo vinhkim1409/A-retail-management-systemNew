@@ -58,6 +58,7 @@ import SignupCustomer from "./pages/Customer/SignupCustomer/SignupCustomer";
 //Error
 import Error from "./pages/Error/Error";
 import EditProduct from "./pages/Business/Product/EditProduct/EditProduct";
+import AddNewAddress from "./pages/Customer/AddNewAddress/AddNewAddress";
 
 
 function App() {
@@ -85,7 +86,7 @@ function App() {
           <Route path="business" element={<Business />} />
         </Route>
 
-        <Route path="/:tennatURL/business" element={<BusinessLayout />}>
+        <Route path="/:tenatURL/business" element={<BusinessLayout />}>
           <Route index element={<BusinessHome />} />
           <Route path="item" element={<DashboardAdmin />} />
           <Route path="transaction" element={<DashboardAdmin />} />
@@ -103,11 +104,12 @@ function App() {
           <Route path="category" element={<CategoryM />} />
         </Route>
 
-        <Route path="/customer" element={<CustomerLayout />}>
+        <Route path="/:tenantURL/customer" element={<CustomerLayout />}>
           <Route index element={<Home />} />
           <Route path="detail-product/:id" element={<DetailProductCustomer />} />
           <Route path="address" element={<Address />} />
           <Route path="address-edit" element={<AddressEdit />} />
+          <Route path="address-addnew" element={<AddNewAddress />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="order" element={<OrderCustomer />} />
           <Route path="detail-order" element={<DetailOrder />} />

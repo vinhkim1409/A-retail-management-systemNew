@@ -4,7 +4,7 @@ import google from "../../../assets/google.png";
 import background from "../../../assets/login-background.png";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginBusiness } from "../../../redux/apiRequest";
+import { loginBusiness } from "../../../redux/apiRequest"; 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

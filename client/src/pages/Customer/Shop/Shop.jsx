@@ -20,7 +20,7 @@ function Shop() {
   const productsPerPage = 3;
   const productsPerRow = 5;
   const totalProducts = 50;
-  const [allProducts,setAllProducts]=useState([])
+  const [allProducts, setAllProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [productTable, setProductTable] = useState([]);
 
@@ -67,7 +67,7 @@ function Shop() {
   const getProduct = async () => {
     const products = await axios.get(`${api}product`);
     setProductTable(products.data);
-    setAllProducts(products.data)
+    setAllProducts(products.data);
   };
 
   const [category, setCategory] = useState([]);
@@ -90,12 +90,14 @@ function Shop() {
   const handleChangeCategory = (id) => {
     if (id === "All") {
       setCategoryStatus("All");
-      setProductTable(allProducts)
+      setProductTable(allProducts);
     } else {
       setCategoryStatus(id);
       const categorys = category.find((item) => item._id === id);
-      const newProducts = allProducts.filter((product)=>categorys.product.includes(product._id))
-      setProductTable(newProducts)
+      const newProducts = allProducts.filter((product) =>
+        categorys.product.includes(product._id)
+      );
+      setProductTable(newProducts);
     }
   };
   useEffect(() => {
