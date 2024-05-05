@@ -21,6 +21,7 @@ import img2 from "./../../../assets/checkout-item2.png";
 import axois from "axios";
 import { api } from "../../../constant/constant";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -41,7 +42,14 @@ const Order = () => {
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
-
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
   const handleTabClick = (event) => {
     setActiveTab(event.target.value);
   };
@@ -50,9 +58,9 @@ const Order = () => {
 
   const totalPages = Math.ceil(orderList.length / 10);
   const getOrder = async () => {
-    const orders = await axois.get(`${api}order`);
+    const orders = await axois.get(`${api}order`,config);
     console.log(orders.data);
-    setOrderList(orders.data);
+    setOrderList(orders.data.data);
   };
   useEffect(() => {
     getOrder();

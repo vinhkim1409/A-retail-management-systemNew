@@ -26,10 +26,43 @@ const productOrder = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema(
   {
-    //tenantId
-    //customerID
+    tenantID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "business",
+      required: true,
+    },
+
+    customerID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "customers",
+      required: true,
+    },
     products: { type: [productOrder] },
-    address: {
+    buyer_firstName: {
+      type: String,
+      required: true,
+    },
+    buyer_lastName: {
+      type: String,
+      required: true,
+    },
+    buyer_phoneNumber: {
+      type: String,
+      required: true,
+    },
+    buyer_province: {
+      type: String,
+      required: true,
+    },
+    buyer_district: {
+      type: String,
+      required: true,
+    },
+    buyer_ward: {
+      type: String,
+      required: true,
+    },
+    buyer_address_detail: {
       type: String,
       required: true,
     },
@@ -38,6 +71,7 @@ const orderSchema = new mongoose.Schema(
     statusPayment: {
       type: Boolean,
       required: true,
+      default: false,
     },
     totalPrice: {
       type: String,
@@ -49,7 +83,6 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     shipPrice: { type: String, required: true },
-    orderID:{ type: String}
   },
   {
     timestamps: true,

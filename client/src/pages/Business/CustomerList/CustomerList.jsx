@@ -58,64 +58,64 @@ function CustomerList() {
       lastname: "Nguyen Minh",
       firstname: "Hung",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình Thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 2,
       lastname: "Nguyen Minh",
       firstname: "Hung",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình Thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 3,
       lastname: "Nguyen Minh",
       firstname: "Hung",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 4,
       lastname: "Nguyen Minh",
       firstname: "Hung",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 5,
       lastname: "Nguyen Minh",
       firstname: "Hung",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 6,
       lastname: "Nguyen Minh",
       firstname: "Hung",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 7,
       lastname: "Nguyen Minh",
       firstname: "Hung",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 8,
       lastname: "Nguyen Minh",
       firstname: "Hung",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
   ];
   const customerdatashopee = [
@@ -124,88 +124,88 @@ function CustomerList() {
       lastname: "Nguyen Minh",
       firstname: "Hung1",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 2,
       lastname: "Nguyen Minh",
       firstname: "Hung1",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 3,
       lastname: "Nguyen Minh",
       firstname: "Hung1",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 4,
       lastname: "Nguyen Minh",
       firstname: "Hung1",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 5,
       lastname: "Nguyen Minh",
       firstname: "Hung1",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 6,
       lastname: "Nguyen Minh",
       firstname: "Hung1",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 7,
       lastname: "Nguyen Minh",
       firstname: "Hung1",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 8,
       lastname: "Nguyen Minh",
       firstname: "Hung1",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 9,
       lastname: "Nguyen Minh",
       firstname: "Hung1",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 10,
       lastname: "Nguyen Minh",
       firstname: "Hung2",
       email: "minhhung@gmail.commmmmmmmmmm",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
     {
       id: 11,
       lastname: "Nguyen Minh",
       firstname: "Hung3",
       email: "minhhung@gmail.com",
-      phone: "0123456789",
-      status: "Bình thường",
+      phoneNumber: "0123456789",
+      createDate: "12/02/2024",
     },
   ];
   const [stateTag, setStateTag] = useState("website");
@@ -234,31 +234,32 @@ function CustomerList() {
     <>
       <div className="CustomerList-container">
         <h2 className="title">Customer List</h2>
-        <div className="tab">
-          <button
-            className={`tablinks button-website ${
-              stateTag == "website" ? "active-tag" : ""
-            }`}
-            onClick={() => {
-              setCurrentTableData(customerdatawebsite);
-              setStateTag("website");
-            }}
-          >
-            Website
-          </button>
-          <button
-            className={`tablinks button-shopee ${
-              stateTag == "shopee" ? "active-tag" : ""
-            }`}
-            onClick={() => {
-              setCurrentTableData(customerdatashopee);
-              setStateTag("shopee");
-            }}
-          >
-            Shopee
-          </button>
-        </div>
-        <div className="table-product">
+
+        <div className="list-container">
+          <div className="tab">
+            <button
+              className={`tablinks button-website ${
+                stateTag == "website" ? "active-tag" : ""
+              }`}
+              onClick={() => {
+                setCurrentTableData(customerdatawebsite);
+                setStateTag("website");
+              }}
+            >
+              Website
+            </button>
+            <button
+              className={`tablinks button-shopee ${
+                stateTag == "shopee" ? "active-tag" : ""
+              }`}
+              onClick={() => {
+                setCurrentTableData(customerdatashopee);
+                setStateTag("shopee");
+              }}
+            >
+              Shopee
+            </button>
+          </div>
           <Box
             width="100%"
             overflow="auto"
@@ -267,44 +268,31 @@ function CustomerList() {
           >
             <StyledTable>
               <TableHead>
-                <TableRow>
+                <TableRow
+                  sx={{
+                    backgroundColor: "#F5F5F5",
+                  }}
+                >
                   <TableCell
                     align="left"
-                    className="table-label"
-                    sx={{ minWidth: 100 }}
+                    className="customer-name lable-customer"
                   >
-                    Họ
+                    Customer
                   </TableCell>
-                  <TableCell
-                    align="left"
-                    className="table-label"
-                    sx={{ minWidth: 60 }}
-                  >
-                    Tên
+                  <TableCell align="left" className="lastname lable-customer ">
+                    Address
                   </TableCell>
-                  <TableCell
-                    align="left"
-                    className="table-label"
-                    sx={{ minWidth: 120 }}
-                  >
+                  <TableCell align="left" className="email lable-customer ">
                     Email
                   </TableCell>
-                  <TableCell
-                    align="left"
-                    className="table-label"
-                    sx={{ minWidth: 120 }}
-                  >
-                    Số điện thoại
+                  <TableCell align="left" className="phone lable-customer ">
+                    Phone
                   </TableCell>
                   <TableCell
                     align="left"
-                    className="table-label"
-                    sx={{ minWidth: 100 }}
+                    className="create-date lable-customer "
                   >
-                    Tình trạng
-                  </TableCell>
-                  <TableCell align="left" className="table-label">
-                    Cấm
+                    Create Date
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -315,62 +303,69 @@ function CustomerList() {
                     <TableRow key={index}>
                       <TableCell
                         align="left"
-                        className="table-label"
+                        className="customer-name content-customer non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
-                        {item.lastname}
+                        {item.lastname} {item.firstname}
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="table-label"
-                        sx={{ maxWidth: 50 }}
-                      >
-                        {item.firstname}
-                      </TableCell>
+                        className="phone content-customer non-tranform"
+                        sx={{ maxWidth: 100 }}
+                      ></TableCell>
                       <TableCell
                         align="left"
-                        className="cell-content"
+                        className="email content-customer non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
                         {item.email}
                       </TableCell>
-                      <TableCell align="left" className="cell-content">
-                        {item.phone}
+                      <TableCell
+                        align="left"
+                        className="phone content-customer non-tranform"
+                        sx={{ maxWidth: 100 }}
+                      >
+                        {item.phoneNumber}
                       </TableCell>
-                      <TableCell align="left" className="cell-content">
-                        {item.status}
+                      <TableCell
+                        align="left"
+                        className="create-date content-customer non-tranform"
+                        sx={{ maxWidth: 100 }}
+                      >
+                        {item.createDate}
                       </TableCell>
-                      <TableCell align="left">
+                      {/* <TableCell align="left">
                         <button className="btn">
                           <FontAwesomeIcon icon={faBan} onClick={handleOpen} />
                         </button>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
               </TableBody>
             </StyledTable>
           </Box>
           <div className="pages">
-            <div className="pages-number">1-5 of {page + 1}</div>
+            <div className="pages-number">
+              {" "}
+              {1 * (page * 5 + 1)}-
+              {page == totalPages - 1
+                ? currentTableData.length
+                : 5 * (page + 1)}{" "}
+              of {currentTableData.length}
+            </div>
             <button
               className="button-back"
               onClick={() => handleChangePage(page - 1)}
               disabled={page == 0}
             >
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                className={`${page == 0 ? "icon-back" : "active"}`}
-              />
+              <FontAwesomeIcon icon={faChevronLeft} className="icon-back" />
             </button>
             <button
               className="button-next"
               onClick={() => handleChangePage(page + 1)}
               disabled={page == totalPages - 1}
             >
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className={`${page == totalPages - 1 ? "icon-next" : "active"}`}
-              />
+              <FontAwesomeIcon icon={faChevronRight} className="icon-next" />
             </button>
           </div>
         </div>

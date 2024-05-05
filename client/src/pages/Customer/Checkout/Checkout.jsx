@@ -15,7 +15,11 @@ const Checkout = () => {
     (state) => state.authCustomer.login?.currentUser
   );
   const { tenantURL } = useParams();
-
+  const config = {
+    headers: {
+      Authorization: `Bearer ${customer?.accessToken}`,
+    },
+  };
   useEffect(() => {
     if (!customer) {
       navigate(`/${tenantURL}/customer/login`);
@@ -143,12 +147,13 @@ const Checkout = () => {
       shipMethod: deliveryMethods[deliveryMethod],
       paymentType: paymentMethods[paymentMethod].text,
       shipPrice: "15000",
+      tenantURL: tenantURL
     };
     if (paymentMethods[paymentMethod].text == "Ví Momo") {
-      const paymentMomo = await axios.post(`${api}payment/payMomo`, orderInfo);
-      if (paymentMomo) {
-        window.open(paymentMomo.data.payUrl, "_self");
-      }
+      const paymentMomo = await axios.post(`${api}payment/payMomo`, orderInfo,config);
+      // if (paymentMomo) {
+      //   window.open(paymentMomo.data.payUrl, "_self");
+      // }
       console.log(paymentMomo.data);
     }
     // const createOrder = await axios.post(`${api}order/createOrder`,orderInfo)
