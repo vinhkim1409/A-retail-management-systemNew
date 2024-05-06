@@ -16,7 +16,9 @@
 
     "jsonwebtoken": "^9.0.2",
 
-    "mongoose": "^8.2.0"
+    "mongoose": "^8.2.0",
+    
+    "axios": "^1.6.8"
 
   }
 
