@@ -3,8 +3,8 @@
   flex-direction: column;
   .title {
     font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 3%;
+    font-weight: bold; 
+    margin-bottom: 2%;
     margin-top: 2%;
   }
   .title-small {
@@ -21,6 +21,13 @@
   // }
   .detail {
     margin-top: 2%;
+  }
+  .variants{
+    margin-top: 2%;
+    margin-bottom: 2%;
+  }
+  .table{
+    margin-bottom: 2%;
   }
   .pic {
     display: inline-block;

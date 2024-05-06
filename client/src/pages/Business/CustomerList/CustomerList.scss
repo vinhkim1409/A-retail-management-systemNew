@@ -5,6 +5,7 @@
   border-radius: 10px;
   margin-top: 30px;
   padding: 10px 30px 20px 30px;
+
   .title {
     font-size: 30px;
     font-weight: bold;
@@ -147,6 +148,7 @@
   .cell-content {
     overflow: hidden;
     text-overflow: ellipsis;
+    text-transform: none ;
   }
   .btn {
     background-color: #e03444;

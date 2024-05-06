@@ -8,22 +8,34 @@ import {
   OutlinedInput,
   Paper,
   Stack,
+  Modal,
+  Box,
 } from "@mui/material";
-import UploadImg from "../../../../components/UploadImg/UploadImg";
-import SaleInfor from "../../../../components/ClassInfor/SaleInfor";
 import SelecIndustry from "../../../../components/SelecIndustry/SelecIndustry";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUpload,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUpload, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { api } from "../../../../constant/constant";
 import EditSaleInfor from "../../../../components/EditSaleInfor/EditSaleInfor";
+import { useNavigate } from "react-router-dom";
 
 const styles = {
   backgroundColor: "white",
 };
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "background.paper",
+  borderRadius: 2,
+  p: 4,
+  outline:"None"
+}; 
 function EditProduct() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [detailsInfo, setDetailInfos] = useState([]);
   const { id } = useParams();
   const [multipleFile, setMultipleFile] = useState([]);
@@ -57,7 +69,9 @@ function EditProduct() {
       setErrorName(true);
     }
   };
+
   const handleUpdateProduct = async () => {
+    setLoading(true);
     const newProduct = {
       name: basicInfo.name,
       industry: inds,
@@ -71,11 +85,16 @@ function EditProduct() {
         };
       }),
       saleInfo: saleInfor,
-      isDeleted:false
+      isDeleted: false,
     };
-    const addProductRes = await axios.put(`${api}product/edit/${id}`, newProduct);
+    const addProductRes = await axios.put(
+      `${api}product/edit/${id}`,
+      newProduct
+    );
     console.log(addProductRes.data);
+    navigate("/business/product");
   };
+
   const getProduct = async () => {
     const product = await axios.get(`${api}product/${id}`);
     console.log(product.data);
@@ -88,7 +107,6 @@ function EditProduct() {
     setMultipleFile(initalPicture);
     setInds(product.data.industry);
     setDetailInfos(product.data.detailInfo);
-   
   };
   useEffect(() => {
     getProduct();
@@ -101,7 +119,7 @@ function EditProduct() {
     const files = event.target.files;
     const newImages = [];
     for (let i = 0; i < files.length; i++) {
-      if (i >= 6) {
+      if (i >= 5) {
         break;
       }
       const base64 = await readFile(files[i]);
@@ -119,7 +137,7 @@ function EditProduct() {
       reader.readAsDataURL(file);
     });
   };
-  const removeImage = (index) => {
+  const handleDeleteImg = (index) => {
     setMultipleFile([
       ...multipleFile.slice(0, index),
       ...multipleFile.slice(index + 1, multipleFile.length),
@@ -146,12 +164,18 @@ function EditProduct() {
                     <div className="Upload-container">
                       {multipleFile.length != 0 &&
                         multipleFile.map((url, index) => (
-                          <div key={url} className="img-frame ">
+                          <div key={url} className="img-frame">
+                            <span
+                              class="close"
+                              onClick={() => handleDeleteImg(index)}
+                            >
+                              <FontAwesomeIcon icon={faTrashCan} />
+                            </span>
                             <img className="img" src={url} alt="..." />
                           </div>
                         ))}
 
-                      {multipleFile.length != 6 ? (
+                      {multipleFile.length != 5 ? (
                         <div className="upload-button">
                           <label htmlFor="upload">
                             <FontAwesomeIcon icon={faUpload} className="icon" />
@@ -272,7 +296,10 @@ function EditProduct() {
           </Paper>
         </div>
         <div className="class-info">
-          <EditSaleInfor setTypeSale={setTypeSale} setSaleInfor={setSaleInfor} />
+          <EditSaleInfor
+            setTypeSale={setTypeSale}
+            setSaleInfor={setSaleInfor}
+          />
         </div>
         <div className="btn-add">
           <button
@@ -287,6 +314,18 @@ function EditProduct() {
         </div>
       </div>
       <SelecIndustry />
+      <Modal
+        open={loading}
+        disableEscapeKeyDown
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style} className="editproduct-container">
+          <div className="loading">
+            <span className="loader"></span>
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 }

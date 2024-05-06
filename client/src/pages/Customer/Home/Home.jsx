@@ -45,8 +45,8 @@ function HomePage() {
   const getWebsite= async()=>{
     const website=await axios.get(`${api}website`)
     setBusinessImgFile(website.data[0].businessImg)
-    setFeatProduct(website.data[0].featureProduct)
-    console.log(website.data[0].featureProduct)
+    // setFeatProduct(website.data[0].featureProduct)
+    // console.log(website.data[0].featureProduct)
   }
   useEffect(()=>{
     getWebsite()

@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './BusinessLayout.scss';
 import SidebarBusiness from '../../components/SidebarBusiness/SidebarBusiness'
 import NavbarAdminBusiness from '../../components/NavbarAdminBusiness/NavbarAdminBusiness';
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux';
 
 const AdminLayout = () => {
+    const userBusiness=useSelector((state)=>state.authBusiness.login.currentUser)
+    const navigate=useNavigate()
+    useEffect(()=>{
+       if (!userBusiness)
+       {
+        navigate("/")
+        //tao mot ham check use nua
+       }
+    },[])
     return (
         <div className="BusinessLayoutContainer">
             <div className="sidebar">

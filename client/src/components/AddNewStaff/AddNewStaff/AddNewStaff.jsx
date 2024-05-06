@@ -8,12 +8,18 @@ import {
   OutlinedInput,
   InputLabel,
   Stack,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { api } from "../../../constant/constant";
+import { imageDB } from "../../../firebase/firebaseConfig";
+import { getDownloadURL, ref, uploadBytes, uploadString } from "firebase/storage";
+import { v4 } from "uuid";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -29,6 +35,13 @@ const style = {
 
 export default function AddNewStaff({ stafflist, setStaffList }) {
   const [open, setOpen] = React.useState(false);
+  const userBusiness=useSelector((state)=>state.authBusiness.login?.currentUser)
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -58,6 +71,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
     email: "",
     phone: "",
     position: "",
+    password: "",
   });
   const [errorForm, setErrorForm] = useState({
     firstname: false,
@@ -65,6 +79,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
     email: false,
     phonenumber: false,
     position: false,
+    password: false,
   });
   const handleChangeInfo = (event, item) => {
     const value = event.target.value;
@@ -74,7 +89,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
     if (item === "email") newBasicInfo.email = value;
     if (item === "phone") newBasicInfo.phone = value;
     if (item === "position") newBasicInfo.position = value;
-
+    if (item === "password") newBasicInfo.password = value;
     setBasicInfo(newBasicInfo);
     checkErrorName(item);
   };
@@ -134,36 +149,41 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
     }
   };
   const [avatarEncode, setAvatarEncode] = useState("");
-  const uploadAvatar = (e) => {
+  const [avatar, setAvatar] = useState("");
+  const uploadAvatar = async (e) => {
     const data = new FileReader();
     data.addEventListener("load", () => {
       setAvatarEncode(data.result);
     });
     data.readAsDataURL(e.target.files[0]);
   };
+
   const addStaff = async () => {
     const haveerror = Object.values(errorForm).includes(true);
-
+    const imgRef = ref(imageDB, `files/${v4()}`);
+    const snapshot = await uploadString(imgRef, avatarEncode, "data_url");
+    const url = await getDownloadURL(snapshot.ref);
     const newStaff = {
       lastname: basicInfo.lastname,
       firstname: basicInfo.firstname,
       email: basicInfo.email,
       phoneNumber: basicInfo.phone,
-      avatar: avatarEncode,
+      avatar: url,
       position: basicInfo.position,
-      isDelete: false,
+      password: basicInfo.password,
     };
     //check newstaff nhanh hon
     try {
-      const responce = await axios.post(`${api}staff/add`, newStaff);
-      console.log(responce);
+      const responce = await axios.post(`${api}staff/add`, newStaff,config);
       setStaffList([...stafflist, newStaff]);
+      console.log(responce.data)
       handleClose();
+
     } catch (err) {
       console.log("false");
     }
   };
-
+  const testDelete = async (imgurl) => {};
   return (
     <div className="Addnewstaff-container">
       <button className="btn" onClick={handleOpen}>
@@ -185,6 +205,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     First Name
                   </InputLabel>
@@ -209,6 +230,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Last Name
                   </InputLabel>
@@ -233,6 +255,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Email
                   </InputLabel>
@@ -256,6 +279,31 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
+                  >
+                    Password
+                  </InputLabel>
+                  <OutlinedInput
+                    size="small"
+                    sx={{
+                      boxShadow: 3,
+                    }}
+                    onChange={(event) => {
+                      handleChangeInfo(event, "password");
+                    }}
+                    error={errorForm.password}
+                  />
+                  <FormHelperText error={errorForm.p}>
+                    {errorForm.password ? "Please enter a Password" : ""}
+                  </FormHelperText>
+                </Stack>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack spacing={1}>
+                  <InputLabel
+                    htmlFor="title"
+                    style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Phone Number
                   </InputLabel>
@@ -281,6 +329,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Avatar
                   </InputLabel>
@@ -319,19 +368,29 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                   <InputLabel
                     htmlFor="title"
                     style={{ fontWeight: 600, color: "gray" }}
+                    className="label"
                   >
                     Position
                   </InputLabel>
-                  <OutlinedInput
-                    size="small"
-                    sx={{
-                      boxShadow: 3,
-                    }}
-                    onChange={(event) => {
-                      handleChangeInfo(event, "position");
-                    }}
-                    error={errorForm.position}
-                  />
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={basicInfo.position}
+                    label="Position"
+                    onChange={(event) => handleChangeInfo(event, "position")}
+                  >
+                     <MenuItem value={"Admin"}>
+                      Admin
+                    </MenuItem>
+                    <MenuItem value={"Sales Associate"}>
+                      Sales Associate
+                    </MenuItem>
+                    <MenuItem value={"Cashier"}>Cashier</MenuItem>
+                    <MenuItem value={"Manager"}>Manager</MenuItem>
+                    <MenuItem value={"Warehouse Staff"}>
+                      Warehouse Staff
+                    </MenuItem>
+                  </Select>
                   <FormHelperText error={errorForm.position}>
                     {errorForm.position ? "Please enter a Position" : ""}
                   </FormHelperText>
@@ -348,6 +407,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                 className="btn"
                 onClick={() => {
                   addStaff();
+                  // console.log(avatar)
                 }}
               >
                 Yes

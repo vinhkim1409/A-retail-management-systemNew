@@ -21,56 +21,11 @@ import {
   faTrashCan,
   faChevronLeft,
   faChevronRight,
+  faEye
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
 import shirt from "../../../assets/shirt.jpg";
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
-import {api} from "../../../constant/constant"
-
-
-function createData(pic, code, name, sell, buy, quantity) {
-  return { pic, code, name, sell, buy, quantity };
-}
-
-const rows = [
-  createData("Pic1", "1ABCDS", "Fans", "1200000", "1000000", "10"),
-  createData("Pic2", "2ABCDS", "Chair", "1500000", "1000000", "10"),
-  createData("Pic3", "3ABCDS", "Table", "1600000", "1000000", "10"),
-  createData("Pic4", "4ABCDS", "Fans", "1700000", "1000000", "10"),
-  createData("Pic5", "5ABCDS", "Fans", "1700000", "1000000", "10"),
-  createData("Pic6", "6ABCDS", "Fans", "1200000", "1000000", "10"),
-  createData("Pic7", "7ABCDS", "Chair", "1500000", "1000000", "10"),
-  createData("Pic8", "8ABCDS", "Table", "1600000", "1000000", "10"),
-  createData(
-    "Pic9",
-    "9ABCDS",
-    "Fans FansFansFansFans Fans",
-    "1700000",
-    "1000000",
-    "10"
-  ),
-  createData("Pic1", "10ABCDS", "Fans", "1700000", "1000000", "10"),
-  createData("Pic1", "11ABCDS", "Fans", "1200000", "1000000", "10"),
-  createData("Pic2", "12ABCDS", "Chair", "1500000", "1000000", "10"),
-  createData("Pic3", "13ABCDS", "Table", "1600000", "1000000", "10"),
-  createData("Pic4", "14ABCDS", "Fans", "1700000", "1000000", "10"),
-  createData("Pic5", "15ABCDS", "Fans", "1700000", "1000000", "10"),
-  createData("Pic6", "16ABCDS", "Fans", "1200000", "1000000", "10"),
-  createData("Pic7", "17ABCDS", "Chair", "1500000", "1000000", "10"),
-  createData("Pic8", "18ABCDS", "Table", "1600000", "1000000", "10"),
-  createData("Pic9", "19ABCDS", "Fans", "1700000", "1000000", "10"),
-];
-
-const columns = [
-  { id: "pic", label: "", minWidth: 150 },
-  { id: "code", label: "Product code", minWidth: 150 },
-  { id: "name", label: "Name", minWidth: 150 },
-  { id: "sell", label: "Selling price", minWidth: 150 },
-  { id: "buy", label: "Buying price", minWidth: 150 },
-  { id: "quantity", label: "Quantity", minWidth: 150 },
-];
+import { api } from "../../../constant/constant";
 
 const style = {
   position: "absolute",
@@ -80,7 +35,7 @@ const style = {
   width: 400,
   bgcolor: "background.paper",
   boxShadow: 24,
-  borderRadius:2,
+  borderRadius: 2,
   p: 4,
 };
 
@@ -95,9 +50,10 @@ const StyledTable = styled(Table)(() => ({
 }));
 
 function ProductM() {
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [products,setProducts]=useState([])
+  const [products, setProducts] = useState([]);
   const totalProducts = products.length;
   const totalPages = Math.ceil(totalProducts / 5);
   const handleChangePage = (newPage) => {
@@ -127,50 +83,71 @@ function ProductM() {
         >
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
-        <a href={`/business/product/edit/${row._id}`}  >
-          <button className="btn edit">
+        <a href={`/business/product/edit/${row._id}`}>
+          <button className="btn-icon">
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
-         
         </a>
-        
-        {/* <Link to={`/business/product/detail/${row.code}`}>
-          <button className="btn minus">
-            <FontAwesomeIcon icon={faCircleInfo} />
+        <a href={`/business/product/edit/${row._id}`}>
+          <button className="btn-icon">
+            <FontAwesomeIcon icon={faEye} />
           </button>
-        </Link> */}
+        </a>
       </div>
     </>
   );
-  console.log(totalPages);
-        
-  //delete product
-  const handleDeleteProduct=async()=>{
-    console.log(idDelete)
-    const deleteProduct = await axios.put(
-      `${api}product/delete/${idDelete}`
-    );
-    if(deleteProduct.data.success)
-    {
-      console.log("Delete Product Success")
-    }
-    const updateArrayProduct=products.filter((n)=>n._id!=idDelete)
-    setProducts(updateArrayProduct)
-    //call api xoa
-    // tra ve status cua hanh dong xoa
-    // notify()
-    //tat popup
-    setShowModal(false)
 
-  }
-  const getAllProducts=async()=>{
-    const Products=await axios.get(`${api}product`);
-    setProducts(Products.data)
-  }
-  useEffect(()=>{
-    getAllProducts()
-  },[])
-  // const notify = () => toast.success("Delete Successfully");
+  const [filter, setFilter] = useState('Active');
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+  };
+
+  //delete product
+  const handleDeleteProduct = async () => {
+    console.log(idDelete);
+    const deleteProduct = await axios.put(`${api}product/delete/${idDelete}`);
+    if (deleteProduct.data.success) {
+      console.log("Delete Product Success");
+    }
+    const updateArrayProduct = products.filter((n) => n._id != idDelete);
+    setProducts(updateArrayProduct);
+    setShowModal(false);
+  };
+  const getAllProducts = async () => {
+    try {
+      const Products = await axios.get(`${api}product`);
+      let filteredProducts = Products.data;
+      if (filter !== 'All') {
+        filteredProducts = Products.data.filter(product => {
+          if (filter === 'Active') {
+            return !product.isDeleted;
+          } else if (filter === 'Deactive') {
+            return product.isDeleted;
+          }
+          return true; // Default case
+        });
+      }
+      setProducts(filteredProducts);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    getAllProducts();
+    console.log("re-render");
+  }, []);
+
+  useEffect(() => {
+    getAllProducts();
+  }, [filter]);
+
+
+
+
   return (
     <>
       <div className="ProductM-container">
@@ -201,7 +178,7 @@ function ProductM() {
           </div>
           <div className="addbox">
             <a href="/business/product/add">
-              <button className="btn add-btn">Add product</button>
+              <button className="btn add-btn edit">Add product</button>
             </a>
           </div>
         </div>
@@ -225,75 +202,129 @@ function ProductM() {
                 All Products
               </Typography>
             </div>
-            <StyledTable>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left"></TableCell>
-                  <TableCell
-                    align="left"
-                    className="table-label"
-                    sx={{ minWidth: 100 }}
-                  >
-                    Code
-                  </TableCell>
-                  <TableCell
-                    align="left"
-                    className="table-label"
-                    sx={{ minWidth: 100 }}
-                  >
-                    Name
-                  </TableCell>
-                  <TableCell align="center" className="table-label">
-                    Selling Price
-                  </TableCell>
-                  <TableCell align="center" className="table-label">
-                    Buying Price
-                  </TableCell>
-                  <TableCell align="center" className="table-label">
-                    Quantity
-                  </TableCell>
-                  <TableCell align="center"></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {products
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell align="center">
-                        <img
-                          src={row.picture[0]?row.picture[0]:shirt}
-                          style={{
-                            width: "60px",
-                            height: "50px",
-                            borderRadius: "5px",
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        align="left"
-                        className="table-label"
-                        sx={{ maxWidth: 100 }}
-                      >
-                        ABCS123
-                      </TableCell>
-                      <TableCell
-                        align="left"
-                        className="table-label"
-                        sx={{ maxWidth: 80 }}
-                      >
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="center">{row.saleInfo[0].sellPrice}</TableCell>
-                      <TableCell align="center">{row.saleInfo[0].buyPrice}</TableCell>
-                      <TableCell align="center">{row.saleInfo[0].quantity}</TableCell>
-                      <TableCell align="center">
-                        {updateQuantityButton(row)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </StyledTable>
+
+            <div className="select">
+              <select value={filter} onChange={handleFilterChange} className="filter-status">
+                <option value="All">All</option>
+                <option value="Active">Active</option>
+                <option value="Deactive">Deactive</option>
+              </select>
+            </div>
+
+            {!loading ? (
+              <StyledTable>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">
+                      <div
+                        style={{
+                          width: "60px",
+                        }}
+                      ></div>
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      className="table-label"
+                      sx={{ minWidth: 100 }}
+                    >
+                      Code
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      className="table-label"
+                      sx={{ minWidth: 100 }}
+                    >
+                      Name
+                    </TableCell>
+                    <TableCell align="left" className="table-label">
+                      Selling Price (VND)
+                    </TableCell>
+                    <TableCell align="left" className="table-label">
+                      Quantity
+                    </TableCell>
+                    <TableCell align="center" className="table-label">
+                      Status
+                    </TableCell>
+                    <TableCell align="center" className="table-label">
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {products
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell align="center">
+                          <img
+                            src={row.picture[0] ? row.picture[0] : shirt}
+                            style={{
+                              width: "60px",
+                              height: "50px",
+                              borderRadius: "5px",
+                            }}
+                            alt=""
+                          />
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          className="table-label"
+                          sx={{ maxWidth: 100 }}
+                        >
+                          ABCS123
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          className="table-label"
+                          sx={{ maxWidth: 80 }}
+                        >
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="left">
+                          <div className="saleInfo">
+                            {row.saleInfo.map((sale, index) => (
+                              <div
+                                className={`${index === 0 ? "salefirst" : "sale"
+                                  }`}
+                                key={index}
+                              >
+                                {new Intl.NumberFormat('en-US').format(sale.sellPrice)}
+                              </div>
+                            ))}
+                          </div>
+                        </TableCell>
+                        <TableCell align="left">
+                          <div className="saleInfo">
+                            {row.saleInfo.map((sale, index) => (
+                              <div
+                                className={`${index === 0 ? "salefirst" : "sale"
+                                  }`}
+                                key={index}
+                              >
+                                {new Intl.NumberFormat('en-US').format(sale.quantity)}
+                              </div>
+                            ))}
+                          </div>
+                        </TableCell>
+                        <TableCell align="center">
+                          <div className="status">
+                            <div className={row.isDeleted === false ? "active-status" : "deactive"}>
+                              {row.isDeleted === false ? "Active" : "Deactive"}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell align="center">
+                          {updateQuantityButton(row)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </StyledTable>
+            ) : (
+              <div className="loading">
+                <span className="loader"></span>
+              </div>
+            )}
           </Box>
           <div className="pages">
             <div className="pages-number">1-5 of {page + 1}</div>
@@ -342,10 +373,14 @@ function ProductM() {
             <Button variant="contained" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="contained" color="error" onClick={()=>{
-              handleDeleteProduct()}}>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                handleDeleteProduct();
+              }}
+            >
               Yes
-              
             </Button>
           </Box>
         </Box>

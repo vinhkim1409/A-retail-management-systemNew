@@ -1,35 +1,63 @@
-import React from 'react'
-import "./NavbarCustomer.scss"
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import "./NavbarCustomer.scss";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutCustomerSuccess } from "../../redux/authCustomerSilde";
 
 const Navbar = () => {
-    return (
-        <div className="navbar-customer">
-            <div className="home">
-                <Link to="/customer" className="link">Home</Link>
-            </div>
-            <div className="product">
-                <Link to="/customer/shop" className="link">Product</Link>
-            </div>
-            <div className="logo">
-                <Link to="/customer" >
-                    Logo
-                </Link>
-            </div>
-            <div className="search">
-                <FontAwesomeIcon icon={faSearch} />
-            </div>
-            <div className="cart">
-                <Link to="/customer/cart" className="link"><FontAwesomeIcon icon={faCartShopping} /></Link>
-            </div>
-            <div className="user">
-                <Link to="/customer/login" className="link">Login</Link>
-            </div>
+  const { tenantURL } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  console.log(tenantURL);
+  const customer = useSelector(
+    (state) => state.authCustomer.login?.currentUser?.resCustomer
+  );
+  console.log(customer);
+  const handleLogOut = () => {
+    dispatch(logoutCustomerSuccess());
+    navigate(`/${tenantURL}/customer/login`);
+  };
+  return (
+    <div className="navbar-customer">
+      <div className="home">
+        <Link to={`/${tenantURL}/customer`} className="link">
+          Home
+        </Link>
+      </div>
+      <div className="product">
+        <Link to={`/${tenantURL}/customer/shop`} className="link">
+          Product
+        </Link>
+      </div>
+      <div className="logo">
+        <Link to={`/${tenantURL}/customer`}>Logo</Link>
+      </div>
+      <div className="search">
+        <FontAwesomeIcon icon={faSearch} />
+      </div>
+      <div className="cart">
+        <Link to={`/${tenantURL}/customer/cart`} className="link">
+          <FontAwesomeIcon icon={faCartShopping} />
+        </Link>
+      </div>
+      {customer ? (
+        <div className="user">
+          <div className="link" onClick={handleLogOut}>
+            {customer.firstName}
+          </div>
         </div>
-    );
+      ) : (
+        <div className="user">
+          <Link to={`/${tenantURL}/customer/login`} className="link">
+            Login
+          </Link>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Navbar;
