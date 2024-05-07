@@ -85,7 +85,6 @@ const UploadImg = ({ setImg }) => {
       <div onClick={()=>{
         console.log(check1x1)
       }}>
-HAHAHAHAAAAAAAAAAAAAAAAAAAAAAAA
       </div>
         <div className="Upload-container">
           {multipleFile.length != 0 &&
