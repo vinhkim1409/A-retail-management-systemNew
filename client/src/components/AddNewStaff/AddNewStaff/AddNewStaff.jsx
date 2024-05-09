@@ -401,7 +401,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
           <div className="button">
             <div className="btn-box">
               <button className="btn" onClick={handleClose}>
-                Cancle
+                Cancel
               </button>
               <button
                 className="btn"

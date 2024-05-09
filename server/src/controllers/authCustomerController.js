@@ -120,6 +120,18 @@ const customerController = {
     } catch (error) {
       res.status(500).json(error);
     }
+  },
+  getWebsiteCustomerByBusiness: async(req,res)=>{
+    try {
+      const customer= await Customer.find({tenantID:req.tenantID})
+        if(customer){
+        return  res.json({success:true,data:customer})
+        }
+        return res.json({success:false,data:"An Unknown error"})
+      
+    } catch (error) {
+      
+    }
   }
 };
 

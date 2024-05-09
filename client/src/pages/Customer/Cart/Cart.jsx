@@ -7,11 +7,19 @@ import { getPriceExpr } from "../../../utils/getPriceRepr";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { api } from "../../../constant/constant";
+import { useSelector } from "react-redux";
 const Cart = () => {
-  const {tenantURL}=useParams()
+  const { tenantURL } = useParams();
   const navigate = useNavigate();
-  const [book, setBook] = useState([]);
-
+  const [products, setProducts] = useState([]);
+  const customer = useSelector(
+    (state) => state.authCustomer.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${customer?.accessToken}`,
+    },
+  };
   const address = [
     {
       id: "1",
@@ -25,15 +33,15 @@ const Cart = () => {
   ];
 
   const getCart = async () => {
-    const cart = await axios.get(`${api}cart`);
+    const cart = await axios.get(`${api}cart`, config);
     console.log(cart.data[0].products);
-    setBook(cart.data[0].products);
+    setProducts(cart.data[0].products);
   };
   useEffect(() => {
     getCart();
   }, []);
 
-  const countbook = book.length;
+  const countproducts = products.length;
   // const getTotalPrice = (deliveryFee = 0) =>
   //   getPriceExpr(
   //     book.reduce((prev, curr) => {
@@ -42,32 +50,32 @@ const Cart = () => {
   //   );
 
   const handleCountIncrease = (index) => {
-    const newBook = [...book];
-    newBook[index].quantity += 1;
-    setBook(newBook);
+    const newProducts = [...products];
+    newProducts[index].quantity += 1;
+    setProducts(newProducts);
   };
 
   const handleCountDecrease = (index) => {
-    const newBook = [...book];
-    if (newBook[index].quantity > 1) {
-      newBook[index].quantity -= 1;
-      setBook(newBook);
+    const newProducts = [...products];
+    if (newProducts[index].quantity > 1) {
+      newProducts[index].quantity -= 1;
+      setProducts(newProducts);
     }
   };
 
   const handleCountChange = (event, index) => {
-    const newBook = [...book];
+    const newProducts = [...products];
     const count = Number(event.target.value);
     if (count > 0) {
-      newBook[index].quantity = count;
-      setBook(newBook);
+      newProducts[index].quantity = count;
+      setProducts(newProducts);
     }
   };
 
   const handleRemoveItem = (index) => {
-    const newBook = [...book];
-    newBook.splice(index, 1);
-    setBook(newBook);
+    const newProducts = [...products];
+    newProducts.splice(index, 1);
+    setProducts(newProducts);
     //goi api de thay doi so luong product trong cart
   };
 
@@ -75,13 +83,17 @@ const Cart = () => {
   const [isHeadChecked, setIsHeadChecked] = useState(false);
 
   const handleHeadCheckboxChange = () => {
-    const newSelectedItems = !isHeadChecked ? book.map((item) => item._id) : [];
+    const newSelectedItems = !isHeadChecked
+      ? products.map((item) => item._id)
+      : [];
     setSelectedItems(newSelectedItems);
-    setIsHeadChecked(!isHeadChecked || newSelectedItems.length === book.length);
+    setIsHeadChecked(
+      !isHeadChecked || newSelectedItems.length === products.length
+    );
   };
 
   const handleCheckboxChange = (index) => {
-    const selectedItem = book[index]._id;
+    const selectedItem = products[index]._id;
     const selectedIndex = selectedItems.indexOf(selectedItem);
     let newSelectedItems = [...selectedItems];
 
@@ -107,7 +119,7 @@ const Cart = () => {
       newSelectedItems.indexOf(selectedItem) === -1
     ) {
       setIsHeadChecked(false);
-    } else if (newSelectedItems.length === book.length) {
+    } else if (newSelectedItems.length === products.length) {
       setIsHeadChecked(true);
     }
   };
@@ -115,17 +127,24 @@ const Cart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    const selectedBook = book.filter((item) =>
+    const selectedProducts = products.filter((item) =>
       selectedItems.includes(item._id)
     );
-    const newTotalPrice = selectedBook.reduce((prev, curr) => {
-      return prev + curr.price * (1 - 10 / 100) * curr.quantity;
+    const newTotalPrice = selectedProducts.reduce((prev, curr) => {
+      return (
+        prev +
+        (curr.variant > 0
+          ? curr.product.variants[curr.variant - 1].variant_special_price
+          : curr.product.price) *
+          (1 - 10 / 100) *
+          curr.quantity
+      );
     }, 0);
     setTotalPrice(newTotalPrice);
-  }, [selectedItems, book]);
+  }, [selectedItems, products]);
   const buyProduct = () => {
     console.log(selectedItems);
-    const selectedProducts = book.filter((item) =>
+    const selectedProducts = products.filter((item) =>
       selectedItems.includes(item._id)
     );
 
@@ -145,12 +164,14 @@ const Cart = () => {
                 onChange={() => handleHeadCheckboxChange()}
               />
             </div>
-            <div className="count-book-head">Tất cả ({countbook} sản phẩm)</div>
+            <div className="count-book-head">
+              Tất cả ({countproducts} sản phẩm)
+            </div>
             <div className="price-head">Đơn giá</div>
             <div className="count-head">Số lượng</div>
           </div>
 
-          {book.map((item, index) => (
+          {products.map((item, index) => (
             <div key={item._id}>
               <div className="book-info">
                 <div className="checkbox-info">
@@ -164,7 +185,7 @@ const Cart = () => {
                 <div className="book-detail">
                   <div className="book-image">
                     <img
-                      src={item.product.picture[0]}
+                      src={item.product.avatar.picture_url}
                       width="65px"
                       height="92px"
                       alt="alt"
@@ -176,10 +197,22 @@ const Cart = () => {
                 </div>
                 <div className="price">
                   <div className="last-price">
-                    <p>{getPriceExpr(item.price, 20)}</p>
+                    <p>
+                      {getPriceExpr(
+                        item.variant > 0
+                          ? item.product.variants[item.variant - 1]
+                              .variant_special_price
+                          : item.product.price,
+                        20
+                      )}
+                    </p>
                   </div>
                   <div className="initial-price">
-                    {getPriceExpr(item.price)}
+                    {getPriceExpr(
+                      item.variant > 0
+                        ? item.product.variants[item.variant - 1].variant_price
+                        : item.product.price
+                    )}
                   </div>
                 </div>
                 <div className="count">

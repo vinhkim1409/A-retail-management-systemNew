@@ -18,6 +18,10 @@ import {
   Typography,
   styled,
 } from "@mui/material";
+import axios from "axios"
+import {api} from "../../../constant/constant"
+import { useSelector } from "react-redux";
+
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -44,7 +48,14 @@ const style = {
 function CustomerList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -52,166 +63,21 @@ function CustomerList() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const customerdatawebsite = [
-    {
-      id: 1,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 2,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 3,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 4,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 5,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 6,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 7,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 8,
-      lastname: "Nguyen Minh",
-      firstname: "Hung",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-  ];
-  const customerdatashopee = [
-    {
-      id: 1,
-      lastname: "Nguyen Minh",
-      firstname: "Hung1",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 2,
-      lastname: "Nguyen Minh",
-      firstname: "Hung1",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 3,
-      lastname: "Nguyen Minh",
-      firstname: "Hung1",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 4,
-      lastname: "Nguyen Minh",
-      firstname: "Hung1",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 5,
-      lastname: "Nguyen Minh",
-      firstname: "Hung1",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 6,
-      lastname: "Nguyen Minh",
-      firstname: "Hung1",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 7,
-      lastname: "Nguyen Minh",
-      firstname: "Hung1",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 8,
-      lastname: "Nguyen Minh",
-      firstname: "Hung1",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 9,
-      lastname: "Nguyen Minh",
-      firstname: "Hung1",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 10,
-      lastname: "Nguyen Minh",
-      firstname: "Hung2",
-      email: "minhhung@gmail.commmmmmmmmmm",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-    {
-      id: 11,
-      lastname: "Nguyen Minh",
-      firstname: "Hung3",
-      email: "minhhung@gmail.com",
-      phoneNumber: "0123456789",
-      createDate: "12/02/2024",
-    },
-  ];
+  const [customerdatawebsite, setCustomerDataWebsite] = useState([]);
+  const [customerdatashopee,getCustomerDataShoppe] =useState([]) 
   const [stateTag, setStateTag] = useState("website");
+
+  const getWebsiteCustomer=async ()=>{
+    const customerList= await axios.get(`${api}customer/website-business`,config)
+    console.log(customerList.data.data)
+    setCustomerDataWebsite(customerList.data.data)
+    getCustomerDataShoppe(customerList.data.data)
+    setCurrentTableData(customerList.data.data)
+  }
 
   useEffect(() => {
     setDefaultActiveTab();
+    getWebsiteCustomer()
   }, []);
 
   const setDefaultActiveTab = () => {
@@ -239,7 +105,7 @@ function CustomerList() {
           <div className="tab">
             <button
               className={`tablinks button-website ${
-                stateTag == "website" ? "active-tag" : ""
+                stateTag == "website" ? "active-tagwebsite" : ""
               }`}
               onClick={() => {
                 setCurrentTableData(customerdatawebsite);
@@ -250,14 +116,14 @@ function CustomerList() {
             </button>
             <button
               className={`tablinks button-shopee ${
-                stateTag == "shopee" ? "active-tag" : ""
+                stateTag == "shopee" ? "active-tagsendo" : ""
               }`}
               onClick={() => {
                 setCurrentTableData(customerdatashopee);
                 setStateTag("shopee");
               }}
             >
-              Shopee
+              Sendo
             </button>
           </div>
           <Box
@@ -306,13 +172,15 @@ function CustomerList() {
                         className="customer-name content-customer non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
-                        {item.lastname} {item.firstname}
+                        {item.firstName}{item.lastName} 
                       </TableCell>
                       <TableCell
                         align="left"
-                        className="phone content-customer non-tranform"
+                        className="address content-customer non-tranform"
                         sx={{ maxWidth: 100 }}
-                      ></TableCell>
+                      >
+                        {item.address[0]?.province?.split("//")[0]},{item.address[0]?.district?.split("//")[0]}
+                      </TableCell>
                       <TableCell
                         align="left"
                         className="email content-customer non-tranform"
@@ -332,7 +200,7 @@ function CustomerList() {
                         className="create-date content-customer non-tranform"
                         sx={{ maxWidth: 100 }}
                       >
-                        {item.createDate}
+                        {item.createdAt?.split("T")[0]}
                       </TableCell>
                       {/* <TableCell align="left">
                         <button className="btn">

@@ -3,14 +3,14 @@ const router = express.Router();
 
 const Cart = require("../models/cartModel");
 const { default: mongoose } = require("mongoose");
+const authMiddlewares=require("../middlewares/authMiddlewares")
 
-router.get("/", async (req, res) => {
+router.get("/",authMiddlewares.verifyTokenCustomer, async (req, res) => {
   try {
     const getCartCondition = {
-      customerID: "123",
-      tenantID: "123",
+      customerID: req.user[0]._id,
     };
-    const cart = await Cart.find().populate("products.product");
+    const cart = await Cart.find(getCartCondition).populate("products.product");
     res.json(cart);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -32,23 +32,21 @@ router.post("/:id", async (req, res) => {
 });
 
 //[PUT] '/cart/add-product' se lay id tu token
-router.put("/add-product", async (req, res) => {
+router.put("/add-product",authMiddlewares.verifyTokenCustomer, async (req, res) => {
   try {
-    const { productId, saleInfo, quantity } = req.body;
+    const { productId, variant, quantity } = req.body;
     const products = {
       product: new mongoose.Types.ObjectId(productId),
-      class1: saleInfo.class1,
-      class2: saleInfo.class2,
-      price: saleInfo.sellPrice,
+      variant:variant,
       quantity: quantity,
     };
-    const addProductCartCondition = { _id: "65ff0b618c26cfb533caa40c" };
+    const addProductCartCondition = { customerID: req.user[0]._id };
     const addProductCart = await Cart.findOneAndUpdate(
       addProductCartCondition,
       { $push: { products:  products  } },
       { new: true }
     );
-    res.json(addProductCart);
+    res.json({success:true,data:addProductCart});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

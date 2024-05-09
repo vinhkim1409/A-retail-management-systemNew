@@ -100,6 +100,7 @@ function StaffList() {
 
   const getAll = async () => {
     const staff = await axios.get(`${api}staff`, config);
+    console.log(staff.data);
     setStaffList(staff.data);
   };
   useEffect(() => {

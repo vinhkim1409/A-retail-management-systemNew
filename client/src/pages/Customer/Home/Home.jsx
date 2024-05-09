@@ -40,16 +40,16 @@ const products = [
 ];
 
 function HomePage() {
-  const [businessImgFile, setBusinessImgFile] = useState([]);
+  const [businessImgFile, setBusinessImgFile] = useState(["","",""]);
   const [featProduct, setFeatProduct] = useState([]);
   const getWebsite= async()=>{
     const website=await axios.get(`${api}website`)
-    setBusinessImgFile(website.data[0].businessImg)
+    setBusinessImgFile(website.data[0]?.businessImg)
     // setFeatProduct(website.data[0].featureProduct)
     // console.log(website.data[0].featureProduct)
   }
   useEffect(()=>{
-    getWebsite()
+    // getWebsite()
   },[])
   
   return (
@@ -57,13 +57,13 @@ function HomePage() {
       <div id="carosel" className="carousel slide" data-bs-ride="carousel">
         <div className="carousel-inner">
           <div className="carousel-item active">
-            <img src={businessImgFile[0]} className="d-block w-100" alt="..." />
+            <img src={businessImgFile[0]?businessImgFile[0]:""} className="d-block w-100" alt="..." />
           </div>
           <div className="carousel-item">
-            <img src={businessImgFile[1]} className="d-block w-100" alt="..." />
+            <img src={businessImgFile[1]?businessImgFile[1]:""} className="d-block w-100" alt="..." />
           </div>
           <div className="carousel-item">
-            <img src={businessImgFile[2]} className="d-block w-100" alt="..." />
+            <img src={businessImgFile[2]?businessImgFile[2]:""} className="d-block w-100" alt="..." />
           </div>
         </div>
         <button className="carousel-control-prev" type="button" data-bs-target={"#carosel"} data-bs-slide="prev">

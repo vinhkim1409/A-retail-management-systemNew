@@ -3,24 +3,18 @@ const mongoose = require("mongoose");
 const porductCart = new mongoose.Schema({
   product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "products",
+    ref: "Product",
     required: true,
   },
-  quantity: {
-    type: Number,
+  variant:{
+    type:Number,
     required: true,
+    default:0
   },
-  class1:{
-    type:String,
+  quantity:{
+    type:Number,
     required: true,
-  },
-  class2:{
-    type:String,
-    required: true,
-  },
-  price:{
-    type:String,
-    required: true,
+    default:1
   }
 });
 

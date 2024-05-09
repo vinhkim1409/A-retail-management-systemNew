@@ -408,7 +408,7 @@ export default function EditStaff({
                 Yes
               </button>
               <button className="btn" onClick={handleClose}>
-                Cancle
+                Cancel
               </button>
             </div>
           </div>

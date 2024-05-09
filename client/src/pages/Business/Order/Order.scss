@@ -3,11 +3,13 @@
   flex-direction: column;
   justify-content: space-between; 
   .title {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: bold;
+    
   }
   .header {
     padding: 10px 0;
+    margin-bottom: 1%;
   }
   .pages {
     width: 16%;
@@ -16,6 +18,7 @@
     align-items: center;
     margin-left: auto;
     margin-right: 2%;
+    margin-top: 1%;
   }
   .pages-number,
   .icon-back,
@@ -46,39 +49,51 @@
   }
   .order-id {
     padding-left: 4%;
-    width: 10%;
+    width: 14%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-    text-transform: none;
+   text-transform: uppercase;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .customer {
     width: 10%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-    text-transform: none;
+   text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .date {
     width: 10%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-    text-transform: none;
+   text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .payment {
     width: 10%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-    text-transform: none;
+   text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .total {
     width: 10%;
     // border: 1px solid lightgray;
-    text-transform: none;
+   text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .order-status {
     width: 10%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-    text-transform: none;
+   text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .lable-order {
     font-size: 14px;
@@ -89,6 +104,11 @@
   .content-order {
     color: #475569;
     font-size: 14px;
+   text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .order-body {
     cursor: pointer;
@@ -101,6 +121,15 @@
     background-color: #198754;
     color: white;
     width: 30%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .wayPaidTag {
+    border-radius: 10px;
+    background-color: #FFCA2C;
+    color: black;
+    width: 50%;
     text-align: center;
     font-size: 13px;
     font-weight: 600;

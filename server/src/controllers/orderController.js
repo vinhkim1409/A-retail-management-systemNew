@@ -1,5 +1,6 @@
 const Order = require("../models/orderModel");
 const Cart = require("../models/cartModel");
+const Business = require("../models/businessModel");
 const { default: mongoose } = require("mongoose");
 async function deleteProductFromCart(conditionCart, idProductInCart) {
   try {
@@ -17,9 +18,11 @@ async function deleteProductFromCart(conditionCart, idProductInCart) {
     console.error("Lỗi khi cố gắng xóa sản phẩm khỏi giỏ hàng:", error);
   }
 }
-const createShippingOrder = async (product, order, cod) => {
-    try {
-      const response = await fetch("https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create", {
+const createShippingOrder = async () => {
+  try {
+    const response = await fetch(
+      "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,73 +30,81 @@ const createShippingOrder = async (product, order, cod) => {
         },
         body: JSON.stringify({
           payment_type_id: 2,
-          note: "Đơn hàng của Business",
-          required_note: "CHOXEMHANGKHONGTHU",
-          from_name: product.lastName,
-          from_phone: product.phoneNumber,
-          from_address: `${product.address}, ${product.ward.split("//")[0]}, ${product.district.split("//")[0]}, ${
-            product.province.split("//")[0]
-          }, Vietnam `,
-          from_ward_name: product.ward.split("//")[0],
-          from_district_name: product.district.split("//")[0],
-          from_province_name: product.province.split("//")[0],
-          return_phone: product.lastName,
-          return_address: `${product.address}, ${product.ward.split("//")[0]}, ${product.district.split("//")[0]}, ${
-            book.province.split("//")[0]
-          }, Vietnam `,
+          note: "Tintest 123",
+          required_note: "KHONGCHOXEMHANG",
+          return_phone: "0332190158",
+          return_address: "39 NTT",
           return_district_id: null,
           return_ward_code: "",
           client_order_code: "",
-          to_name: order.name,
-          to_phone: order.phone,
-          to_address: `${order.address}, ${order.ward.split("//")[0]}, ${order.district.split("//")[0]}, ${
-            order.province.split("//")[0]
-          }, Vietnam `,
-          to_ward_code: String(order.ward.split("//")[1]),
-          to_district_id: 1444,
-          cod_amount: cod ? book.price : 0,
+          from_name: "TinTest124",
+          from_phone: "0987654321",
+          from_address:
+            "72 Thành Thái, Phường 14, Quận 10, Hồ Chí Minh, Vietnam",
+          from_ward_name: "Phường 14",
+          from_district_name: "Quận 10",
+          from_province_name: "HCM",
+          to_name: "TinTest124",
+          to_phone: "0987654321",
+          to_address: "72 Thành Thái, Phường 14, Quận 10, Hồ Chí Minh, Vietnam",
+          to_ward_name: "Phường 14",
+          to_district_name: "Quận 10",
+          to_province_name: "HCM",
+          cod_amount: 200000,
           content: "Theo New York Times",
-          weight: 1,
+          weight: 200,
           length: 1,
-          width: 1,
-          height: 1,
+          width: 19,
+          height: 10,
+          cod_failed_amount: 2000,
           pick_station_id: 1444,
           deliver_station_id: null,
-          insurance_value: 10000,
+          insurance_value: 10000000,
           service_id: 0,
           service_type_id: 2,
           coupon: null,
+          pickup_time: 1692840132,
           pick_shift: [2],
           items: [
             {
-              name: book.name,
-              code: "BKBook2023",
+              name: "Áo Polo",
+              code: "Polo123",
               quantity: 1,
-              price: book.price,
-              length: 1,
-              width: 1,
-              height: 1,
-              weight: 100,
+              price: 200000,
+              length: 12,
+              width: 12,
+              weight: 1200,
+              height: 12,
+              category: {
+                level1: "Áo",
+              },
             },
           ],
         }),
-      });
-      const data = await response.json();
-      return data.data;
-    } catch (error) {
-      console.log(error);
-      next(error);
-    }
-  };
+      }
+    );
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 const orderController = {
   createOrder: async (req, res) => {
     try {
       //create order
+      const user=req.user[0]
       const { products } = req.body;
-      const newOrder = new Order(req.body);
+      const newOrder = new Order({
+        customerID:user._id,
+        tenantID:req.tenantID,
+        typeOrder:"Website",
+        ...req.body
+      });
       await newOrder.save();
       //delete product from cart
-      const conditionCart = { _id: "65ff0b618c26cfb533caa40c" };
+      const conditionCart = { customerID: user._id };
       const productIds = products.map((product) => {
         return product._id;
       });
@@ -117,15 +128,48 @@ const orderController = {
   },
   getOrderBusiness: async (req, res) => {
     try {
-      const business = req.user[0];
-      const order = await Order.find();
+      const order = await Order.find({ tenantID: req.tenantID }).populate(
+        "customerID"
+      );
       res.json({ success: true, data: order });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
   notifyOrderCustomer: async (req, res) => {
-    console.log("Ok");
-  }
+    try {
+      const accessKey = process.env.ACCESS_KEY;
+      const secretkey = process.env.SECRET_KEY;
+
+      const {
+        partnerCode,
+        orderId,
+        requestId,
+        amount,
+        orderInfo,
+        orderType,
+        transId,
+        resultCode,
+        message,
+        payType,
+        responseTime,
+        extraData,
+        signature,
+      } = req.body;
+      const data = JSON.parse(Buffer.from(extraData, "base64").toString());
+      if (resultCode === 0) {
+        const order = Order.findByIdAndUpdate(
+          { _id: data.orderId },
+          {
+            statusPayment: "Paid",
+          },
+          { new: true }
+        ).populate("products.product");
+      }
+      const delivery = await createShippingOrder();
+      console.log("success");
+      return res.status(200).json("OK");
+    } catch (error) {}
+  },
 };
 module.exports = orderController;

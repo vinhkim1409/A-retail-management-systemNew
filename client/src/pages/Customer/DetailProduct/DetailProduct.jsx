@@ -9,9 +9,11 @@ import colorBlue from "../../../assets/blue.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { api } from "../../../constant/constant";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import { useSelector } from "react-redux";
 
 function DetailProduct() {
   const BookList = [
@@ -120,7 +122,16 @@ function DetailProduct() {
       time: "Staci, February 22, 2020",
     },
   ];
-  const { id } = useParams();
+  const customer = useSelector(
+    (state) => state.authCustomer.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${customer?.accessToken}`,
+    },
+  };
+  const navigate = useNavigate();
+  const { tenantURL, id } = useParams();
   const [quantity, setQuantity] = useState(0);
   const [rating_product, setRating] = useState(0);
   const [isReadMore, SetIsReadMore] = useState(true);
@@ -220,18 +231,22 @@ function DetailProduct() {
     setProduct(product.data);
   };
   const addToCart = async () => {
-    console.log(quantity)
-    const products = {
-      productId: product._id,
-      saleInfo: {
-        class1: product.saleInfo[0].class1.name,
-        class2: product.saleInfo[0].class2.name,
-        sellPrice: product.saleInfo[0].sellPrice,
-      },
-      quantity: quantity,
-    };
-    const addtoCart = await axios.put(`${api}cart/add-product`, products);
-    console.log(addtoCart);
+    if (!customer) {
+      navigate(`/${tenantURL}/customer/login`);
+    } else {
+      const products = {
+        productId: product._id,
+        variant: 1,
+        quantity: quantity,
+      };
+      console.log(products);
+      const addtoCart = await axios.put(
+        `${api}cart/add-product`,
+        products,
+        config
+      );
+      console.log(addtoCart);
+    }
   };
   useEffect(() => {
     getProduct();
@@ -243,7 +258,7 @@ function DetailProduct() {
           <div className="info-product">
             <div className="image">
               <div className="thumbnail-container">
-                {product.picture.map((image, index) => (
+                {product.pictures.map((image, index) => (
                   <img
                     key={index}
                     src={image}
@@ -258,25 +273,12 @@ function DetailProduct() {
                 ))}
               </div>
               <div className="main-image-container">
-                <img src={product.picture[selectedImage]} alt="Main" />
+                <img src={product.pictures[selectedImage]} alt="Main" />
               </div>
             </div>
             <div className="name-price">
               <div className="name">{product.name}</div>
-              <div className="price">
-                {new Intl.NumberFormat("en-US").format(
-                  product.saleInfo.reduce((prev, current) =>
-                    prev.sellPrice < current.sellPrice ? prev : current
-                  ).sellPrice
-                )}{" "}
-                to{" "}
-                {new Intl.NumberFormat("en-US").format(
-                  product.saleInfo.reduce((prev, current) =>
-                    prev.sellPrice > current.sellPrice ? prev : current
-                  ).sellPrice
-                )}{" "}
-                VND
-              </div>
+              <div className="price"></div>
               {/* chua co */}
               <div className="color">
                 <div className="title-color">
@@ -344,11 +346,11 @@ function DetailProduct() {
                     </button>
                   </div>
                   <div className="in-stock">
-                    {product.saleInfo.reduce(
+                    {/* {product.saleInfo.reduce(
                       (accumulator, currentValue) =>
                         accumulator + currentValue.quantity,
                       0
-                    )}{" "}
+                    )}{" "} */}
                     sản phẩm có sẵn
                   </div>
                 </div>
@@ -371,20 +373,20 @@ function DetailProduct() {
                 Thông tin sản phẩm
               </div>
               <table className="while_background spec_product_table">
-                {product.detailInfo.map((detail, index) => (
+                {/* {product.detailInfo.map((detail, index) => (
                   <tr key={index}>
                     <td>{detail.name}</td>
                     <td>{detail.info}</td>
                   </tr>
-                ))}
+                ))} */}
 
                 <tr>
                   <td>Nội dung: </td>
                 </tr>
               </table>
               <div className="spec_descrip">
-              {/* dangerouslySetInnerHTML={{ __html: content }} */}
-                <ReadMore >{BookList[0].description}</ReadMore>
+                {/* dangerouslySetInnerHTML={{ __html: content }} */}
+                <ReadMore>{BookList[0].description}</ReadMore>
               </div>
             </div>
           </div>

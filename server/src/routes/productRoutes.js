@@ -6,7 +6,7 @@ const authMiddleware = require("../middlewares/authMiddlewares");
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find({ 'extended_shipping_package.is_self_shipping': false });
-    res.json(products);
+    res.json({success:true,data:products});
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

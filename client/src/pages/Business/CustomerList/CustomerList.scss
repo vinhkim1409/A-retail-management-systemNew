@@ -17,6 +17,7 @@
     align-items: center;
     margin-left: auto;
     margin-right: 2%;
+    margin-bottom: 1%;
   }
   .pages-number,
   .icon-back,
@@ -36,8 +37,12 @@
   .active {
     color: black;
   }
-  .active-tag {
-    background-color: black;
+  .active-tagsendo {
+    background-color: #EE2624;
+    color: white;
+  }
+  .active-tagwebsite {
+    background-color: #0d6efd;
     color: white;
   }
   .list-container {
@@ -50,17 +55,16 @@
     width: 10%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-     text-transform: none;
+    text-transform: none;
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: 550;
-
   }
   .lastname {
     width: 10%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-     text-transform: none;
+    text-transform: none;
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -68,22 +72,30 @@
     width: 10%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-     text-transform: none;
+    text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .address {
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .phone {
-    width: 10%;
+    width: 5%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-     text-transform: none;
+    text-transform: none;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .create-date {
     width: 10%;
     // border: 1px solid lightgray;
-     text-transform: none;
+    text-transform: none;
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -91,7 +103,7 @@
     width: 10%;
     // border: 1px solid lightgray;
     font-family: "Inter", sans-serif;
-     text-transform: none;
+    text-transform: none;
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -104,6 +116,7 @@
   .content-customer {
     color: #475569;
     font-size: 14px;
+    // border: 1px solid gray;
   }
   .order-body {
     cursor: pointer;
@@ -177,7 +190,7 @@
     font-weight: 500;
     border: none;
     cursor: pointer;
-    color: black;
+    
     font-size: 16px;
     font-weight: 500;
   }
@@ -194,11 +207,11 @@
     font-weight: 500;
     border: none;
     cursor: pointer;
-    color: black;
+   
     font-size: 16px;
     font-weight: 500;
   }
- .active-tag {
+  .active-tag {
     background-color: black;
     color: white;
   }

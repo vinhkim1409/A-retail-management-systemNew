@@ -1,18 +1,22 @@
 .AddButton-container {
   display: flex;
-  padding: 2px 10px;
+  padding: 1% 5% 1% 5%;
   justify-content: space-between;
   align-items: center;
-  width: 140px;
-  height: 30px;
   border: none;
-  background-color: #C00000;
+  background-color: #b40404;
   border-radius: 5px;
   color: white;
   font-weight: bold;
   cursor: pointer;
-  .AddButton-container:hover {
-    background-color: #9f0101;    /* is this ok? */
+  white-space: nowrap;
+  
+  .icon{
+    margin-right: 2%;
   }
+}
+.AddButton-container:hover {
+  background-color: #c80404;    
+  box-shadow: 0 4px 8px #c80404;
 }
 

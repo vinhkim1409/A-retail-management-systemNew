@@ -29,62 +29,19 @@ const Checkout = () => {
   }, []);
   const expressDeliveryProvinces = ["TPHCM", "Hà Nội", "Đà Nẵng"];
 
-  // const [customer.resCustomer.address, setUserAddress] = useState([
-  //   {
-  //     id: "0",
-  //     fname: "Hưng",
-  //     lname: "Nguyễn Minh",
-  //     phone: "0123456789",
-  //     province: "TPHCM",
-  //     district: "Quận 1",
-  //     ward: "Phường 1",
-  //     addr: "123 John Doe",
-  //   },
-  //   {
-  //     id: "1",
-  //     fname: "A",
-  //     lname: "Nguyễn Văn",
-  //     phone: "0987654321",
-  //     province: "Hà Nội",
-  //     district: "Quận Hà Đông",
-  //     ward: "Phường 1",
-  //     addr: "100 Albert Einstein",
-  //   },
-  //   {
-  //     id: "2",
-  //     fname: "B",
-  //     lname: "Lê Thị",
-  //     phone: "0123789456",
-  //     province: "Thanh Hóa",
-  //     district: "Huyện Quảng Xương",
-  //     ward: "Xã ABC",
-  //     addr: "456 Alan Turing",
-  //   },
-  // ]);
   const [order, setOrder] = useState([]);
-  //   const order = [
-  //     {
-  //       id: "checkoutBook1",
-  //       name: "Thay đổi cuộc sống với nhân số học",
-  //       image: images.checkoutBook1,
-  //       price: 248000,
-  //       discount: 20,
-  //       count: 1,
-  //     },
-  //     {
-  //       id: "checkoutBook2",
-  //       name: "Hiểu Về Trái Tim (Tái Bản 2023)",
-  //       image: images.checkoutBook2,
-  //       price: 158000,
-  //       discount: 25,
-  //       count: 2,
-  //     },
-  //   ];
 
   const getTotalPrice = (deliveryFee = 0) =>
     getPriceExpr(
       order.reduce((prev, curr) => {
-        return prev + curr.price * (1 - 20 / 100) * curr.quantity;
+        return (
+          prev +
+          (curr.variant > 0
+            ? curr.product.variants[curr.variant - 1].variant_special_price
+            : curr.product.price) *
+            (1 - 20 / 100) *
+            curr.quantity
+        );
       }, deliveryFee)
     );
 
@@ -97,12 +54,12 @@ const Checkout = () => {
 
   useEffect(() => {
     setName(
-      `${customer.resCustomer.address[addressChoice].firstName} ${customer.resCustomer.address[addressChoice].lastName}`
+      `${customer.resCustomer?.address[addressChoice]?.firstName}${customer.resCustomer?.address[addressChoice]?.lastName}`
     );
-    setPhone(customer.resCustomer.address[addressChoice].phoneNumber);
+    setPhone(customer.resCustomer?.address[addressChoice]?.phoneNumber);
     setHasExpress(
       expressDeliveryProvinces.includes(
-        customer.resCustomer.address[addressChoice].province
+        customer.resCustomer?.address[addressChoice]?.province
       )
     );
   }, [addressChoice]);
@@ -120,18 +77,18 @@ const Checkout = () => {
       text: "Ví Momo",
       logo: images.momoLogo,
     },
-    {
-      text: "Ví ZaloPay",
-      logo: images.zalopayLogo,
-    },
-    {
-      text: "ATM / Internet Banking",
-      logo: images.atmLogo,
-    },
-    {
-      text: "Thẻ tín dụng (Visa, Mastercard)",
-      logo: images.creditcardLogo,
-    },
+    // {
+    //   text: "Ví ZaloPay",
+    //   logo: images.zalopayLogo,
+    // },
+    // {
+    //   text: "ATM / Internet Banking",
+    //   logo: images.atmLogo,
+    // },
+    // {
+    //   text: "Thẻ tín dụng (Visa, Mastercard)",
+    //   logo: images.creditcardLogo,
+    // },
     {
       text: "Thanh toán khi nhận hàng (COD)",
       logo: images.codLogo,
@@ -141,57 +98,82 @@ const Checkout = () => {
   const handleOrder = async () => {
     const orderInfo = {
       products: order,
-      address: `${customer.resCustomer.address[addressChoice].detail}, ${customer.resCustomer.address[addressChoice].ward}, ${customer.resCustomer.address[addressChoice].district}, ${customer.resCustomer.address[addressChoice].province}`,
-      statusPayment: false,
+      statusPayment: "Wait Pay",
       totalPrice: Number(getTotalPrice(15000)) * 1000,
       shipMethod: deliveryMethods[deliveryMethod],
       paymentType: paymentMethods[paymentMethod].text,
       shipPrice: "15000",
-      tenantURL: tenantURL
+      tenantURL: tenantURL,
+      buyer_firstName: customer.resCustomer?.address[addressChoice]?.firstName,
+      buyer_lastName: customer.resCustomer?.address[addressChoice]?.lastName,
+      buyer_phoneNumber:
+        customer.resCustomer?.address[addressChoice]?.phoneNumber,
+      buyer_province: customer.resCustomer?.address[addressChoice]?.province,
+      buyer_district: customer.resCustomer?.address[addressChoice]?.district,
+      buyer_ward: customer.resCustomer?.address[addressChoice]?.ward,
+      buyer_address_detail:
+        customer.resCustomer?.address[addressChoice]?.detail,
     };
     if (paymentMethods[paymentMethod].text == "Ví Momo") {
-      const paymentMomo = await axios.post(`${api}payment/payMomo`, orderInfo,config);
-      // if (paymentMomo) {
-      //   window.open(paymentMomo.data.payUrl, "_self");
-      // }
+      const paymentMomo = await axios.post(
+        `${api}payment/payMomo`,
+        orderInfo,
+        config
+      );
+      if (paymentMomo) {
+        window.open(paymentMomo.data.payUrl, "_self");
+      }
       console.log(paymentMomo.data);
+    } else {
+      const createOrder = await axios.post(
+        `${api}order/createOrder`,
+        orderInfo
+      );
+      console.log(createOrder.data);
     }
-    // const createOrder = await axios.post(`${api}order/createOrder`,orderInfo)
-    // console.log(createOrder.data)
   };
 
   return (
     <>
       <div className="Checkout-container">
+        <div className="title">Check Out</div>
         <div className="address-layout">
-          <h1>ĐỊA CHỈ GIAO HÀNG</h1>
+          <h1>Delivery Address</h1>
           <div className="name-phonenumber">
             <div className="name">
-              <label htmlFor="fullName">Họ và tên người nhận</label>
+              <label htmlFor="fullName" className="label">
+                Recipient's full name:
+              </label>
               <input
                 type="text"
                 name="fullName"
                 id="fullName"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                // onChange={(e) => setName(e.target.value)}
+                className="input-info"
               />
             </div>
 
             <div className="phone">
-              <label htmlFor="phone">Số điện thoại</label>
+              <label htmlFor="phone" className="label">
+                Phone Number
+              </label>
               <input
                 type="text"
                 name="phone"
                 id="phone"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                className="input-info"
+                // onChange={(e) => setPhone(e.target.value)}
               />
             </div>
           </div>
 
           <div className="address-button">
             <div className="address">
-              <label htmlFor="address">Địa chỉ nhận hàng</label>
+              <label htmlFor="address" className="label">
+                Delivery address
+              </label>
               <select
                 name="address"
                 id="address"
@@ -200,6 +182,7 @@ const Checkout = () => {
                   setDeliveryMethod(0);
                 }}
                 value={addressChoice}
+                className="input-select"
               >
                 {customer.resCustomer.address.map((address, index) => (
                   <option key={index} value={parseInt(index)}>
@@ -216,50 +199,51 @@ const Checkout = () => {
             </div>
           </div>
         </div>
-
-        <div className="delivery-layout">
-          <h1>PHƯƠNG THỨC VẬN CHUYỂN</h1>
-          <div className="delivery-container">
-            {deliveryMethodTexts.map((option, index) => (
-              <label key={index} className="container-radio">
-                <label htmlFor={`delivery-${index}`}>{option}</label>
-                <input
-                  disabled={!hasExpress && index === 2}
-                  type="radio"
-                  value={index}
-                  name="delivery"
-                  id={`delivery-${index}`}
-                  checked={deliveryMethod === index}
-                  onChange={(e) => {
-                    setDeliveryMethod(parseInt(e.target.value));
-                  }}
-                />
-                <span className="checkmark"></span>
-              </label>
-            ))}
+        <div className="payment-delivery-layout">
+          <div className="delivery-layout">
+            <h1>METHOD OF SHIPPING</h1>
+            <div className="delivery-container">
+              {deliveryMethodTexts.map((option, index) => (
+                <label key={index} className="container-radio">
+                  <label htmlFor={`delivery-${index}`}>{option}</label>
+                  <input
+                    disabled={!hasExpress && index === 2}
+                    type="radio"
+                    value={index}
+                    name="delivery"
+                    id={`delivery-${index}`}
+                    checked={deliveryMethod === index}
+                    onChange={(e) => {
+                      setDeliveryMethod(parseInt(e.target.value));
+                    }}
+                  />
+                  <span className="checkmark"></span>
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="payment-layout">
-          <h1>PHƯƠNG THỨC THANH TOÁN</h1>
-          <div className="payment-container">
-            {paymentMethods.map((method, index) => (
-              <label key={index} className="container-radio">
-                <img src={method.logo} alt="alt" />
-                <label htmlFor={`payment-${index}`}>{method.text}</label>
-                <input
-                  type="radio"
-                  value={index}
-                  name="payment"
-                  id={`payment-${index}`}
-                  checked={paymentMethod === index}
-                  onChange={(e) => {
-                    setPaymentMethod(parseInt(e.target.value));
-                  }}
-                />
-                <span className="checkmark"></span>
-              </label>
-            ))}
+          <div className="payment-layout">
+            <h1>PAYMENT METHODS</h1>
+            <div className="payment-container">
+              {paymentMethods.map((method, index) => (
+                <label key={index} className="container-radio">
+                  <img src={method.logo} alt="alt" />
+                  <label htmlFor={`payment-${index}`}>{method.text}</label>
+                  <input
+                    type="radio"
+                    value={index}
+                    name="payment"
+                    id={`payment-${index}`}
+                    checked={paymentMethod === index}
+                    onChange={(e) => {
+                      setPaymentMethod(parseInt(e.target.value));
+                    }}
+                  />
+                  <span className="checkmark"></span>
+                </label>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -301,24 +285,43 @@ const Checkout = () => {
                   <td className="image-check">
                     <img
                       className="image-detail-check"
-                      src={item.product.picture[0]}
+                      src={item.product.avatar.picture_url}
                       alt="Bookimage"
                     />
                     <div className="text-image-check">{item.product.name}</div>
                   </td>
                   <td className="price-check">
                     <div className="price-final">
-                      {getPriceExpr(item.price)}
+                      {getPriceExpr(
+                        item.variant > 0
+                          ? item.product.variants[item.variant - 1]
+                              .variant_price
+                          : item.product.price
+                      )}
                     </div>
                     <div className="price-initial">
-                      {getPriceExpr(item.price, 20)}
+                      {getPriceExpr(
+                        item.variant > 0
+                          ? item.product.variants[item.variant - 1]
+                              .variant_special_price
+                          : item.product.price,
+                        20
+                      )}
                     </div>
                   </td>
                   <td className="count-check">
                     <div>{item.quantity}</div>
                   </td>
                   <td className="total-check">
-                    <div>{getPriceExpr(item.price * item.quantity, 20)}</div>
+                    <div>
+                      {getPriceExpr(
+                        item.variant > 0
+                          ? item.product.variants[item.variant - 1]
+                              .variant_special_price
+                          : item.product.price * item.quantity,
+                        20
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -345,17 +348,17 @@ const Checkout = () => {
               <div className="address-confirm">
                 <p>Địa chỉ nhận hàng:</p>
                 <p className="text-confirm">{`${
-                  customer.resCustomer.address[addressChoice].detail
+                  customer.resCustomer?.address[addressChoice]?.detail
                 }, ${
-                  customer.resCustomer.address[addressChoice].ward.split(
+                  customer.resCustomer?.address[addressChoice]?.ward.split(
                     "//"
                   )[0]
                 }, ${
-                  customer.resCustomer.address[addressChoice].district.split(
+                  customer.resCustomer?.address[addressChoice]?.district.split(
                     "//"
                   )[0]
                 }, ${
-                  customer.resCustomer.address[addressChoice].province.split(
+                  customer.resCustomer?.address[addressChoice]?.province.split(
                     "//"
                   )[0]
                 }`}</p>

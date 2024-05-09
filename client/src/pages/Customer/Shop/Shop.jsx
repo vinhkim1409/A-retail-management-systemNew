@@ -66,23 +66,15 @@ function Shop() {
   // },[typ])
   const getProduct = async () => {
     const products = await axios.get(`${api}product`);
-    setProductTable(products.data);
-    setAllProducts(products.data);
+    console.log(products.data.data)
+    setProductTable(products.data.data);
+    setAllProducts(products.data.data);
   };
 
   const [category, setCategory] = useState([]);
   const [categoryStatus, setCategoryStatus] = useState("All");
   const [sort, setSort] = useState(0);
   const [categoryStart, setCategoryStart] = useState(0);
-  const nextSlide = () => {
-    const newIndex = Math.min(categoryStart + 5, category.length - 5);
-    setCategoryStart(newIndex);
-  };
-
-  const prevSlide = () => {
-    const newIndex = Math.max(categoryStart - 5, 0);
-    setCategoryStart(newIndex);
-  };
   const getCategory = async () => {
     const category = await axios.get(`${api}category`);
     setCategory(category.data);

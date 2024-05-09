@@ -12,7 +12,7 @@ const staffController = {
   },
   addNewStaff: async (req, res) => {
     try {
-      const { firstname, lastname, email, phone, avatar, position } = req.body;
+      const { firstname, lastname, email, phoneNumber, avatar, position } = req.body;
       
       const staffExist = await Staff.findOne({tenantID:req.tenantID, email:email });
       if (staffExist) {

@@ -34,6 +34,7 @@ const StyledTable = styled(Table)(() => ({
 }));
 
 const paidTag = <div className="paidTag">Paid</div>;
+const wayPaidTag = <div className="wayPaidTag">Wait Pay</div>;
 
 const Order = () => {
   const [activeTab, setActiveTab] = useState("All");
@@ -51,16 +52,27 @@ const Order = () => {
     },
   };
   const handleTabClick = (event) => {
-    setActiveTab(event.target.value);
+    if (event.target.value == "All") {
+      setActiveTab(event.target.value);
+      setOrderList(initialOrderList);
+    } else {
+      setActiveTab(event.target.value);
+      setOrderList(
+        initialOrderList.filter(
+          (order) => order.statusPayment == event.target.value
+        )
+      );
+    }
   };
-
+  const [initialOrderList, setInitialOrderList] = useState([]);
   const [orderList, setOrderList] = useState([]);
 
   const totalPages = Math.ceil(orderList.length / 10);
   const getOrder = async () => {
-    const orders = await axois.get(`${api}order`,config);
+    const orders = await axois.get(`${api}order`, config);
     console.log(orders.data);
     setOrderList(orders.data.data);
+    setInitialOrderList(orders.data.data);
   };
   useEffect(() => {
     getOrder();
@@ -89,10 +101,10 @@ const Order = () => {
             className="select-status-box"
           >
             <option value="All">All</option>
-            <option value="Wait Pay">Wait Pay</option>
-            <option value="Transport">Transport</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Cancelled">Cancelled</option>
+            <option value="Unpaid">Wait Pay</option>
+            {/* <option value="Transport">Transport</option> */}
+            <option value="Paid">Paid</option>
+            {/* <option value="Cancelled">Cancelled</option> */}
           </select>
         </div>
         <Box
@@ -108,7 +120,7 @@ const Order = () => {
                   backgroundColor: "#F5F5F5",
                 }}
               >
-                <TableCell align="left" className="order-id lable-order">
+                <TableCell align="left" className="order-id lable-order" >
                   Order ID
                 </TableCell>
                 <TableCell align="left" className="customer lable-order">
@@ -140,23 +152,30 @@ const Order = () => {
                       }}
                       className="order-body"
                     >
-                      <TableCell align="left" className="order-id blue">
-                        #DU00017
+                      <TableCell
+                        align="left"
+                        className="order-id blue"
+                        sx={{ maxWidth: 173,minWidth: 140 }}
+                      >
+                        {item._id}
                       </TableCell>
                       <TableCell
                         align="left"
                         className="customer content-order"
+                        sx={{ maxWidth: 140 }}
                       >
-                        Kim Xuan Vinh
+                        {item.customerID?.firstName}
+                        {item.customerID?.lastName}
                       </TableCell>
                       <TableCell align="left" className="date content-order">
                         {moment(item.createdAt).format("D MMM, YYYY h:mm A")}
                       </TableCell>
                       <TableCell align="left" className="payment">
-                        {item.statusPayment === true ? "Unpiad" : paidTag}
+                        {item.statusPayment === "Unpaid" ? wayPaidTag : paidTag}
                       </TableCell>
                       <TableCell align="left" className="total content-order">
                         {item.totalPrice}
+                        {""} đ
                       </TableCell>
                       <TableCell align="left" className="order-status">
                         In Shipped

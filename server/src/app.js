@@ -7,7 +7,11 @@ const axios = require("axios"); // Thêm dòng này để import axios
 const fs = require("fs"); // Thêm dòng này để import fs
 
 dotenv.config();
-
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 // Hàm đăng nhập và lưu token
 async function loginAndSaveToken() {
   const apiUrl = 'https://open.sendo.vn/login';
@@ -53,7 +57,7 @@ function startServer() {
   const PORT = 3001;
   app.use(cors());
   const MONGODB_URI =
-    "mongodb+srv://admin:admin123@database.vaoigd5.mongodb.net/";
+    "mongodb+srv://adminsystem:admin123456@database.a0scdtm.mongodb.net/";
 
   // // Kết nối với MongoDB
   mongoose.connect(MONGODB_URI, {
@@ -76,6 +80,7 @@ function startServer() {
   const customerRoutes = require("./routes/customerRoutes");
   const paymentRoutes = require("./routes/paymentRoutes");
   const attributeRoutes = require("./routes/attributeRoutes");
+  const dashboardRoutes = require("./routes/dashboardRoutes")
 
   app.use("/product", productRoutes);
   app.use("/staff", staffRoutes);
@@ -87,6 +92,7 @@ function startServer() {
   app.use("/payment", paymentRoutes);
   app.use("/customer", customerRoutes);
   app.use("/attributes", attributeRoutes);
+  app.use("/dashboard", dashboardRoutes);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
