@@ -175,69 +175,73 @@ module.exports = fetchDataFromAPI;
 //       "picture_url": "https://thuocgiaphuc.vn/Uploads/ImgSP/Full6-DermaForte.jpg"
 //     }
 //   ],
-//   "attributes": [
-//     {
-//       "attribute_id": 1328,
-//       "attribute_is_custom": false,
-//       "attribute_is_checkout": true,
-//       "attribute_values": [
-//         {
-//           "id": 20714,
-//           "value": "Da khô",
-//           "attribute_img": "string",
-//           "is_selected": false,
-//           "is_custom": false
-//         }
-//       ]
-//     }
-//   ],
+  // "attributes": [
+  //   {
+  //     "attribute_id": 1328,
+  //     "attribute_is_custom": false,
+  //     "attribute_is_checkout": true,
+  //     "attribute_values": [
+  //       {
+  //         "id": 20714,
+  //         "value": "Da khô",
+  //         "attribute_img": "string",
+  //         "is_selected": false,
+  //         "is_custom": false
+  //       }
+  //     ]
+  //   }
+  // ],
 //   "promotion_from_date": "2024-05-05T02:51:38.858Z",
 //   "promotion_to_date": "2025-06-18T02:51:38.858Z",
 //   "is_promotion": true,
 //   "extended_shipping_package": {
 //     "is_using_instant": false,
-//     "is_using_in_day": false,
-//     "is_self_shipping": false,
-//     "is_using_standard": true
+    // "is_using_in_day": false,
+    // "is_self_shipping": false,
+    // "is_using_standard": true
 //   },
 //   "is_config_variant": true,
-//   "variants": [
-//     {
-//       "variant_attributes": [
-//         {
-//           "attribute_id": 328,
-//           "option_id": 1359
-//         }
-//       ],
-//       "variant_sku": "Whoo",
-//       "variant_price": 50000,
-//       "variant_promotion_start_date": "2024-05-05T02:51:38.858Z",
-//       "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
-//       "variant_special_price": 49000,
-//       "variant_quantity": 10
-//     },
-//     {
-//       "variant_attributes": [
-//         {
-//           "attribute_id": 328,
-//           "option_id": 23557
-//         }
-//       ],
-//       "variant_sku": "Mac",
-//       "variant_price": 60000,
-//       "variant_promotion_start_date": "2024-05-05T02:51:38.858Z",
-//       "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
-//       "variant_special_price": 55000,
-//       "variant_quantity": 10
-//     }
-//   ],
+  // "variants": [
+  //   {
+  //     "variant_attributes": [
+  //       {
+  //         "attribute_id": 328,
+  //         "option_id": 1359
+  //       }
+  //     ],
+  //     "variant_sku": "Whoo",
+  //     "variant_price": 50000,
+  //     "variant_promotion_start_date": "2024-05-05T02:51:38.858Z",
+  //     "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
+  //     "variant_special_price": 49000,
+  //     "variant_quantity": 10
+  //   },
+    // {
+      // "variant_attributes": [
+      //   {
+      //     "attribute_id": 328,
+      //     "option_id": 23557
+      //   },
+      //   {
+      //     "attribute_id": 328,
+      //     "option_id": 456
+      //   }
+      // ],
+    //   "variant_sku": "Mac",
+    //   "variant_price": 60000,
+    //   "variant_promotion_start_date": "2024-05-05T02:51:38.858Z",
+    //   "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
+    //   "variant_special_price": 55000,
+    //   "variant_quantity": 10
+    // }
+  // ],
 //   "special_price": 49000,
-//   "voucher": {
-//     "product_type": 1,
-//     "start_date": "2024-05-04T02:51:38.858Z",
-//     "end_date": "2025-06-18T02:51:38.858Z",
-//     "is_check_date": true
-//   }
+  // "voucher": {
+  //   "product_type": 1,
+  //   "start_date": "2024-05-04T02:51:38.858Z",
+  //   "end_date": "2025-06-18T02:51:38.858Z",
+  //   "is_check_date": true
+  // }
 // }'
 
 
