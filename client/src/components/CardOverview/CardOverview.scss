@@ -1,0 +1,68 @@
+.CardOverview-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2%;
+  margin-top: 3%;
+  .title-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2%;
+  }
+  .label-card {
+    font-size: 18px;
+    font-weight: 550;
+    color: #64748b;
+  }
+  .number-card {
+    font-size: 32px;
+    font-weight: 700;
+  }
+  .info-card {
+    display: flex;
+    align-items: end;
+    margin-bottom: 2%;
+  }
+  .percent {
+    margin-bottom: 2%;
+    margin-left: 3%;
+  }
+  .increas {
+    margin-bottom: 2%;
+    margin-left: auto;
+  }
+  .action {
+    font-weight: 550;
+    color: #4e3ccc;
+    cursor: pointer;
+  }
+  .icon {
+    color: #0d6efd;
+    width: 25px;
+    height: auto;
+  }
+  .customer {
+    width: 30%;
+    border: 1px solid #ddd;
+    padding: 1% 2% 1% 2%;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .order {
+    width: 30%;
+    border: 1px solid #ddd;
+    padding: 1% 2% 1% 2%;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .num-product {
+    width: 30%;
+    border: 1px solid #ddd;
+    padding: 1% 2% 1% 2%;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
