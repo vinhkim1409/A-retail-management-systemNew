@@ -30,36 +30,86 @@ import categories_level1 from "../../Data-Industry/categories_level1";
 import categories_level2 from "../../Data-Industry/categories_level2";
 import categories_level3 from "../../Data-Industry/categories_level3";
 
+
 const styles = {
   backgroundColor: "white",
 };
 function AddProduct() {
-  const navigate = useNavigate();
-  const [detailInfos, setDetailInfos] = useState([
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-  ]);
+  useEffect(() => {
+    // Giả sử bạn có một cơ chế để xác định các biến thể ban đầu dựa trên sản phẩm, hoặc chỉ đơn giản là khởi tạo rỗng
+    setVariants([{ variant_attributes: [], variant_sku: "", variant_price: 0 }]);
+  }, []);
 
+  const navigate = useNavigate();
+
+  const labels = {
+    1: 'Cái',
+    2: 'Bộ',
+    3: 'Chiếc',
+    4: 'Đôi',
+    5: 'Hộp',
+    6: 'Cuốn',
+    7: 'Chai',
+    8: 'Thùng'
+  };
+  const [errorName, setErrorName] = useState(false);
+  const [img, setImg] = useState([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [productCode, setProductCode] = useState('');
+  const [iPrice, setIPrice] = useState('');
+  const [pPrice, setPPrice] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [weight, setWeight] = useState('');
+  const [height, setHeight] = useState('');
+  const [length, setLength] = useState('');
+  const [width, setWidth] = useState('');
+  const [unit, setUnit] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [variants, setVariants] = useState([]);
 
-  const handleChangeDetailInfo = (event, index) => {
-    const newArray = [...detailInfos];
-    newArray[index] = event.target.value;
-    setDetailInfos(newArray);
+
+
+  const handleChangeUnit = (event) => {
+    const value = event.target.value;
+    setUnit(value);
   };
-  const [img, setImg] = useState([]);
-  const [errorName, setErrorName] = useState(false);
-  // const [inds, setInds] = useState("");
-  const [typeSale, setTypeSale] = useState(0);
-  const [saleInfor, setSaleInfor] = useState([]);
+
+  const handleVariantChange = (index, field, value) => {
+    const newVariants = [...variants];
+    if (!newVariants[index]) {
+      newVariants[index] = {
+        variant_attributes: [],
+        variant_sku: "",
+        variant_price: 0,
+        variant_promotion_start_date: "",
+        variant_promotion_end_date: "",
+        variant_special_price: 0,
+        variant_quantity: 0
+      };
+    }
+
+    // Xử lý các trường thông thường
+    newVariants[index][field] = value;
+
+    // Cập nhật variant_attributes dựa trên các lựa chọn thuộc tính
+    if (field === 'variant_attributes') {
+      // Giả sử value là một object chứa attribute_id và option_id
+      const attributeExists = newVariants[index].variant_attributes.some(attr => attr.attribute_id === value.attribute_id);
+      if (!attributeExists) {
+        newVariants[index].variant_attributes.push(value);
+      } else {
+        // Cập nhật option_id nếu attribute_id đã tồn tại
+        const attributeIndex = newVariants[index].variant_attributes.findIndex(attr => attr.attribute_id === value.attribute_id);
+        newVariants[index].variant_attributes[attributeIndex].option_id = value.option_id;
+      }
+    }
+
+    setVariants(newVariants);
+  };
+
+
 
   const [selectedIndustry1, setSelectedIndustry1] = useState('');
   const [selectedIndustry2, setSelectedIndustry2] = useState('');
@@ -69,37 +119,65 @@ function AddProduct() {
   const [attributeData, setAttributeData] = useState([]);
   const [selectedAttributes, setSelectedAttributes] = useState([]);
 
+  console.log("Selected Attributes", selectedAttributes)
+  console.log("Attribute Data", attributeData)
+
   const handleAttributeChange = (event, index) => {
-    const newSelectedAttributes = [...selectedAttributes];
-    if (attributeData[index].control_type === "CheckBox" && Array.isArray(event.target.value)) {
-      newSelectedAttributes[index] = event.target.value;
-    } else {
-      newSelectedAttributes[index] = event.target.value;
-    }
+    const attribute = attributeData[index];
+    const newSelectedAttributes = { ...selectedAttributes };
+
+    const selectedOptionIds = Array.isArray(event.target.value)
+      ? event.target.value.map(v => parseInt(v))
+      : [parseInt(event.target.value)];
+
+    // Cập nhật selectedAttributes
+    newSelectedAttributes[attribute.id] = {
+      attribute_id: attribute.id,
+      is_checkout: attribute.is_checkout === "true",
+      selectedOptionIds: selectedOptionIds
+    };
+
     setSelectedAttributes(newSelectedAttributes);
+
+    // Cập nhật variants để thêm variant_attributes
+    selectedOptionIds.forEach(optionId => {
+      updateVariantAttributes(attribute.id, optionId);
+    });
   };
 
-  const generateAttributeCombinations = () => {
-    // This will create a Cartesian product of all attribute values
-    const filterAttributes = attributeData.filter(attr => attr.is_checkout === "true");
-    const attributeCombos = filterAttributes.reduce((acc, attribute, idx) => {
-      const newCombinations = [];
-      const values = selectedAttributes[idx] || [];
-      if (acc.length === 0) {
-        values.forEach(value => {
-          newCombinations.push([value]);
-        });
+  const updateVariantAttributes = (attributeId, optionId) => {
+    const newVariants = [...variants];
+    newVariants.forEach(variant => {
+      const attributeIndex = variant.variant_attributes.findIndex(attr => attr.attribute_id === attributeId);
+      if (attributeIndex >= 0) {
+        // Cập nhật option_id cho thuộc tính hiện có
+        variant.variant_attributes[attributeIndex].option_id = optionId;
       } else {
-        acc.forEach(combo => {
-          values.forEach(value => {
-            newCombinations.push([...combo, value]);
-          });
-        });
+        // Thêm thuộc tính mới nếu chưa tồn tại
+        variant.variant_attributes.push({ attribute_id: attributeId, option_id: optionId });
       }
-      return newCombinations;
-    }, []);
-    return attributeCombos;
+    });
+
+    setVariants(newVariants);
   };
+
+
+
+  const generateAttributeCombinations = () => {
+    // Duyệt qua mỗi thuộc tính được chọn, tạo ra các kết hợp dựa trên giá trị đã chọn
+    const combinations = attributeData.filter(attr => attr.is_checkout === "true" && selectedAttributes[attr.id]).map(attr => {
+      return selectedAttributes[attr.id].selectedOptionIds.map(optionId => {
+        const optionDetail = attr.attribute_values.find(val => val.id === optionId);
+        return optionDetail ? optionDetail.value : 'N/A';
+      });
+    });
+
+    // Tạo các kết hợp sản phẩm dựa trên các thuộc tính đã chọn
+    return combinations.length ? combinations.reduce((acc, next) => {
+      return acc.flatMap(a => next.map(n => [...a, n]));
+    }, [[]]) : [];
+  };
+
 
   const handleChangeIndustry1 = (event) => {
     setSelectedIndustry1(event.target.value);
@@ -146,23 +224,112 @@ function AddProduct() {
 
   const attributeCombinations = generateAttributeCombinations();
 
-  const handleAddProduct = () => {
-    const productData = {
-      name: name,
-      description: description,
-      // Thêm các trường dữ liệu khác nếu cần thiết
+  console.log("attribute Combinations", attributeCombinations)
+
+  const getAllCombinations = (attributes) => {
+    const generateCombinations = (currentAttributes) => {
+      if (currentAttributes.length === 0) return [[]];
+      const [first, ...rest] = currentAttributes;
+      const remainingCombinations = generateCombinations(rest);
+      return first.options.flatMap(option => {
+        return remainingCombinations.map(combination => {
+          return [{ attribute_id: first.attribute_id, option_id: option }, ...combination];
+        });
+      });
     };
 
-    axios.post("/api/products/add", productData)
+    return generateCombinations(attributes);
+  };
+
+  useEffect(() => {
+    if (attributeData.length > 0 && selectedAttributes) {
+      const attributesToCombine = attributeData
+        .filter(attr => attr.is_checkout === "true" && selectedAttributes[attr.id])
+        .map(attr => {
+          return {
+            attribute_id: attr.id,
+            options: selectedAttributes[attr.id].selectedOptionIds
+          };
+        });
+      const variantCombinations = getAllCombinations(attributesToCombine);
+      setVariants(variantCombinations.map(attrs => ({ variant_attributes: attrs, variant_sku: "", variant_price: 0 })));
+    }
+  }, [attributeData, selectedAttributes]);
+
+
+  const handleAddProduct = () => {
+    const attributes = attributeData.map(attr => {
+      return {
+        attribute_id: attr.id,
+        attribute_is_custom: false,
+        attribute_is_checkout: attr.is_checkout === "true",
+        attribute_values: selectedAttributes[attr.id] ? selectedAttributes[attr.id].selectedOptionIds.map(valueId => {
+          const valueInfo = attr.attribute_values.find(value => value.id === valueId);
+          return {
+            id: valueId,
+            value: valueInfo ? valueInfo.value : "",
+            attribute_img: "string",
+            is_selected: false,
+            is_custom: false
+          };
+        }) : []
+      };
+    });
+
+    const hasVariants = variants.some(variant => variant.variant_attributes.length > 0);
+
+    const productData = {
+      "id": 0,
+      "name": name,
+      "sku": productCode,
+      "description": description,
+      "cat_4_id": selectedIndustry3,
+      "price": iPrice,
+      "special_price": pPrice,
+      "stock_availability": true,
+      "stock_quantity": quantity,
+      "weight": weight,
+      "height": height,
+      "length": length,
+      "width": width,
+      "unit_id": unit,
+      "avatar": {
+        "picture_url": "https://bizweb.dktcdn.net/100/287/440/products/ao-thun-nam-form-rong-tay-lo-mau-den-18.jpg?v=1618754798253"
+      },
+      "pictures": [
+        {
+          "picture_url": "string"
+        }
+      ],
+      "is_promotion": true,
+      "promotion_from_date": fromDate,
+      "promotion_to_date": toDate,
+      "extended_shipping_package": {
+        "is_using_instant": false,
+        "is_using_in_day": false,
+        "is_self_shipping": false,
+        "is_using_standard": true
+      },
+      "attributes": attributes,
+      "is_config_variant": hasVariants,
+      "variants": variants,
+      "voucher": {
+        "product_type": 1,
+        "is_check_date": false,
+      }
+    };
+
+    console.log('productData', productData)
+
+    axios.post("https://localhost:3001/product/add", productData)
       .then(response => {
         console.log("Product added successfully:", response.data);
-        // Sau khi thêm thành công, bạn có thể chuyển hướng hoặc thực hiện các hành động khác ở đây
-        navigate('/products'); // Ví dụ: chuyển hướng đến trang sản phẩm
       })
       .catch(error => {
         console.error("Error adding product:", error);
       });
   };
+
 
 
   return (
@@ -202,7 +369,7 @@ function AddProduct() {
                         size="small"
                         style={styles}
                         sx={{ boxShadow: 3 }}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => setProductCode(e.target.value)}
                         error={errorName}
                       />
                       <FormHelperText error={errorName}>
@@ -304,7 +471,7 @@ function AddProduct() {
                       htmlFor="title"
                       style={{ fontWeight: 600, color: "gray" }}
                     >
-                      Decsciption
+                      Description
                     </InputLabel>
                     <OutlinedInput
                       multiline
@@ -316,9 +483,194 @@ function AddProduct() {
                   </Stack>
                 </Grid>
               </Grid>
+
+              <Grid container item xs={12}>
+                <Grid item xs={3.3}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="title" style={{ fontWeight: 600, color: "gray" }}>
+                      Initial Price
+                    </InputLabel>
+                    <OutlinedInput
+                      size="small"
+                      style={styles}
+                      sx={{ boxShadow: 3 }}
+                      onChange={(e) => setIPrice(e.target.value)}
+                      error={errorName}
+                    />
+                    <FormHelperText error={errorName}>
+                      {errorName ? "Please enter a name of product" : ""}
+                    </FormHelperText>
+                  </Stack>
+                </Grid>
+                <Grid xs={3.3} sx={{ marginLeft: 10 }}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="title" style={{ fontWeight: 600, color: "gray" }}>
+                      Promotion Price
+                    </InputLabel>
+                    <OutlinedInput
+                      size="small"
+                      style={styles}
+                      sx={{ boxShadow: 3 }}
+                      onChange={(e) => setPPrice(e.target.value)}
+                      error={errorName}
+                    />
+                    <FormHelperText error={errorName}>
+                      {errorName ? "Please enter a name of product" : ""}
+                    </FormHelperText>
+                  </Stack>
+                </Grid>
+              </Grid>
+
+              <Grid container item xs={12}>
+                <Grid xs={3.3}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="title" style={{ fontWeight: 600, color: "gray" }}>
+                      Promotion From Date
+                    </InputLabel>
+                    <OutlinedInput
+                      type="date"
+                      size="small"
+                      style={styles}
+                      sx={{ boxShadow: 3 }}
+                      value={fromDate}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    />
+                  </Stack>
+                </Grid>
+                <Grid xs={3.3} sx={{ marginLeft: 10 }}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="title" style={{ fontWeight: 600, color: "gray" }}>
+                      Promotion To Date
+                    </InputLabel>
+                    <OutlinedInput
+                      type="date"
+                      size="small"
+                      style={styles}
+                      sx={{ boxShadow: 3 }}
+                      value={toDate}
+                      onChange={(e) => setToDate(e.target.value)}
+                    />
+                  </Stack>
+                </Grid>
+              </Grid>
+
+              <Grid container item xs={12}>
+                <Grid item xs={3.3}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="title" style={{ fontWeight: 600, color: "gray" }}>
+                      Quantity
+                    </InputLabel>
+                    <OutlinedInput
+                      size="small"
+                      style={styles}
+                      sx={{ boxShadow: 3 }}
+                      onChange={(e) => setQuantity(e.target.value)}
+                      error={errorName}
+                    />
+                    <FormHelperText error={errorName}>
+                      {errorName ? "Please enter a name of product" : ""}
+                    </FormHelperText>
+                  </Stack>
+                </Grid>
+                <Grid xs={3.3} sx={{ marginLeft: 10 }}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="title" style={{ fontWeight: 600, color: "gray" }}>
+                      Weight
+                    </InputLabel>
+                    <OutlinedInput
+                      size="small"
+                      style={styles}
+                      sx={{ boxShadow: 3 }}
+                      onChange={(e) => setWeight(e.target.value)}
+                      error={errorName}
+                    />
+                    <FormHelperText error={errorName}>
+                      {errorName ? "Please enter a name of product" : ""}
+                    </FormHelperText>
+                  </Stack>
+                </Grid>
+                <Grid xs={3.3} sx={{ marginLeft: 10 }}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="unit" style={{ fontWeight: 600, color: 'gray' }}>
+                      Unit
+                    </InputLabel>
+                    <Select
+                      value={unit}
+                      onChange={handleChangeUnit}
+                      label="Unit"
+                      size="small"
+                      style={{ width: '100%' }}
+                      sx={{ boxShadow: 3 }}
+                      displayEmpty
+                    >
+                      {Object.keys(labels).map(key => (
+                        <MenuItem key={key} value={key}>
+                          {labels[key]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Stack>
+                </Grid>
+              </Grid>
+
+              <Grid container item xs={12}>
+                <Grid item xs={3.3}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="title" style={{ fontWeight: 600, color: "gray" }}>
+                      Height
+                    </InputLabel>
+                    <OutlinedInput
+                      size="small"
+                      style={styles}
+                      sx={{ boxShadow: 3 }}
+                      onChange={(e) => setHeight(e.target.value)}
+                      error={errorName}
+                    />
+                    <FormHelperText error={errorName}>
+                      {errorName ? "Please enter a name of product" : ""}
+                    </FormHelperText>
+                  </Stack>
+                </Grid>
+                <Grid xs={3.3} sx={{ marginLeft: 10 }}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="title" style={{ fontWeight: 600, color: "gray" }}>
+                      Length
+                    </InputLabel>
+                    <OutlinedInput
+                      size="small"
+                      style={styles}
+                      sx={{ boxShadow: 3 }}
+                      onChange={(e) => setLength(e.target.value)}
+                      error={errorName}
+                    />
+                    <FormHelperText error={errorName}>
+                      {errorName ? "Please enter a name of product" : ""}
+                    </FormHelperText>
+                  </Stack>
+                </Grid>
+                <Grid xs={3.3} sx={{ marginLeft: 10 }}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="title" style={{ fontWeight: 600, color: "gray" }}>
+                      Width
+                    </InputLabel>
+                    <OutlinedInput
+                      size="small"
+                      style={styles}
+                      sx={{ boxShadow: 3 }}
+                      onChange={(e) => setWidth(e.target.value)}
+                      error={errorName}
+                    />
+                    <FormHelperText error={errorName}>
+                      {errorName ? "Please enter a name of product" : ""}
+                    </FormHelperText>
+                  </Stack>
+                </Grid>
+              </Grid>
+
             </Grid>
           </Paper>
         </div>
+
 
         <div className="detail" style={{ display: 'flex', flexWrap: 'wrap' }}>
           <Paper style={{ padding: "3% 3% 3% 3%", flexGrow: 1 }}>
@@ -326,62 +678,31 @@ function AddProduct() {
             <Grid container spacing={4}>
               {attributeData.map((attribute, index) => (
                 attribute.is_checkout === "false" && (
-                  <Grid item xs={4} key={index}>
-                    <>
-                      {attribute.control_type === "ComboBox" ? (
-                        <Stack spacing={1}>
-                          <InputLabel htmlFor={`attribute-${index}`} className="detail-title">
-                            {attribute.name}
-                          </InputLabel>
-                          <Select
-                            id={`attribute-${index}`}
-                            value={selectedAttributes[index] || ''}
-                            onChange={(event) => handleAttributeChange(event, index)}
-                            sx={{ minWidth: 120 }}
-                          >
-                            {attribute.attribute_values.map((value) => (
-                              <MenuItem key={value.id} value={value.value}>
-                                {value.value}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </Stack>
-                      ) : attribute.control_type === "CheckBox" ? (
-                        <Stack spacing={1}>
-                          <InputLabel htmlFor={`attribute-${index}`} className="detail-title">
-                            {attribute.name}
-                          </InputLabel>
-                          <Select
-                            id={`attribute-${index}`}
-                            multiple
-                            value={selectedAttributes[index] || []}
-                            onChange={(event) => handleAttributeChange(event, index)}
-                            renderValue={(selected) => (
-                              Array.isArray(selected) ? selected.join(', ') : ''
+                  <Grid item xs={4} key={attribute.id}>
+                    <Stack spacing={1}>
+                      <InputLabel htmlFor={`attribute-${attribute.id}`}>
+                        {attribute.name}
+                      </InputLabel>
+                      <Select
+                        multiple={attribute.control_type === "CheckBox"}
+                        value={selectedAttributes[attribute.id]?.selectedOptionIds || []}
+                        onChange={(event) => handleAttributeChange(event, index)}
+                        renderValue={selected => selected.map(id => attribute.attribute_values.find(val => val.id === id).value).join(', ')}
+                      >
+                        {attribute.attribute_values.map(option => (
+                          <MenuItem key={option.id} value={option.id}>
+                            {attribute.control_type === "CheckBox" && (
+                              <Checkbox checked={selectedAttributes[attribute.id]?.selectedOptionIds.includes(option.id) || false} />
                             )}
-                            sx={{ minWidth: 120 }}
-                          >
-                            {attribute.attribute_values.map((value) => (
-                              <MenuItem key={value.id} value={value.value}>
-                                <Checkbox checked={selectedAttributes[index]?.includes(value.value)} />
-                                <ListItemText primary={value.value} />
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </Stack>
-                      ) : (
-                        <TextField
-                          id={`attribute-${index}`}
-                          label={attribute.name}
-                          value={selectedAttributes[index] || ''}
-                          onChange={(event) => handleAttributeChange(event, index)}
-                          fullWidth
-                        />
-                      )}
-                    </>
+                            <ListItemText primary={option.value} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Stack>
                   </Grid>
                 )
               ))}
+
             </Grid>
           </Paper>
         </div>
@@ -392,59 +713,27 @@ function AddProduct() {
             <Grid container spacing={4}>
               {attributeData.map((attribute, index) => (
                 attribute.is_checkout === "true" && (
-                  <Grid item xs={4} key={index}>
-                    <>
-                      {attribute.control_type === "ComboBox" ? (
-                        <Stack spacing={1}>
-                          <InputLabel htmlFor={`attribute-${index}`} className="detail-title">
-                            {attribute.name}
-                          </InputLabel>
-                          <Select
-                            id={`attribute-${index}`}
-                            value={selectedAttributes[index] || ''}
-                            onChange={(event) => handleAttributeChange(event, index)}
-                            sx={{ minWidth: 120 }}
-                          >
-                            {attribute.attribute_values.map((value) => (
-                              <MenuItem key={value.id} value={value.value}>
-                                {value.value}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </Stack>
-                      ) : attribute.control_type === "CheckBox" ? (
-                        <Stack spacing={1}>
-                          <InputLabel htmlFor={`attribute-${index}`} className="detail-title">
-                            {attribute.name}
-                          </InputLabel>
-                          <Select
-                            id={`attribute-${index}`}
-                            multiple
-                            value={selectedAttributes[index] || []}
-                            onChange={(event) => handleAttributeChange(event, index)}
-                            renderValue={(selected) => (
-                              Array.isArray(selected) ? selected.join(', ') : ''
+                  <Grid item xs={4} key={attribute.id}>
+                    <Stack spacing={1}>
+                      <InputLabel htmlFor={`attribute-${attribute.id}`}>
+                        {attribute.name}
+                      </InputLabel>
+                      <Select
+                        multiple={attribute.control_type === "CheckBox"}
+                        value={selectedAttributes[attribute.id]?.selectedOptionIds || []}
+                        onChange={(event) => handleAttributeChange(event, index)}
+                        renderValue={selected => selected.map(id => attribute.attribute_values.find(val => val.id === id).value).join(', ')}
+                      >
+                        {attribute.attribute_values.map(option => (
+                          <MenuItem key={option.id} value={option.id}>
+                            {attribute.control_type === "CheckBox" && (
+                              <Checkbox checked={selectedAttributes[attribute.id]?.selectedOptionIds.includes(option.id) || false} />
                             )}
-                            sx={{ minWidth: 120 }}
-                          >
-                            {attribute.attribute_values.map((value) => (
-                              <MenuItem key={value.id} value={value.value}>
-                                <Checkbox checked={selectedAttributes[index]?.includes(value.value)} />
-                                <ListItemText primary={value.value} />
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </Stack>
-                      ) : (
-                        <TextField
-                          id={`attribute-${index}`}
-                          label={attribute.name}
-                          value={selectedAttributes[index] || ''}
-                          onChange={(event) => handleAttributeChange(event, index)}
-                          fullWidth
-                        />
-                      )}
-                    </>
+                            <ListItemText primary={option.value} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Stack>
                   </Grid>
                 )
               ))}
@@ -468,27 +757,29 @@ function AddProduct() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {attributeCombinations.map((combo, idx) => (
+              {generateAttributeCombinations().map((combo, idx) => (
                 <TableRow key={idx}>
                   {combo.map((value, valueIdx) => (
                     <TableCell key={valueIdx}>{value}</TableCell>
                   ))}
-                  <TableCell><TextField type="number" /></TableCell>
-                  <TableCell><TextField type="number" /></TableCell>
-                  <TableCell><TextField type="date" /></TableCell>
-                  <TableCell><TextField type="date" /></TableCell>
-                  <TableCell><TextField type="number" /></TableCell>
-                  <TableCell><TextField /></TableCell>
+                  <TableCell><TextField type="number" onChange={e => handleVariantChange(idx, 'variant_price', e.target.value)} /></TableCell>
+                  <TableCell><TextField type="number" onChange={e => handleVariantChange(idx, 'variant_special_price', e.target.value)} /></TableCell>
+                  <TableCell><TextField type="date" onChange={e => handleVariantChange(idx, 'variant_promotion_start_date', e.target.value)} /></TableCell>
+                  <TableCell><TextField type="date" onChange={e => handleVariantChange(idx, 'variant_promotion_end_date', e.target.value)} /></TableCell>
+                  <TableCell><TextField type="number" onChange={e => handleVariantChange(idx, 'variant_quantity', e.target.value)} /></TableCell>
+                  <TableCell><TextField onChange={e => handleVariantChange(idx, 'variant_sku', e.target.value)} /></TableCell>
                 </TableRow>
               ))}
             </TableBody>
+
+
           </Table>
         </TableContainer>
 
         <div className="btn-add">
           <button
             className="btn"
-          // onClick={handleAddProduct}
+            onClick={handleAddProduct}
           >
             Add New Product
           </button>
