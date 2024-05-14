@@ -35,8 +35,8 @@ const SalesOverview = ({row,data1,data2}) => {
             bar: {
                 horizontal: false,
                 barHeight: '60%',
-                columnWidth: '60%',
-                borderRadius: [6],
+                columnWidth: '70%',
+                borderRadius: [7],
                 borderRadiusApplication: 'end',
                 borderRadiusWhenStacked: 'all',
             },
@@ -52,7 +52,7 @@ const SalesOverview = ({row,data1,data2}) => {
             enabled: false,
         },
         legend: {
-            show: false,
+            show: true,
         },
         grid: {
             borderColor: 'rgba(0,0,0,0.1)',

@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./DetailOrder.scss";
 import { getPriceExpr } from "../../../utils/getPriceRepr";
 import img1 from "./../../../assets/checkout-item.png";
 import img2 from "./../../../assets/checkout-item2.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import { api } from "../../../constant/constant";
+import { useSelector } from "react-redux";
 
 const DetailOrderB = () => {
   const orderbook = [
@@ -25,11 +28,10 @@ const DetailOrderB = () => {
       count: 2,
     },
   ];
-
   const getTotalPrice = (deliveryFee = 0) =>
     getPriceExpr(
       orderbook.reduce((prev, curr) => {
-        return prev + curr.price * (1 - curr.discount / 100) * curr.count;
+        return prev + curr.price * (1 - 0 / 100) * curr.count;
       }, deliveryFee)
     );
 

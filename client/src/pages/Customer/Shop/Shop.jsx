@@ -75,6 +75,7 @@ function Shop() {
   const [categoryStatus, setCategoryStatus] = useState("All");
   const [sort, setSort] = useState(0);
   const [categoryStart, setCategoryStart] = useState(0);
+
   const getCategory = async () => {
     const category = await axios.get(`${api}category`);
     setCategory(category.data);

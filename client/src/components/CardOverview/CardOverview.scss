@@ -23,13 +23,28 @@
     align-items: end;
     margin-bottom: 2%;
   }
-  .percent {
+  .number-percent{
+
+  }
+  .percent-up {
     margin-bottom: 2%;
     margin-left: 3%;
+    color: green;
+    display: flex;
+    align-items: center;
+  }
+  .percent-down {
+    margin-bottom: 2%;
+    margin-left: 3%;
+    color: red;
+    display: flex;
+    align-items: center;
   }
   .increas {
     margin-bottom: 2%;
     margin-left: auto;
+    font-size: 12px;
+    font-weight: 550;
   }
   .action {
     font-weight: 550;

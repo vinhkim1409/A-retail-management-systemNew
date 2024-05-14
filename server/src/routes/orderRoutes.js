@@ -12,6 +12,11 @@ router.post(
 );
 router.get("/", authMiddlewares.verifyToken, orderController.getOrderBusiness); //get of business
 router.get(
+  "/business/:orderID",
+  authMiddlewares.verifyToken,
+  orderController.getOrderBusinessById
+); //get one of business
+router.get(
   "/customer",
   authMiddlewares.verifyTokenCustomer,
   orderController.getOrderCustomer
