@@ -13,15 +13,22 @@
         padding: 10px 0;
     }
     .tab{
+        border-radius: 5px;
         width: 80%;
         height: 50px;
-        background-color: white;
+        background-color: #F2F2F2;
         margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 1%;
+        padding-right: 1%;
     }
     .content{
         width: 80%;
         margin-top: 20px;
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
         background-color: rgb(255, 255, 255);
         padding: 20px 0;
@@ -29,21 +36,26 @@
     }
     
     .tab button {
-        background-color: inherit;
         float: left;
         border: none;
         cursor: pointer;
         padding: 14px 16px;
         transition: 0.3s;
-        width: 20%;
         font-size: 16px;
+        width: 18%;
+        border-radius: 10px;
+        height: 60%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
     }
     .tab button:hover {
         background-color: #ddd; 
     }
     
     .tab button.active {
-        background-color: rgb(0, 0, 0);
+        background-color: #0D6EFD;
         color: white;
     }
     .tabcontent {
@@ -148,4 +160,62 @@
         color: white;
         background-color: black;
     }
+    .lable-product {
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        color: #334155;
+        font-weight: 550;
+      }
+      .product {
+        width: 50%;
+        padding-left: 4%;
+        // border: 1px solid gray;
+        .img {
+          width: 20%;
+          height: auto;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+        }
+        .product-container {
+          display: flex;
+          align-items: center;
+        }
+        .name-frame {
+          margin-left: 1%;
+        }
+        .name-product {
+          max-width: 80%;
+          font-family: "Inter", sans-serif;
+          color: #334155;
+          font-weight: 550;
+          text-transform: none;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .sku {
+          font-family: "Inter", sans-serif;
+          color: #334155;
+        }
+      }
+      .quantity {
+        width: 15%;
+        // border: 1px solid gray
+      }
+      .amount {
+        width: 15%;
+        // border: 1px solid gray
+        text-transform: none;
+      }
+      .order{
+        margin-bottom: 1%;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .date{
+        margin-top: 1%;
+        margin-left:3.8%;
+        font-family: "Inter", sans-serif;
+        color: #334155;
+        font-weight: 550;
+      }
 }

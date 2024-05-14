@@ -27,13 +27,13 @@ function Shop() {
   const indexOfLastProduct = currentPage * productsPerPage * productsPerRow;
   const indexOfFirstProduct =
     indexOfLastProduct - productsPerPage * productsPerRow;
-  const currentProducts = productTable.slice(
+  const currentProducts = productTable?.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
 
   const totalPages = Math.ceil(
-    productTable.length / (productsPerPage * productsPerRow)
+    productTable?.length / (productsPerPage * productsPerRow)
   );
 
   const paginate = (pageNumber) => {
@@ -66,9 +66,9 @@ function Shop() {
   // },[typ])
   const getProduct = async () => {
     const products = await axios.get(`${api}product`);
-    console.log(products.data.data)
-    setProductTable(products.data.data);
-    setAllProducts(products.data.data);
+    console.log(products.data)
+    setProductTable(products.data);
+    setAllProducts(products.data);
   };
 
   const [category, setCategory] = useState([]);

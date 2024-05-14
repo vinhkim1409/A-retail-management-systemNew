@@ -100,7 +100,7 @@ function App() {
           <Route path="customer-information" element={<CustomerInformation />} />
           <Route path="order" element={<OrderBusiness />} />
           <Route path="customer-blacklist" element={<CustomerBlacklist />} />
-          <Route path="website" element={<EditWebsite />} />
+          <Route path="website" element={<EditWebsite />} /> 
           <Route path="category" element={<CategoryM />} />
         </Route>
 
