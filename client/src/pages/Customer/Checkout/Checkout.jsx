@@ -71,6 +71,17 @@ const Checkout = () => {
         customer.resCustomer?.address[addressChoice]?.province
       )
     );
+   
+    const getShippingFee = async () => {
+      const shippingFee = await shippingAPI.countShippingFee(
+        location.state,
+        customer.resCustomer?.address[addressChoice]
+      );
+      console.log(shippingFee)
+      setShippingFee(shippingFee.data.data.total);
+    };
+    
+    getShippingFee();
   }, [addressChoice]);
 
   const deliveryMethodTexts = [
