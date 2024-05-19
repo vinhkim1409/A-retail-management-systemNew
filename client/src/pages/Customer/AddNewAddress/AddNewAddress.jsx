@@ -43,13 +43,16 @@ const AddNewAddress = () => {
     setProvinceInput(event.target.value);
     setDistrictInput("");
     setWardInput("");
+    console.log(event.target.value);
   };
   const handleDistrictChange = (event) => {
     setDistrictInput(event.target.value);
     setWardInput("");
+    console.log(event.target.value);
   };
   const handleWardChange = (event) => {
     setWardInput(event.target.value);
+    console.log(event.target.value);
   };
   const handleAddrChange = (event) => {
     setAddrInput(event.target.value);

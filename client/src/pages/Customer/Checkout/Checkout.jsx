@@ -7,6 +7,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { api } from "../../../constant/constant";
 import { useSelector } from "react-redux";
+import { shippingAPI } from "../../../redux/apiRequest";
 
 const Checkout = () => {
   const location = useLocation();
@@ -26,6 +27,14 @@ const Checkout = () => {
     }
     console.log(location.state);
     setOrder(location.state);
+    const getShippingFee = async () => {
+      const shippingFee = await shippingAPI.countShippingFee(
+        location.state,
+        customer.resCustomer?.address[addressChoice]
+      );
+      setShippingFee(shippingFee.data.data.total);
+    };
+    getShippingFee();
   }, []);
   const expressDeliveryProvinces = ["TPHCM", "Hà Nội", "Đà Nẵng"];
 
@@ -39,8 +48,8 @@ const Checkout = () => {
           (curr.variant > 0
             ? curr.product.variants[curr.variant - 1].variant_special_price
             : curr.product.price) *
-            (1 - 20 / 100) *
             curr.quantity
+          // (1 - 20 / 100) * tai sao lai co
         );
       }, deliveryFee)
     );
@@ -62,6 +71,17 @@ const Checkout = () => {
         customer.resCustomer?.address[addressChoice]?.province
       )
     );
+   
+    const getShippingFee = async () => {
+      const shippingFee = await shippingAPI.countShippingFee(
+        location.state,
+        customer.resCustomer?.address[addressChoice]
+      );
+      console.log(shippingFee)
+      setShippingFee(shippingFee.data.data.total);
+    };
+    
+    getShippingFee();
   }, [addressChoice]);
 
   const deliveryMethodTexts = [
@@ -94,15 +114,16 @@ const Checkout = () => {
       logo: images.codLogo,
     },
   ];
+  const [shippingFee, setShippingFee] = useState(0);
 
   const handleOrder = async () => {
     const orderInfo = {
       products: order,
       statusPayment: "Wait Pay",
-      totalPrice: Number(getTotalPrice(15000)) * 1000,
+      totalPrice: Number(getTotalPrice(shippingFee)) * 1000,
       shipMethod: deliveryMethods[deliveryMethod],
       paymentType: paymentMethods[paymentMethod].text,
-      shipPrice: "15000",
+      shipPrice: shippingFee,
       tenantURL: tenantURL,
       buyer_firstName: customer.resCustomer?.address[addressChoice]?.firstName,
       buyer_lastName: customer.resCustomer?.address[addressChoice]?.lastName,
@@ -295,7 +316,7 @@ const Checkout = () => {
                       {getPriceExpr(
                         item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                              .variant_price
+                              .variant_special_price
                           : item.product.price
                       )}
                     </div>
@@ -303,9 +324,8 @@ const Checkout = () => {
                       {getPriceExpr(
                         item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                              .variant_special_price
-                          : item.product.price,
-                        20
+                              .variant_price
+                          : item.product.price
                       )}
                     </div>
                   </td>
@@ -315,11 +335,10 @@ const Checkout = () => {
                   <td className="total-check">
                     <div>
                       {getPriceExpr(
-                        item.variant > 0
+                        (item.variant > 0
                           ? item.product.variants[item.variant - 1]
                               .variant_special_price
-                          : item.product.price * item.quantity,
-                        20
+                          : item.product.price) * item.quantity
                       )}
                     </div>
                   </td>
@@ -387,11 +406,13 @@ const Checkout = () => {
               </div>
               <div className="price-delivery-confirm">
                 <p>Vận chuyển:</p>
-                <p className="text-confirm">{getPriceExpr(15000)}</p>
+                <p className="text-confirm">{getPriceExpr(shippingFee)}</p>
               </div>
               <div className="total-confirm">
                 <p className="text-confirm">Tổng cộng:</p>
-                <p className="text-confirm-final">{getTotalPrice(15000)}</p>
+                <p className="text-confirm-final">
+                  {getTotalPrice(shippingFee)}
+                </p>
               </div>
             </div>
           </div>

@@ -38,6 +38,8 @@ import StaffList from "./pages/Business/Staff/StaffList";
 import CustomerBlacklist from "./pages/Business/CustomerBlacklist/CustomerBlacklist"
 import EditWebsite from "./pages/Business/Website/EditWebsite/EditWebsite";
 import CategoryM from "./pages/Business/Category/CategoryM/CategoryM";
+import ImportGoods from "./pages/Business/ImportGoods/ImportGoods";
+import InfoShop from "./pages/Business/InfoShop/InfoShop";
 
 
 
@@ -59,6 +61,7 @@ import SignupCustomer from "./pages/Customer/SignupCustomer/SignupCustomer";
 import Error from "./pages/Error/Error";
 import EditProduct from "./pages/Business/Product/EditProduct/EditProduct";
 import AddNewAddress from "./pages/Customer/AddNewAddress/AddNewAddress";
+import DetailOrderBusiness from "./pages/Business/Order/DetailOrder/DetailOrder";
 
 
 function App() {
@@ -99,9 +102,12 @@ function App() {
           <Route path="product/detail/:id" element={<DetailProduct />} />
           <Route path="customer-information" element={<CustomerInformation />} />
           <Route path="order" element={<OrderBusiness />} />
+          <Route path="order/:id" element={<DetailOrderBusiness />} />
           <Route path="customer-blacklist" element={<CustomerBlacklist />} />
           <Route path="website" element={<EditWebsite />} />
           <Route path="category" element={<CategoryM />} />
+          <Route path="import-goods" element={<ImportGoods />} />
+          <Route path="info-shop" element={<InfoShop />} />
         </Route>
 
         <Route path="/:tenantURL/customer" element={<CustomerLayout />}>

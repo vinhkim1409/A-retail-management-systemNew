@@ -10,7 +10,7 @@ const AddButton = () => {
 
   return (
     <button className="AddButton-container" onClick={()=>{
-      navigate(`${tenantURL}/customer/address-addnew`)
+      navigate(`/${tenantURL}/customer/address-addnew`)
     }}>
       <FontAwesomeIcon icon={faPlus} color="white" size="lg" className='icon' />
       <div>{"Add new address"}</div>

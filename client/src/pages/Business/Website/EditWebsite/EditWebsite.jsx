@@ -99,8 +99,9 @@ function EditWebsite() {
   };
   const getWebsite = async () => {
     const website = await axios.get(`${api}website`);
-    setBusinessImgFile(website.data[0].businessImg);
-    setFeatProduct(website.data[0].featureProduct);
+    console.log(website.data)
+    setBusinessImgFile(website.data[0]?.businessImg);
+    setFeatProduct(website.data[0]?.featureProduct);
   };
   useEffect(() => {
     getWebsite();

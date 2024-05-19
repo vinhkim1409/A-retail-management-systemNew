@@ -1,6 +1,7 @@
 import React from "react";
 import "./NavbarMain.scss";
 import { Link } from "react-router-dom";
+import logo from "../../assets/logo.png";
 import {
   Box,
   Button,
@@ -31,10 +32,13 @@ const style = {
   borderRadius: 2,
   p: 4,
 };
+
 const Navbar = () => {
   return (
     <nav className="navbar-main">
-      <div className="logo">Logo</div>
+      <div className="logo">
+        <img src={logo} alt="Logo" className="logo-img"/>
+      </div>
       <div className="function-button">
         <div className="home">
           <Link to="/">

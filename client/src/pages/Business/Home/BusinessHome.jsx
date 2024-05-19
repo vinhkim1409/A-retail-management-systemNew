@@ -62,7 +62,7 @@ function BusinessHome() {
         <Grid item xs={12} lg={4}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <MonthRevenue data={dataMonth} />
+              <MonthRevenue data={dataMonth} /> 
             </Grid>
           </Grid>
         </Grid>

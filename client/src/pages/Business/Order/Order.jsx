@@ -22,6 +22,7 @@ import axois from "axios";
 import { api } from "../../../constant/constant";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -43,6 +44,8 @@ const Order = () => {
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
+  const navigate=useNavigate()
+  const {tenatURL}=useParams()
   const userBusiness = useSelector(
     (state) => state.authBusiness.login?.currentUser
   );
@@ -148,7 +151,7 @@ const Order = () => {
                     <TableRow
                       key={index}
                       onClick={() => {
-                        console.log(item._id);
+                        navigate(`/${tenatURL}/business/order/${item._id}`);
                       }}
                       className="order-body"
                     >

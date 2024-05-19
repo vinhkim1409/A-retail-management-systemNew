@@ -10,11 +10,11 @@ import {
   styled,
 } from "@mui/material";
 import axios from "axios";
-import { api } from "../../../constant/constant";
+import { api } from "../../../../constant/constant";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import { getPriceExpr } from "../../../utils/getPriceRepr";
+import { getPriceExpr } from "../../../../utils/getPriceRepr";
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -31,21 +31,21 @@ const wayPaidTag = <div className="wayPaidTag">Wait Pay</div>;
 const DetailOrderBusiness = () => {
   const [order, setOrder] = useState();
   const { tenatURL, id } = useParams();
-  const customer = useSelector(
-    (state) => state.authCustomer.login?.currentUser
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
   );
   const config = {
     headers: {
-      Authorization: `Bearer ${customer?.accessToken}`,
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
     },
   };
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const getOrder = async () => {
-    const order = await axios.get(`${api}order/customer/${id}`, config);
+    const order = await axios.get(`${api}order/business/${id}`, config);
     console.log(order.data.data);
-    setOrder(order.data.data[0]);
+    setOrder(order.data.data);
   };
   const getTotalPrice = (deliveryFee = 0) =>
     getPriceExpr(
@@ -55,7 +55,7 @@ const DetailOrderBusiness = () => {
           (curr.variant > 0
             ? curr.product.variants[curr.variant - 1].variant_special_price
             : curr.product.price) *
-          curr.quantity
+            curr.quantity
         );
       }, deliveryFee)
     );
@@ -64,7 +64,7 @@ const DetailOrderBusiness = () => {
   }, []);
   return (
     <>
-      <div className="detailordercustomer-container">
+      <div className="detailorder-container">
         <div className="header">
           <div className="title">Order Detail</div>
         </div>
@@ -83,6 +83,11 @@ const DetailOrderBusiness = () => {
                   </div>
                 </div>
               </div>
+              {order?.statusPayment == "Paid" ? (
+                <></>
+              ) : (
+                <button className="action">Payment Confirm</button>
+              )}
             </div>
             <div className="list-product">
               <Box
@@ -138,7 +143,7 @@ const DetailOrderBusiness = () => {
                           <TableCell
                             align="left"
                             className="quantity content-order"
-                          // sx={{ maxWidth: 140 }}
+                            // sx={{ maxWidth: 140 }}
                           >
                             {item?.quantity}
                           </TableCell>
@@ -148,7 +153,7 @@ const DetailOrderBusiness = () => {
                           >
                             {(item?.variant > 0
                               ? item.product.variants[item.variant - 1]
-                                .variant_special_price
+                                  .variant_special_price
                               : item.product.price) * item?.quantity}
                             đ
                           </TableCell>
@@ -175,7 +180,10 @@ const DetailOrderBusiness = () => {
                         backgroundColor: "#F5F5F5",
                       }}
                     >
-                      <TableCell align="left" className="description lable-product">
+                      <TableCell
+                        align="left"
+                        className="description lable-product"
+                      >
                         Descriptions
                       </TableCell>
                       <TableCell align="left" className="amount lable-product">
@@ -208,7 +216,10 @@ const DetailOrderBusiness = () => {
                         {getPriceExpr(Number(order?.shipPrice))}đ
                       </TableCell>
                     </TableRow>
-                    <TableRow className="order-body" sx={{ borderBottom: 2, borderColor: "white" }}>
+                    <TableRow
+                      className="order-body"
+                      sx={{ borderBottom: 2, borderColor: "white" }}
+                    >
                       <TableCell align="left" className="description">
                         Total Amount :
                       </TableCell>

@@ -18,7 +18,7 @@ const port = 3002;
 
 app.get('/category-info/:categoryId', async (req, res) => {
     try {
-        const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTdG9yZUlkIjoiOTg2MDcwIiwiVXNlck5hbWUiOiIiLCJTdG9yZVN0YXR1cyI6IjIiLCJTaG9wVHlwZSI6IjEiLCJTdG9yZUxldmVsIjoiMCIsImV4cCI6MTcxNTI5MTE5NSwiaXNzIjoiOTg2MDcwIiwiYXVkIjoiOTg2MDcwIn0.TF3pxnI1epphbD4Se6SVGfzoVFhDLiMLLb_M9Z-7BsM";
+        const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTdG9yZUlkIjoiOTg2MDcwIiwiVXNlck5hbWUiOiIiLCJTdG9yZVN0YXR1cyI6IjIiLCJTaG9wVHlwZSI6IjEiLCJTdG9yZUxldmVsIjoiMCIsImV4cCI6MTcxNjExNjI1NSwiaXNzIjoiOTg2MDcwIiwiYXVkIjoiOTg2MDcwIn0.HIPVMdyYCruir2frBsT9PUyBCO5elmE42xYGfWt27V0";
         const categoryId = req.params.categoryId;
         const categoryInfo = await getCategoryInfo(accessToken, categoryId);
 

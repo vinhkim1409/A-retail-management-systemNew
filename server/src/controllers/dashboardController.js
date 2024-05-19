@@ -1,5 +1,6 @@
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
+const Customer = require("../models/customerModel");
 function getDayOfWeek(day) {
   let dayOfWeek;
   switch (day) {
@@ -41,6 +42,18 @@ function get7Days() {
   }
 
   return weekDays;
+}
+function getPercent(thisMonth, lastMonth) {
+  if (thisMonth == 0) {
+    return { type: 3, value: 0 };
+  }
+  if (lastMonth == 0) {
+    return { type: 4, value: 0 };
+  }
+  if (thisMonth > lastMonth) {
+    return { type: 1, value: parseFloat(((lastMonth / thisMonth) * 100).toFixed(2)) };
+  }
+  return { type: 2, value: parseFloat(((thisMonth / lastMonth) * 100).toFixed(2)) };
 }
 
 const dashboardController = {
@@ -219,7 +232,7 @@ const dashboardController = {
       const getProduct = topProducts.filter(
         (productInTop) => productInTop._id == "663852ee97a1eae0ebe1f3ac"
       );
-      
+
       return {
         ...product,
         product: getProduct[0],
@@ -227,6 +240,67 @@ const dashboardController = {
     });
 
     res.json(topProductList);
+  },
+  getDataCard: async (req, res) => {
+    const today = new Date();
+    const thisMonth = today.getMonth() + 1;
+    const lastMonth = today.getMonth();
+    const totalOrder = await Order.find();
+    const orderThisMonth = totalOrder.filter(
+      (order) => order.createdAt.getMonth() + 1 == thisMonth
+    );
+    const orderLastMonth = totalOrder.filter(
+      (order) => order.createdAt.getMonth() + 1 == lastMonth
+    );
+    const countTotalOrder = totalOrder.length;
+    const countOrderThisMonth = orderThisMonth.length;
+    const countOrderLastMonth = orderLastMonth.length;
+    const countProductThisMonth = orderThisMonth.reduce((total, order) => {
+      const countProduct = order.products.reduce((count, product) => {
+        return count + product.quantity;
+      }, 0);
+      return total + countProduct;
+    }, 0);
+    const countProductLastMonth = orderLastMonth.reduce((total, order) => {
+      const countProduct = order.products.reduce((count, product) => {
+        return count + product.quantity;
+      }, 0);
+      return total + countProduct;
+    }, 0);
+    const countTotalProduct = totalOrder.reduce((total, order) => {
+      const countProduct = order.products.reduce((count, product) => {
+        return count + product.quantity;
+      }, 0);
+      return total + countProduct;
+    }, 0);
+    const totalCustomer = await Customer.find();
+    const countTotalCustomer = totalCustomer.length;
+    const countThisMonthCustomer = totalCustomer.filter(
+      (product) => product.createdAt.getMonth() + 1 == thisMonth
+    ).length;
+    const countLastMonthCustomer = totalCustomer.filter(
+      (product) => product.createdAt.getMonth() + 1 == lastMonth
+    ).length;
+    res.json({
+      customer: {
+        countTotalCustomer,
+        countThisMonthCustomer,
+        countLastMonthCustomer,
+        percent: getPercent(countThisMonthCustomer, countLastMonthCustomer),
+      },
+      order: {
+        countTotalOrder,
+        countOrderThisMonth,
+        countOrderLastMonth,
+        percent: getPercent(countOrderThisMonth, countOrderLastMonth),
+      },
+      product: {
+        countProductThisMonth,
+        countProductLastMonth,
+        countTotalProduct,
+        percent: getPercent(countProductThisMonth, countProductLastMonth),
+      },
+    });
   },
 };
 module.exports = dashboardController;

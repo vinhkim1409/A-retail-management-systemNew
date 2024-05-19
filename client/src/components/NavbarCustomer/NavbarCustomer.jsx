@@ -6,6 +6,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutCustomerSuccess } from "../../redux/authCustomerSilde";
+import logo from "../../assets/logo.png";
 
 const Navbar = () => {
   const { tenantURL } = useParams();
@@ -33,7 +34,9 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="logo">
-        <Link to={`/${tenantURL}/customer`}>Logo</Link>
+        <Link to={`/${tenantURL}/customer`} className="link-logo">
+          <img src={logo} alt="Logo" className="logo-img"/>
+        </Link>
       </div>
       <div className="search">
         <FontAwesomeIcon icon={faSearch} />
