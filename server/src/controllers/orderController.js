@@ -156,6 +156,17 @@ const orderController = {
       res.status(500).json({ message: error.message });
     }
   },
+  getOrderCustomerById: async (req, res) => {
+    try {
+      const customer = req.user[0];
+      const order = await Order.find({ customerID: customer._id,_id:req.params.orderID })
+        .populate("customerID")
+        .populate("products.product");
+      res.json({ success: true, data: order });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
   getOrderBusiness: async (req, res) => {
     try {
       const order = await Order.find({ tenantID: req.tenantID })

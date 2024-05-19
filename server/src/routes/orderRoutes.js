@@ -21,6 +21,11 @@ router.get(
   authMiddlewares.verifyTokenCustomer,
   orderController.getOrderCustomer
 ); //get of customer
+router.get(
+  "/customer/:orderID",
+  authMiddlewares.verifyTokenCustomer,
+  orderController.getOrderCustomerById
+); //get of customer
 
 router.post(
   "/notify-payment",

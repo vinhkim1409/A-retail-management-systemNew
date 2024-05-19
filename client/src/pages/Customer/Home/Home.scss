@@ -1,63 +1,63 @@
 .CustomerHome-container {
+  width: 100%;
+  .carousel{
+    height: 600px;
+  }
+  .button-gotoshop{
+    display: flex;
+    justify-content: center;
+    width: 12%;
+    border-radius: 5px;
+    padding: 5px 10px;
+    background-color: black;
+    margin: 30px auto;
+    border: 2px solid black;
+  }
+  .link-shop{
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+  }
+
+  .button-gotoshop:hover{
+
+  background-color: white;
+  .link-shop{
+    color: black;
+  }
+  }
+  .title-outstanding-products{
+    font-size: 36px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .outstanding-products-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .outstanding-products{
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .product{
+    width: 24%;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .img-product{
     width: 100%;
-    .carousel{
-      height: 600px;
-    }
-    .button-gotoshop{
-      display: flex;
-      justify-content: center;
-      width: 12%;
-      border-radius: 5px;
-      padding: 5px 10px;
-      background-color: black;
-      margin: 30px auto;
-      border: 2px solid black;
-    }
-    .link-shop{
-      text-decoration: none;
-      font-size: 20px;
-      color: white;
-    }
-
-    .button-gotoshop:hover{
-
-    background-color: white;
-    .link-shop{
-      color: black;
-    }
-    }
-    .title-outstanding-products{
-      font-size: 36px;
-      font-weight: 500;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .outstanding-products-container{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .outstanding-products{
-      width: 80%;
-      display: flex;
-      justify-content: space-between;
-    }
-    .product{
-      width: 24%;
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .img-product{
-      width: 100%;
-    }
-    .name-product{
-      margin-top: 10px;
-    }
-    .price-product{
-      font-weight: 500;
-    }
-    
+  }
+  .name-product{
+    margin-top: 10px;
+  }
+  .price-product{
+    font-weight: 500;
+  }
+  
 
 }

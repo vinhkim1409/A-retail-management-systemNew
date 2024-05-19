@@ -45,7 +45,6 @@ const customerSchema = new mongoose.Schema(
     //commnets:{ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "comments" }] },
     avatar: { type: String },
     membershipPoint: { type: Number, required: true, default: 0 },
-    banStatus: { type: String, required: true, default: "Active" },
   },
   {
     timestamps: true,

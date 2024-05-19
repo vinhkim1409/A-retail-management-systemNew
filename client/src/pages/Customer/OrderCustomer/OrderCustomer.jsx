@@ -16,6 +16,7 @@ import axios from "axios";
 import { api } from "../../../constant/constant";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { useNavigate, useParams } from "react-router-dom";
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -40,42 +41,19 @@ const OrderCustomer = () => {
       Authorization: `Bearer ${customer?.accessToken}`,
     },
   };
-  const [initialOrders,setInitialOrders]=useState([])
+  const { tenantURL } = useParams();
+  const navigate = useNavigate();
+  const [initialOrders, setInitialOrders] = useState([]);
   const [orders, setOrders] = useState([]);
   const getOrders = async () => {
     const orders = await axios.get(`${api}order/customer`, config);
     console.log(orders.data.data);
-    setInitialOrders(orders.data.data.reverse())
+    setInitialOrders(orders.data.data.reverse());
     setOrders(orders.data.data.reverse());
   };
   useEffect(() => {
     getOrders();
   }, []);
-  const orderbook = [
-    {
-      id: "1",
-      name: "Thay đổi cuộc sống với nhân số học",
-      image: img1,
-      price: 248000,
-      discount: 20,
-      count: 1,
-    },
-    {
-      id: "2",
-      name: "Hiểu về trái tim (Tái bản 2023)",
-      image: img2,
-      price: 118500,
-      discount: 25,
-      count: 2,
-    },
-  ];
-
-  const getTotalPrice = (deliveryFee = 0) =>
-    getPriceExpr(
-      orderbook.reduce((prev, curr) => {
-        return prev + curr.price * (1 - curr.discount / 100) * curr.count;
-      }, deliveryFee)
-    );
 
   return (
     <div className="OrderCustomer-container">
@@ -118,19 +96,22 @@ const OrderCustomer = () => {
 
       <div className="content">
         {orders?.map((order) => (
-          <div className="order" key={order?._id}>
+          <div
+            className="order"
+            key={order?._id}
+            onClick={() => {
+              navigate(`/${tenantURL}/customer/detail-order/${order._id}`);
+            }}
+          >
             <div className="order-miniInfo">
-            <div className="date">
-            Order Date:{moment(order.createdAt).format("D MMM, YYYY h:mm A")}
+              <div className="date">
+                Order Date:
+                {moment(order.createdAt).format("D MMM, YYYY h:mm A")}
+              </div>
+              <div className="status"></div>
             </div>
-            <div className="status"></div>
-            </div>
-           
-            <Box
-              width="100%"
-              overflow="auto"
-              backgroundColor="white"
-            >
+
+            <Box width="100%" overflow="auto" backgroundColor="white">
               <StyledTable>
                 <TableHead>
                   <TableRow

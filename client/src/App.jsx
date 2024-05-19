@@ -114,7 +114,7 @@ function App() {
           <Route path="address-addnew" element={<AddNewAddress />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="order" element={<OrderCustomer />} />
-          <Route path="detail-order" element={<DetailOrder />} />
+          <Route path="detail-order/:id" element={<DetailOrder />} />
           <Route path="cart" element={<Cart />} />
           <Route path="shop" element={<Shop />} />
           <Route path="review/:id" element={<Review />} />

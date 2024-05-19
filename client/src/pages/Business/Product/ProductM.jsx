@@ -327,7 +327,7 @@ function ProductM() {
             )}
           </Box>
           <div className="pages">
-            <div className="pages-number">{1*(page*5+1)}-{5*(page+1)} of {totalProducts + 1}</div>
+            <div className="pages-number">1-5 of {page + 1}</div>
             <button
               className="button-back"
               onClick={() => handleChangePage(page - 1)}
@@ -338,7 +338,6 @@ function ProductM() {
                 className={`${page == 0 ? "icon-back" : "active"}`}
               />
             </button>
-            <div className="number-page">{page+1}</div>
             <button
               className="button-next"
               onClick={() => handleChangePage(page + 1)}

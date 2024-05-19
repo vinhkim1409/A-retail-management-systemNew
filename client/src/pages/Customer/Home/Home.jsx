@@ -49,7 +49,7 @@ function HomePage() {
     // console.log(website.data[0].featureProduct)
   }
   useEffect(()=>{
-    // getWebsite()
+    getWebsite()
   },[])
   
   return (
@@ -78,7 +78,7 @@ function HomePage() {
       <button className="button-gotoshop">
         <Link to={'/customer/shop'} className="link-shop">Go to shop</Link>
       </button>
-      <div className="title-outstanding-products">Sản phẩm nổi bật</div>
+      <div className="title-outstanding-products">Outstanding Products</div>
       <div className="outstanding-products-container">
         <div className="outstanding-products">
           {featProduct.map((product, index) => (

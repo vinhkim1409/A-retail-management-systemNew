@@ -174,7 +174,7 @@ const Order = () => {
                         {moment(item.createdAt).format("D MMM, YYYY h:mm A")}
                       </TableCell>
                       <TableCell align="left" className="payment">
-                        {item.statusPayment === "Unpaid" ? wayPaidTag : paidTag}
+                        {item.statusPayment === "Paid" ? paidTag:wayPaidTag}
                       </TableCell>
                       <TableCell align="left" className="total content-order">
                         {item.totalPrice}

@@ -1,224 +1,227 @@
-.DetailOrderM-container {
-  margin-top: 30px;
-  font-family: "Roboto", sans-serif;
-  display: flex;
-  flex-direction: column;
+.detailordercustomer-container {
+  width: 80%;
+  margin-left: 10%;
 
   .title {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: bold;
   }
   .header {
-    width: 100%;
     padding: 10px 0;
+    margin-bottom: 1%;
   }
-
-  .delivery {
-    width: 100%;
+  .detail-info {
     display: flex;
     justify-content: space-between;
   }
-
-  .address {
-    width: 40%;
+  .order-info {
+    width: 61%;
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1% 1% 1% 1%;
+    padding: 1.5% 1% 0% 2%;
   }
-  .detail-delivery {
-    width: 55%;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1% 1% 1% 1%;
-  }
+  .another-info {
+    width: 37%;
 
-  .title-address,
-  .title-delivery {
-    font-size: 24px;
-    font-weight: bold;
-  }
-
-  .content-address,
-  .content-delivery {
-    width: 100%;
-    margin-top: 20px;
-  }
-
-  .name-address {
-    font-size: 20px;
-    margin-bottom: 1%;
-    display: flex;
-    .lable {
-        margin-right: 2%;
+    .order-summary {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding-top: 1%;
+      padding-bottom: 1%;
+      height: auto;
+      margin-bottom: 1%;
+      .summary-label {
+        margin-left: 4%;
+        margin-bottom: 2%;
         font-weight: 600;
+        font-family: "Inter", sans-serif;
+        font-size: 17px;
+        color: #334155;
       }
-  }
-
-  .phone-address {
-    display: flex;
-    color: rgb(168, 168, 168);
-    .lable {
-      margin-right: 2%;
-      font-weight: 600;
+    }
+    .ship-info {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 1% 0% 0% 5%;
+      .phone-number {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .ship-status {
+        margin-bottom: 4%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .person-info {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .address {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .ship-label {
+        margin-bottom: 2%;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        font-size: 17px;
+        color: #334155;
+      }
     }
   }
-  .detail-address {
-    color: rgb(168, 168, 168);
-    .lable {
-      font-weight: 600;
-    }
-  }
-
-  .time-status-delivery {
-    width: 100%;
+  .label-frame {
     display: flex;
-    margin-bottom: 5px;
-  }
-  .time-delivery {
-    margin-right: 20px;
-    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2%;
     align-items: center;
   }
-  .icon-circle {
-    font-size: 8px;
-    margin-right: 5px;
+  .content-label {
+    width: 70%;
+    // border: 1px solid gray;
   }
-
-  .order {
-    width: 100%;
-    margin-top: 20px;
+  .action {
+    width: 22%;
     display: flex;
-    justify-content: space-between;
-    background-color: rgb(255, 255, 255);
-    min-height: 470px;
-    border: 1px solid #ddd;
+    align-items: center;
+    padding: 1% 1% 1% 2%;
+    font-weight: 600;
     border-radius: 10px;
+    background-color: #0d6efd;
+    color: white;
+    height: 80%;
+    font-size: 14px;
+    border: 1px solid white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1% 1% 1% 1%;
   }
-
-  .tab button {
-    background-color: inherit;
-    float: left;
-    border: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-    width: 20%;
-    font-size: 16px;
+  .action:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0d6efd;
+    border: 1px solid #0d6efd;
   }
-  .tab button:hover {
-    background-color: #ddd;
+  .action:hover {
+    box-shadow: 0 0 5px #0d6efd;
+    border: 1px solid #0d6efd;
+    text-shadow: 0 0 5px white;
   }
-
-  .tab button.active {
-    background-color: sumpricergb(0, 0, 0);
-    color: white;
-  }
-  .tabcontent {
-    // padding: 6px 12px;
-    border-top: none;
+  .mini-label {
+    display: flex;
     width: 100%;
+    margin-top: 1%;
   }
-  .username {
-    border-bottom: solid 1.5px black;
-    margin-bottom: 16px;
-    font-weight: bold;
-    // margin: 0 16px;
-  }
-  .username-content {
-    padding-bottom: 5px;
-  }
-  .book-detail {
-    display: flex;
-    margin: 16px 0;
-    justify-content: space-between;
-    font-weight: bold;
-    padding-bottom: 8px;
-
-    border-bottom: solid 1.5px black;
-  }
-  .book-info {
-    display: flex;
-    justify-content: space-between;
-  }
-  .image {
-    margin-right: 16px;
-  }
-  .name-count {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .price {
-    float: right;
-    width: 9rem;
-    display: flex;
-    justify-content: space-between;
-  }
-  .initial-price {
-    color: #808080;
-    text-decoration-line: line-through;
-  }
-  .last-price {
-    color: #c00000;
-  }
-  .horizontal-line {
-    margin-top: -10px;
-    border-top: 2px solid #808080;
-  }
-  .total {
-    display: flex;
-    flex-direction: column;
-    float: right;
-  }
-  .sumprice {
-    width: 13rem;
-    text-align: right;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-  }
-  .sum {
-    color: #808080;
-  }
-  .total-price {
-    color: #000000;
-  }
-  .final-price {
-    color: #c00000;
-  }
-  .repurchase {
-    width: 10rem;
-  }
-  .button-repurchase {
-    width: 5rem;
-    height: 2rem;
-    cursor: pointer;
-    border-radius: 6px;
-    border: none;
-    background-color: #c00000;
+  .paidTag {
+    border-radius: 10px;
+    background-color: #198754;
     color: white;
+    width: 30%;
     text-align: center;
-    margin-top: 16px;
-    float: right;
+    font-size: 12px;
+    font-weight: 600;
   }
-  .button-order {
-    margin-top: 130px;
+  .wayPaidTag {
+    border-radius: 10px;
+    background-color: #ffca2c;
+    color: black;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0% 0% 0% 0%;
+  }
+  .payment-status {
     display: flex;
-    justify-content: right;
+    align-items: center;
+    width: 14%;
+    margin-left: 2%;
   }
-  .detail-button {
-    margin-left: 10px;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-weight: 500;
-    color: white;
-    background-color: black;
+  .order-date {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+  }
+  .order-id {
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    font-size: 17px;
+    color: #334155;
+  }
+  .lable-product {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 550;
+  }
+  .product {
+    width: 50%;
+    padding-left: 4%;
+    // border: 1px solid gray;
+    .img {
+      width: 20%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+    .product-container {
+      display: flex;
+      align-items: center;
+    }
+    .name-frame {
+      margin-left: 1%;
+    }
+    .name-product {
+      max-width: 80%;
+      font-family: "Inter", sans-serif;
+      color: #334155;
+      font-weight: 550;
+      text-transform: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sku {
+      font-family: "Inter", sans-serif;
+      color: #334155;
+    }
+  }
+  .description {
+    padding-left: 4%;
+
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    width: 50%;
+  }
+  .quantity {
+    width: 15%;
+    // border: 1px solid gray
+  }
+  .amount {
+    width: 15%;
+    // border: 1px solid gray
   }
 }

@@ -45,7 +45,54 @@
       border: 1px solid #ddd;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 1% 0% 0% 1%;
+      padding: 1% 0% 0% 5%;
+      .phone-number {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .ship-status {
+        margin-bottom: 4%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .person-info {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .address {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .ship-label {
+        margin-bottom: 2%;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        font-size: 17px;
+        color: #334155;
+      }
     }
   }
   .label-frame {
@@ -161,7 +208,7 @@
   }
   .description {
     padding-left: 4%;
-    
+
     font-family: "Inter", sans-serif;
     color: #334155;
     width: 50%;

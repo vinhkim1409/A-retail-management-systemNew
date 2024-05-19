@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 
 const websiteSchema = new mongoose.Schema({
-  businessImg: { type: [String], required: true },
   tenantID:{ type: mongoose.Schema.Types.ObjectId, ref: "business", required: true},
+  businessImg: { type: [String], required: true },
+  logo:String,
+ 
 },{
   timestamps: true,
 });

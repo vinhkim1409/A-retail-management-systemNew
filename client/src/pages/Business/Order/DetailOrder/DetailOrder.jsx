@@ -171,7 +171,7 @@ const DetailOrderBusiness = () => {
                 width="100%"
                 overflow="auto"
                 backgroundColor="white"
-                sx={{marginBottom:1}}
+                sx={{ marginBottom: 1 }}
               >
                 <StyledTable>
                   <TableHead>
@@ -180,7 +180,10 @@ const DetailOrderBusiness = () => {
                         backgroundColor: "#F5F5F5",
                       }}
                     >
-                      <TableCell align="left" className="description lable-product">
+                      <TableCell
+                        align="left"
+                        className="description lable-product"
+                      >
                         Descriptions
                       </TableCell>
                       <TableCell align="left" className="amount lable-product">
@@ -199,7 +202,7 @@ const DetailOrderBusiness = () => {
                     </TableRow>
                     <TableRow className="order-body">
                       <TableCell align="left" className="description">
-                      Discount :
+                        Discount :
                       </TableCell>
                       <TableCell align="left" className="amount content-order">
                         {0}đ
@@ -207,15 +210,18 @@ const DetailOrderBusiness = () => {
                     </TableRow>
                     <TableRow className="order-body">
                       <TableCell align="left" className="description">
-                      Shipping Charge :
+                        Shipping Charge :
                       </TableCell>
                       <TableCell align="left" className="amount content-order">
                         {getPriceExpr(Number(order?.shipPrice))}đ
                       </TableCell>
                     </TableRow>
-                    <TableRow className="order-body" sx={{borderBottom:2,borderColor:"white"}}>
+                    <TableRow
+                      className="order-body"
+                      sx={{ borderBottom: 2, borderColor: "white" }}
+                    >
                       <TableCell align="left" className="description">
-                      Total Amount :
+                        Total Amount :
                       </TableCell>
                       <TableCell align="left" className="amount content-order">
                         {getTotalPrice(Number(order?.shipPrice))}đ
@@ -225,7 +231,31 @@ const DetailOrderBusiness = () => {
                 </StyledTable>
               </Box>
             </div>
-            <div className="ship-info">Ship</div>
+            <div className="ship-info">
+              <div className="ship-label">Delivery Infomation</div>
+              <div className="person-info">
+                <div className="label">Name:</div> {order?.buyer_firstName}{" "}
+                {order?.buyer_lastName}
+              </div>
+              <div className="phone-number">
+                <div className="label"> Phone Number:</div>{" "}
+                {order?.buyer_phoneNumber}
+              </div>
+              <div className="address">
+                <div className="label">Address:</div>{" "}
+                {order?.buyer_address_detail}
+                {","}
+                {order?.buyer_ward.split("//")[0]}
+                {","}
+                {order?.buyer_district.split("//")[0]}
+                {","}
+                {order?.buyer_province.split("//")[0]}
+              </div>
+              <div className="ship-status">
+                <div className="label"> Shipping Status:</div>
+                {"Transaction"}
+              </div>
+            </div>
           </div>
         </div>
       </div>
