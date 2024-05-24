@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const axios = require("axios"); // Thêm dòng này để import axios
 const fs = require("fs"); // Thêm dòng này để import fs
+const path = require('path');
 
 dotenv.config();
 const corsOptions = {
@@ -32,7 +33,8 @@ async function loginAndSaveToken() {
     if (responseData.success) {
       const token = responseData.result.token;
       // Lưu token vào file
-      fs.writeFile('token.txt', token, (err) => {
+      const tokenPath = path.join(__dirname, 'token.txt'); // Xác định đường dẫn chính xác đến token.txt
+      fs.writeFile(tokenPath, token, (err) => {
         if (err) throw err;
         console.log('Token đã được lưu vào file.');
       });
@@ -55,7 +57,8 @@ function startServer() {
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
   const PORT = 3001;
-  app.use(cors());
+  app.use(cors(corsOptions));
+  // app.use(cors());
   const MONGODB_URI =
     "mongodb+srv://adminsystem:admin123456@database.a0scdtm.mongodb.net/";
 
@@ -81,6 +84,8 @@ function startServer() {
   const paymentRoutes = require("./routes/paymentRoutes");
   const attributeRoutes = require("./routes/attributeRoutes");
   const dashboardRoutes = require("./routes/dashboardRoutes")
+  // const infoRoutes = require("./routes/infoRoutes");
+  const attributeApiRoutes = require('./scripts/attribute_api');
 
   app.use("/product", productRoutes);
   app.use("/staff", staffRoutes);
@@ -93,6 +98,8 @@ function startServer() {
   app.use("/customer", customerRoutes);
   app.use("/attributes", attributeRoutes);
   app.use("/dashboard", dashboardRoutes);
+  // app.use("/info", infoRoutes);
+  app.use("/category-info", attributeApiRoutes);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

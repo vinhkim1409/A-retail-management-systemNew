@@ -3,7 +3,7 @@ import "./NavbarCustomer.scss";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutCustomerSuccess } from "../../redux/authCustomerSilde";
 import logo from "../../assets/logo.png";
@@ -35,11 +35,8 @@ const Navbar = () => {
       </div>
       <div className="logo">
         <Link to={`/${tenantURL}/customer`} className="link-logo">
-          <img src={logo} alt="Logo" className="logo-img"/>
+          <img src={logo} alt="Logo" className="logo-img" />
         </Link>
-      </div>
-      <div className="search">
-        <FontAwesomeIcon icon={faSearch} />
       </div>
       <div className="cart">
         <Link to={`/${tenantURL}/customer/cart`} className="link">
@@ -49,7 +46,8 @@ const Navbar = () => {
       {customer ? (
         <div className="user">
           <div className="link" onClick={handleLogOut}>
-            {customer.firstName}
+            {/* {customer.firstName} */}
+            <FontAwesomeIcon icon={faRightFromBracket} />
           </div>
         </div>
       ) : (

@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './InfoShop.scss';
+import {api} from "../../../constant/constant"
 
 const InfoShop = () => {
     const [shopKey, setShopKey] = useState('');
     const [secretKey, setSecretKey] = useState('');
     const [message, setMessage] = useState('');
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // Save the keys here
-        setMessage('Thông tin kết nối đã được lưu.');
-    };
-
     return (
         <div className="info-shop-container">
             <h2 className="info-shop-title">Info Shop</h2>
-            <form className="info-shop-form" onSubmit={handleSubmit}>
+            <form className="info-shop-form">
                 <div className="info-shop-form-item">
                     <label>
                         Shop Key:

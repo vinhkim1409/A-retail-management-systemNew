@@ -26,6 +26,7 @@ import {
 import shirt from "../../../assets/shirt.jpg";
 import axios from "axios";
 import { api } from "../../../constant/constant";
+import { useParams } from 'react-router-dom';
 
 const style = {
   position: "absolute",
@@ -50,6 +51,7 @@ const StyledTable = styled(Table)(() => ({
 }));
 
 function ProductM() {
+  const { tenantURL } = useParams();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -83,12 +85,12 @@ function ProductM() {
         >
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
-        <a href={`/business/product/edit/${row._id}`}>
+        <a href={`product/edit/${row._id}`}>
           <button className="btn-icon">
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
         </a>
-        <a href={`/business/product/edit/${row._id}`}>
+        <a href={`product/edit/${row._id}`}>
           <button className="btn-icon">
             <FontAwesomeIcon icon={faEye} />
           </button>
@@ -105,7 +107,7 @@ function ProductM() {
   //delete product
   const handleDeleteProduct = async () => {
     console.log(idDelete);
-    const deleteProduct = await axios.put(`${api}product/delete/${idDelete}`);
+    const deleteProduct = await axios.delete(`${api}product/${idDelete}`);
     if (deleteProduct.data.success) {
       console.log("Delete Product Success");
     }
@@ -117,16 +119,6 @@ function ProductM() {
     try {
       const Products = await axios.get(`${api}product`);
       let filteredProducts = Products.data;
-      if (filter !== 'All') {
-        filteredProducts = Products.data.filter(product => {
-          if (filter === 'Active') {
-            return !product.isDeleted;
-          } else if (filter === 'Deactive') {
-            return product.isDeleted;
-          }
-          return true; // Default case
-        });
-      }
       setProducts(filteredProducts);
       setLoading(false);
     } catch (error) {
@@ -155,7 +147,7 @@ function ProductM() {
         <div className="toolkit">
 
           <div className="addbox">
-            <a href="/business/product/add">
+            <a href={`/${tenantURL}/business/product/add`}>
               <button className="btn add-btn edit">Add product</button>
             </a>
           </div>

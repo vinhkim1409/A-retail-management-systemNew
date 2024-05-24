@@ -9,6 +9,7 @@ import product4 from "../../../assets/product4.webp";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightLong } from '@fortawesome/free-solid-svg-icons';
 import images from "../../../images/index";
+import { useParams } from 'react-router-dom';
 
 import '@popperjs/core';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
@@ -40,6 +41,7 @@ const products = [
 ];
 
 function HomePage() {
+  const { tenantURL } = useParams();
   const [businessImgFile, setBusinessImgFile] = useState(["", "", ""]);
   const [featProduct, setFeatProduct] = useState([]);
   const getWebsite = async () => {
@@ -82,7 +84,7 @@ function HomePage() {
         </button>
       </div>
       <button className="button-gotoshop">
-        <Link to={'/customer/shop'} className="link-shop">Go to shop</Link>
+        <Link to={`/${tenantURL}/customer/shop`} className="link-shop">Go to shop</Link>
       </button>
       <div className="title-outstanding-products">Outstanding Products</div>
       <div className="outstanding-products-container">
@@ -96,7 +98,7 @@ function HomePage() {
           ))}
         </div>
         <button className="button-gotoshop">
-          <Link to={'/customer/shop'} className="link-shop">
+          <Link to={`/${tenantURL}/customer/shop`} className="link-shop">
             See more <FontAwesomeIcon icon={faRightLong} />
           </Link>
         </button>

@@ -29,12 +29,15 @@ import { useNavigate } from "react-router-dom";
 import categories_level1 from "../../Data-Industry/categories_level1";
 import categories_level2 from "../../Data-Industry/categories_level2";
 import categories_level3 from "../../Data-Industry/categories_level3";
+import { useParams } from 'react-router-dom';
+import { api } from "../../../../constant/constant";
 
 
 const styles = {
   backgroundColor: "white",
 };
 function AddProduct() {
+  const { tenantURL } = useParams();
   useEffect(() => {
     // Giả sử bạn có một cơ chế để xác định các biến thể ban đầu dựa trên sản phẩm, hoặc chỉ đơn giản là khởi tạo rỗng
     setVariants([{ variant_attributes: [], variant_sku: "", variant_price: 0 }]);
@@ -200,7 +203,7 @@ function AddProduct() {
 
   const handleChangeIndustry3 = (event) => {
     setSelectedIndustry3(event.target.value);
-    axios.get(`http://localhost:3002/category-info/${event.target.value}`)
+    axios.get(`${api}category-info/${event.target.value}`)
       .then(response => {
         const attributes = response.data.attributes;
         const attributeData = attributes.map(attribute => {
@@ -335,7 +338,7 @@ function AddProduct() {
   return (
     <>
       <div className="addproduct-container">
-        <div className="title"> Add New Product</div>
+        <div className="title">Add Product</div>
         <div className="basic-info">
           <Paper style={{ padding: "2% 3% 3% 3%" }}>
             <Grid container spacing={0}>
@@ -777,6 +780,12 @@ function AddProduct() {
         </TableContainer>
 
         <div className="btn-add">
+          <button
+            className="btn-cancel"
+            onClick={() => navigate(`/${tenantURL}/business/product`)}
+          >
+            Cancel
+          </button>
           <button
             className="btn"
             onClick={handleAddProduct}

@@ -29,7 +29,7 @@ function DetailProduct() {
       publish_Year: "2023",
       language: "Tiếng Việt",
       description:
-        "Câu chuyện của Chainsaw Man mô tả một thế giới nơi ma quỷ và con người cùng tồn tại trên Trái đất, và trong đó con người có thể lập hiệp ước để đạt được sức mạnh của quỷ. Nhân vật chính là Denji, để hoàn trả số nợ khổng lồ của cha để lại, Denji cùng con quỷ nhỏ Pochita làm tất cả mọi công việc để có thể hoàn nợ. Sau một tai nạn, Denji bị giết, Pochita đã hòa làm một với Denji, giúp cậu hồi sinh và ....",
+        "Áo thun Adidas 3 Colors Future Icons Sportswear H39787 màu trắng, XL",
     },
     {
       name: "Chainsaw Man - Tập 9 - Tặng kèm lót ly",
@@ -102,21 +102,21 @@ function DetailProduct() {
     },
     {
       title: "Amazing Story! You will LOVE it",
-      rating: "3",
+      rating: "5",
       content:
         "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
       time: "Staci, February 22, 2020",
     },
     {
       title: "Amazing Story! You will LOVE it",
-      rating: "1",
+      rating: "5",
       content:
         "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
       time: "Staci, February 22, 2020",
     },
     {
       title: "Amazing Story! You will LOVE it",
-      rating: "1",
+      rating: "4",
       content:
         "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
       time: "Staci, February 22, 2020",
@@ -201,7 +201,7 @@ function DetailProduct() {
   const handleSizeClick = (size) => {
     setSelectedSize(size);
   };
-  const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+  const sizes = ["M", "L"];
 
   const [selectedColor, setSelectedColor] = useState("");
 
@@ -227,7 +227,7 @@ function DetailProduct() {
   const [product, setProduct] = useState();
   const getProduct = async () => {
     const product = await axios.get(`${api}product/${id}`);
-    console.log(product.data);
+    console.log('data-product', product.data);
     setProduct(product.data);
   };
   const addToCart = async () => {
@@ -261,7 +261,7 @@ function DetailProduct() {
                 {product.pictures.map((image, index) => (
                   <img
                     key={index}
-                    src={image}
+                    src={image.picture_url}
                     alt={`Thumbnail ${index}`}
                     className={
                       selectedImage === index
@@ -273,14 +273,14 @@ function DetailProduct() {
                 ))}
               </div>
               <div className="main-image-container">
-                <img src={product.pictures[selectedImage]} alt="Main" />
+                <img src={product.avatar.picture_url} alt="Main" />
               </div>
             </div>
             <div className="name-price">
               <div className="name">{product.name}</div>
               <div className="price"></div>
               {/* chua co */}
-              <div className="color">
+              {/* <div className="color">
                 <div className="title-color">
                   Chọn màu sắc: <strong>{selectedColor.name}</strong>
                 </div>
@@ -303,30 +303,29 @@ function DetailProduct() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </div> */}
               {/* chua co */}
               <div className="size">
                 <div className="title-size">
-                  Chọn kích cỡ: <strong>{selectedSize}</strong>{" "}
+                  Choose size: <strong>{selectedSize}</strong>{" "}
                 </div>
                 <div className="size-content">
                   {sizes.map((size, index) => (
                     <div
                       key={index}
-                      className={`size-container ${
-                        selectedSize === size ? "active" : ""
-                      }`}
+                      className={`size-container ${selectedSize === size ? "active" : ""
+                        }`}
                       onClick={() => handleSizeClick(size)}
                     >
                       {size}
                     </div>
                   ))}
                 </div>
-                <div className="table-size">Bảng quy đổi kích cỡ</div>
+                <div className="table-size">Size conversion table</div>
               </div>
               {/* chua co */}
               <div className="quantity">
-                <div className="quantity-name">Số lượng:</div>
+                <div className="quantity-name">Quantity:</div>
                 <div className="quantity-content">
                   <div className="change-quantity">
                     <button
@@ -351,18 +350,18 @@ function DetailProduct() {
                         accumulator + currentValue.quantity,
                       0
                     )}{" "} */}
-                    sản phẩm có sẵn
+                    10 products available
                   </div>
                 </div>
               </div>
               <div className="button-add-buy">
                 <div className="buy_section">
                   <button className="add_wishlist_button" onClick={addToCart}>
-                    Thêm vào giỏ hàng
+                    Add to cart
                   </button>
                 </div>
                 <div className="cart_section">
-                  <button className="buy_now_button">Mua ngay</button>
+                  <button className="buy_now_button">Buy Now</button>
                 </div>
               </div>
             </div>
@@ -370,7 +369,7 @@ function DetailProduct() {
           <div className="detail-product">
             <div className="spec_info">
               <div className="bold while_background title_rp">
-                Thông tin sản phẩm
+                Information Product
               </div>
               <table className="while_background spec_product_table">
                 {/* {product.detailInfo.map((detail, index) => (
@@ -381,7 +380,7 @@ function DetailProduct() {
                 ))} */}
 
                 <tr>
-                  <td>Nội dung: </td>
+                  <td>Content: </td>
                 </tr>
               </table>
               <div className="spec_descrip">
@@ -393,7 +392,7 @@ function DetailProduct() {
           <div className="review-product">
             <div className="spec_evaluate">
               <div className="bold while_background title_rp">
-                Đánh giá sản phẩm
+                Product reviews
               </div>
               <div className="Start_rating rating_grid">
                 <div className="while_background evaluate_product">
@@ -407,7 +406,7 @@ function DetailProduct() {
                     <div className="while_background Start_rating">
                       <ReactStars
                         count={5}
-                        value={aver_star}
+                        value={4.5}
                         isHalf={true}
                         activeColor={"#F7B32D"}
                         size={50}
@@ -427,7 +426,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>1 sao</div>
+                      <div>1 star</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div
@@ -451,7 +450,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>2 sao</div>
+                      <div>2 stars</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div
@@ -475,7 +474,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>3 sao</div>
+                      <div>3 stars</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div
@@ -499,7 +498,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>4 sao</div>
+                      <div>4 stars</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div
@@ -523,7 +522,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>5 sao</div>
+                      <div>5 stars</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div
