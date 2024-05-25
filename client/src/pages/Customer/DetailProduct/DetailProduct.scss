@@ -81,7 +81,7 @@
     align-items: center;
     border: 1.5px solid #bfbfbf;
     cursor: pointer;
-    padding: 5px;
+    padding: 5px 10px;
   }
   .color-img {
     width: 30px;
@@ -360,4 +360,14 @@
     margin-bottom: 20px;
     display: block;
   }
+  .add-to-cart-success {
+    margin-top: 10px;
+    padding: 10px;
+    color: white;
+    background-color: green;
+    text-align: center;
+    border-radius: 5px;
+    width: 50%;
+  }
+  
 }
