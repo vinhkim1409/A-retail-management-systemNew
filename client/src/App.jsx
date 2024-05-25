@@ -38,6 +38,8 @@ import StaffList from "./pages/Business/Staff/StaffList";
 import CustomerBlacklist from "./pages/Business/CustomerBlacklist/CustomerBlacklist"
 import EditWebsite from "./pages/Business/Website/EditWebsite/EditWebsite";
 import CategoryM from "./pages/Business/Category/CategoryM/CategoryM";
+import ImportGoods from "./pages/Business/ImportGoods/ImportGoods";
+import InfoShop from "./pages/Business/InfoShop/InfoShop";
 
 
 
@@ -87,10 +89,8 @@ function App() {
           <Route path="business" element={<Business />} />
         </Route>
 
-        <Route path="/:tenatURL/business" element={<BusinessLayout />}>
+        <Route path="/:tenantURL/business" element={<BusinessLayout />}>
           <Route index element={<BusinessHome />} />
-          <Route path="item" element={<DashboardAdmin />} />
-          <Route path="transaction" element={<DashboardAdmin />} />
           <Route path="customer" element={<CustomerList />} />
           <Route path="employee" element={<StaffList />} />
           <Route path="warehouse" element={<Warehouse />} />
@@ -104,11 +104,14 @@ function App() {
           <Route path="customer-blacklist" element={<CustomerBlacklist />} />
           <Route path="website" element={<EditWebsite />} /> 
           <Route path="category" element={<CategoryM />} />
+          <Route path="import-goods" element={<ImportGoods />} />
+          <Route path="info-shop" element={<InfoShop />} />
         </Route>
 
         <Route path="/:tenantURL/customer" element={<CustomerLayout />}>
           <Route index element={<Home />} />
           <Route path="detail-product/:id" element={<DetailProductCustomer />} />
+          <Route path="detail-product" element={<DetailProductCustomer />} />
           <Route path="address" element={<Address />} />
           <Route path="address-edit" element={<AddressEdit />} />
           <Route path="address-addnew" element={<AddNewAddress />} />

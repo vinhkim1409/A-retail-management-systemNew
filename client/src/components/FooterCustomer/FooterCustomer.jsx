@@ -14,15 +14,15 @@ const Footer = () => {
 
     const footerSections = [
         {
-            text: "Liên hệ",
+            text: "Contact",
             logos: images.contactLogos
         },
         {
-            text: "Đơn vị vận chuyển",
+            text: "Shipping unit",
             logos: images.deliveryLogos
         },
         {
-            text: "Thanh toán",
+            text: "Payment",
             logos: images.paymentLogos
         }
     ]
@@ -49,7 +49,7 @@ const Footer = () => {
             <div className="col-md-6 order-md-1">
                 <div className="p-0">
                     <div className="text-container">
-                        <p><strong>Thông tin liên hệ cửa hàng</strong></p>
+                        <p><strong>Store contact information</strong></p>
                         <p>0123456789 - bkbook@gmail.com</p>
                         <p><FontAwesomeIcon icon={faHouse} /> Phòng 608, Lầu 6, Tòa nhà H6, Đại học Bách Khoa TPHCM, Khu phố Tân Lập, Phường Đông Hòa, Thành phố Dĩ An, Tỉnh Bình Dương</p>
                         <p><FontAwesomeIcon icon={faHouse} /> 268 Lý Thường Kiệt, phường 10, quận 10, Thành phố Hồ Chí Minh</p>

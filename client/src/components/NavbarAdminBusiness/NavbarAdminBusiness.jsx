@@ -20,10 +20,6 @@ const NavbarAdminBusiness = () => {
   },[])
   return (
     <div className="navbar-admin-business">
-      <div className="search">
-        <FontAwesomeIcon icon={faMagnifyingGlass} className="icon-search" />
-      </div>
-
       <div className="avt">
         <div className="info">
           <div className="name">{userBusiness?.lastname}</div>

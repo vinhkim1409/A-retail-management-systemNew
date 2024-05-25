@@ -78,7 +78,9 @@ function CategoryM() {
   const getCatergory = async () => {
     const Category = await axios.get(`${api}category`);
     setCategorys(Category.data);
+    console.log(Category)
   };
+
   useEffect(() => {
     getCatergory();
   }, []);

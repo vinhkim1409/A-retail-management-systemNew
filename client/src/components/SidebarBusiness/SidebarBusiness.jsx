@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import './SidebarBusiness.scss';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartSimple, faShirt, faBook, faList, faPeopleGroup, faBan, faUsers, faGlobe,faCircleUp } from '@fortawesome/free-solid-svg-icons';
+import { faChartSimple, faShirt, faBook, faList, faPeopleGroup, faBan, faUsers, faGlobe, faUpload, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
+import logo from "../../assets/logo.png"
 
 const SidebarAdmin = () => {
     const [activeTab, setActiveTab] = useState(null);
@@ -72,12 +73,6 @@ const SidebarAdmin = () => {
             subTabs: []
         },
         {
-            name: 'Customer Blacklist',
-            path: `/${tenantURL}/business/customer-blacklist`,
-            icon: faBan,
-            subTabs: []
-        },
-        {
             name: 'Staff',
             path: `/${tenantURL}/business/employee`,
             icon: faUsers,
@@ -95,12 +90,25 @@ const SidebarAdmin = () => {
             icon: faCircleUp,
             subTabs: []
         },
-
+{
+            name: 'Import Goods',
+            path: `/${tenantURL}/business/import-goods`,
+            icon: faUpload,
+            subTabs: []
+        },
+        {
+            name: 'Connection Information',
+            path: `/${tenantURL}/business/info-shop`,
+            icon: faCircleInfo,
+            subTabs: []
+        },
     ];
 
     return (
         <div className="sidebar-business-container">
-            <div className="logo">Logo</div>
+            <div className="logo">
+                <img src={logo} alt="logo" className="img-logo"/>
+            </div>
             <div className="sidebar-content">
                 {tabs.map((tab, index) => (
                     <div key={index}>

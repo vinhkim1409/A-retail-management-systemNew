@@ -1,7 +1,6 @@
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
 const Customer = require("../models/customerModel");
-
 function getDayOfWeek(day) {
   let dayOfWeek;
   switch (day) {

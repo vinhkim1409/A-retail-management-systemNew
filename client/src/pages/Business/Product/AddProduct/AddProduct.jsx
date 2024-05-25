@@ -30,6 +30,7 @@ import categories_level1 from "../../Data-Industry/categories_level1";
 import categories_level2 from "../../Data-Industry/categories_level2";
 import categories_level3 from "../../Data-Industry/categories_level3";
 import { useParams } from 'react-router-dom';
+import { api } from "../../../../constant/constant";
 
 
 const styles = {
@@ -202,7 +203,7 @@ function AddProduct() {
 
   const handleChangeIndustry3 = (event) => {
     setSelectedIndustry3(event.target.value);
-    axios.get(`http://localhost:3002/category-info/${event.target.value}`)
+    axios.get(`${api}category-info/${event.target.value}`)
       .then(response => {
         const attributes = response.data.attributes;
         const attributeData = attributes.map(attribute => {

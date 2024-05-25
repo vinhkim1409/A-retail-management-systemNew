@@ -72,25 +72,13 @@ const OrderCustomer = () => {
           className={`tablinks ${activeTab === "Wait-pay" ? "active" : ""}`}
           onClick={(e) => handleTabClick(e, "Wait-pay")}
         >
-          Wait Pay
+          Unpaid
         </button>
         <button
           className={`tablinks ${activeTab === "Transport" ? "active" : ""}`}
           onClick={(e) => handleTabClick(e, "Transport")}
         >
-          Transport
-        </button>
-        <button
-          className={`tablinks ${activeTab === "Delivered" ? "active" : ""}`}
-          onClick={(e) => handleTabClick(e, "Delivered")}
-        >
-          Delivered
-        </button>
-        <button
-          className={`tablinks ${activeTab === "Cancelled" ? "active" : ""}`}
-          onClick={(e) => handleTabClick(e, "Cancelled")}
-        >
-          Cancelled
+          Paid
         </button>
       </div>
 

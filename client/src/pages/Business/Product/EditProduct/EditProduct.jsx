@@ -249,7 +249,7 @@ function EditProduct() {
 
   const handleChangeIndustry3 = (event) => {
     setSelectedIndustry3(event.target.value);
-    axios.get(`http://localhost:3002/category-info/${event.target.value}`)
+    axios.get(`${api}category-info/${event.target.value}`)
       .then(response => {
         const attributes = response.data.attributes;
         const attributeData = attributes.map(attribute => {
@@ -369,7 +369,7 @@ function EditProduct() {
 
     console.log('productData', productData)
 
-    axios.put(`${api}product/edit/${id}`, productData)
+    axios.put(`${api}product/${id}`, productData)
       .then(response => {
         console.log("Product updated successfully:", response.data);
       })

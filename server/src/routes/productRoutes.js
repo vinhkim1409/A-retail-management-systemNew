@@ -24,7 +24,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.put('/delete/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const productId = req.params.id;
 
@@ -32,7 +32,7 @@ router.put('/delete/:id', async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({ message: 'Invalid product ID' });
     }
-    const deletedProduct = await Product.findOneAndUpdate({_id:productId},{isDelete: true});
+    const deletedProduct = await Product.findByIdAndDelete(productId);
 
     if (!deletedProduct) {
       return res.status(404).json({ message: 'Product not found' });
@@ -56,11 +56,11 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put('/edit/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const productId = req.params.id;
     const updateData = req.body;
-    const updatedProduct = await Product.findOneAndUpdate({_id:productId}, updateData, { new: true, runValidators: true });
+    const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, { new: true, runValidators: true });
 
     if (!updatedProduct) {
       return res.status(404).json({ message: 'Product not found' });
