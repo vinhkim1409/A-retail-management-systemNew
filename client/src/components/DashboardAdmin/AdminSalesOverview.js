@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Select, MenuItem } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import DashboardCard from "./DashboardCard";
 import Chart from "react-apexcharts";
 import ReactApexChart from "react-apexcharts";
+import axios from "axios";
+import { api } from "../../constant/constant";
+import moment from "moment"
 
 const AdminSalesOverview = ({ row, data1, data2 }) => {
   // select
@@ -18,79 +21,29 @@ const AdminSalesOverview = ({ row, data1, data2 }) => {
   const primary = theme.palette.primary.main;
   const secondary = theme.palette.secondary.main;
 
-  // chart
-  //   const optionscolumnchart = {
-  //     chart: {
-  //       type: "bar",
-  //       fontFamily: "'Plus Jakarta Sans', sans-serif;",
-  //       foreColor: "#adb0bb",
-  //       toolbar: {
-  //         show: true,
-  //       },
-  //       height: 400,
-  //     },
-  //     colors: [primary, secondary],
-  //     plotOptions: {
-  //       bar: {
-  //         horizontal: false,
-  //         barHeight: "60%",
-  //         columnWidth: "70%",
-  //         borderRadius: [7],
-  //         borderRadiusApplication: "end",
-  //         borderRadiusWhenStacked: "all",
-  //       },
-  //     },
+  const [data, setData] = useState();
+  const [dayOfMonth, setDayOfMonth] = useState([]);
+  const getData = async () => {
+    const data = await axios.get(`${api}admin/get-data-dashboard`);
 
-  //     stroke: {
-  //       show: true,
-  //       width: 10,
-  //       lineCap: "butt",
-  //       colors: ["transparent"],
-  //     },
-  //     dataLabels: {
-  //       enabled: false,
-  //     },
-  //     legend: {
-  //       show: true,
-  //     },
-  //     grid: {
-  //       borderColor: "rgba(0,0,0,0.1)",
-  //       strokeDashArray: 3,
-  //       xaxis: {
-  //         lines: {
-  //           show: false,
-  //         },
-  //       },
-  //     },
-  //     yaxis: {
-  //       tickAmount: 4,
-  //     },
-  //     xaxis: {
-  //       categories: row,
-  //       axisBorder: {
-  //         show: false,
-  //       },
-  //     },
-  //     tooltip: {
-  //       theme: theme.palette.mode === "dark" ? "dark" : "light",
-  //       fillSeriesColor: false,
-  //     },
-  //   };
-  //   const seriescolumnchart = [
-  //     {
-  //       name: "Revenue Of Website",
-  //       data: data1.data,
-  //     },
-  //     {
-  //       name: "Revenue Of Sendo",
-  //       data: data2.data,
-  //     },
-  //   ];
+    const dayArray = data.data.data.month.dayOfMonth.map((day, index) => {
+      if (index === 0) {
+        return moment(day.firstDate).format('DD/MM/YYYY');
+      }
+      return moment(day.endDate).format('DD/MM/YYYY');
+    });
+    console.log(dayArray);
+    setDayOfMonth(dayArray)
+    setData(data.data.data);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   const options = {
     series: [
       {
-        name:"Revenue",
-        data: [3100000, 4000000, 2800000, 5100000, 4200000, 10900000, 10000000],
+        name: "Revenue",
+        data: data?.month?.RevenueMonth,
       },
     ],
     options: {
@@ -98,8 +51,8 @@ const AdminSalesOverview = ({ row, data1, data2 }) => {
         height: 350,
         type: "area",
         zoom: {
-            enabled: false,
-          },
+          enabled: false,
+        },
       },
       dataLabels: {
         enabled: false,
@@ -108,23 +61,10 @@ const AdminSalesOverview = ({ row, data1, data2 }) => {
         curve: "smooth",
       },
       xaxis: {
-   
-        categories: [
-          "May-01",
-          "May-05",
-          "May-10",
-          "May-15",
-          "May-20",
-          "May-25",
-          "May-31",
-          
-        ],
-        
+        categories: dayOfMonth,
       },
       tooltip: {
-        x: {
-          format: "yy/MM/dd",
-        },
+        
       },
     },
   };

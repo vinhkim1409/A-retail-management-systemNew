@@ -1,6 +1,7 @@
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
 const Customer = require("../models/customerModel");
+
 function getDayOfWeek(day) {
   let dayOfWeek;
   switch (day) {
@@ -188,7 +189,7 @@ const dashboardController = {
       const totalRevenueData = totalOrder.reduce(function (total, order) {
         if (
           order.createdAt >= dayOfMonth[index].firstDate &&
-          order.createdAt >= dayOfMonth[index].endDate
+          order.createdAt <= dayOfMonth[index].endDate
         ) {
           return total + parseInt(order.totalPrice);
         } else {
@@ -302,5 +303,6 @@ const dashboardController = {
       },
     });
   },
+  
 };
 module.exports = dashboardController;

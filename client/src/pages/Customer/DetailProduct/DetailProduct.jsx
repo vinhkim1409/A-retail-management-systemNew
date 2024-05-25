@@ -14,6 +14,7 @@ import axios from "axios";
 import { api } from "../../../constant/constant";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { useSelector } from "react-redux";
+import moment from "moment";
 
 function DetailProduct() {
   const BookList = [
@@ -85,6 +86,7 @@ function DetailProduct() {
     },
   ];
 
+
   const Comments = [
     {
       title: "Amazing Story! You will LOVE it",
@@ -122,6 +124,10 @@ function DetailProduct() {
       time: "Staci, February 22, 2020",
     },
   ];
+
+  
+
+
   const customer = useSelector(
     (state) => state.authCustomer.login?.currentUser
   );
@@ -225,11 +231,19 @@ function DetailProduct() {
 
   ///get product
   const [product, setProduct] = useState();
+  const [review,setReview] = useState([]);
   const getProduct = async () => {
     const product = await axios.get(`${api}product/${id}`);
     console.log(product.data);
     setProduct(product.data);
   };
+
+  const getReview=async()=>{
+    const review = await axios.get(`${api}review/get-by-product/${id}`)
+    console.log(review.data);
+    setReview(review.data.data)
+  }
+
   const addToCart = async () => {
     if (!customer) {
       navigate(`/${tenantURL}/customer/login`);
@@ -250,6 +264,7 @@ function DetailProduct() {
   };
   useEffect(() => {
     getProduct();
+    getReview();
   }, []);
   return (
     <>
@@ -399,7 +414,7 @@ function DetailProduct() {
                 <div className="while_background evaluate_product">
                   <div>
                     <div className="while_background start_rating_number">
-                      {aver_star}/{" "}
+                      {product.ratingPoint}/{" "}
                       <span className="while_background static_number_star_rating">
                         5
                       </span>
@@ -407,7 +422,7 @@ function DetailProduct() {
                     <div className="while_background Start_rating">
                       <ReactStars
                         count={5}
-                        value={aver_star}
+                        value={product.ratingPoint}
                         isHalf={true}
                         activeColor={"#F7B32D"}
                         size={50}
@@ -542,18 +557,18 @@ function DetailProduct() {
                 </div>
               </div>
 
-              {Comments.map((acomment, index) => (
+              {review?.map((acomment, index) => (
                 <div className="while_background" key={index}>
                   <div className="while_background comment_grid">
                     <div className="while_background flex title_comment_box">
                       <div className="while_background comment_title">
                         {" "}
-                        {acomment.title}
+                        {acomment?.title}
                       </div>
                       <div className="while_background">
                         <ReactStars
                           count={5}
-                          value={acomment.rating}
+                          value={acomment?.ratingPoint}
                           isHalf={true}
                           activeColor={"#F7B32D"}
                           size={30}
@@ -563,11 +578,11 @@ function DetailProduct() {
                     </div>
                     <div className="while_background comment_content">
                       {" "}
-                      {acomment.content}
+                      {acomment?.description}
                     </div>
                     <div className="while_background comment_time">
                       {" "}
-                      {acomment.time}
+                      {moment(acomment?.createdAt).format("D MMM, YYYY h:mm A")}
                     </div>
                   </div>
                 </div>

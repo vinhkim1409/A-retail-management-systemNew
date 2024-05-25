@@ -26,7 +26,7 @@ const staffController = {
         firstname:firstname,
         lastname:lastname,
         email:email,
-        phoneNumber:phone,
+        phoneNumber:phoneNumber,
         avatar:avatar,
         position:position,
         password:hashed,

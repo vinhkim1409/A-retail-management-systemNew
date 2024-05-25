@@ -11,11 +11,11 @@ const Navbar = () => {
   const { tenantURL } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log(tenantURL);
+ 
   const customer = useSelector(
     (state) => state.authCustomer.login?.currentUser?.resCustomer
   );
-  console.log(customer);
+  
   const handleLogOut = () => {
     dispatch(logoutCustomerSuccess());
     navigate(`/${tenantURL}/customer/login`);

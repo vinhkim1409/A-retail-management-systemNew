@@ -1,10 +1,33 @@
 import React, { useState } from "react";
 import "./AddNewReview.scss";
 import { Grid, InputLabel, OutlinedInput, Rating, Stack } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { api } from "../../../../constant/constant";
+
 function AddNewReview() {
+  const customer = useSelector(
+    (state) => state.authCustomer.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${customer?.accessToken}`,
+    },
+  };
+  const navigate = useNavigate();
+  const { tenantURL, id } = useParams();
   const [stars, setStars] = useState(0);
-  const [title,setTitle] = useState("");
-  const [desc,setDesc] = useState("")
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const addNewReview = async () => {
+    const newReview = await axios.post(`${api}review/add/${id}`, { 
+      title: title,
+      point: stars,
+      desc: desc,
+    },config);
+    console.log(newReview.data);
+  };
   return (
     <>
       <div className="Addnewreview-container">
@@ -32,11 +55,11 @@ function AddNewReview() {
                 {"Add a title"}
               </InputLabel>
               <OutlinedInput
-                placeholder="3000 characters remaining "
+                placeholder="300 characters remaining "
                 multiline
                 sx={{ boxShadow: 3 }}
-                onChange={(event)=>{
-                  setTitle(event.target.value)
+                onChange={(event) => {
+                  setTitle(event.target.value);
                 }}
               />
             </Stack>
@@ -56,8 +79,8 @@ function AddNewReview() {
                 multiline
                 rows={10}
                 sx={{ boxShadow: 3 }}
-                onChange={(event)=>{
-                  setDesc(event.target.value)
+                onChange={(event) => {
+                  setDesc(event.target.value);
                 }}
               />
             </Stack>
@@ -65,9 +88,14 @@ function AddNewReview() {
         </div>
 
         <div className="btn-box">
-          <button className="btn" onClick={()=>{
-            console.log(title,desc)
-          }}>Review</button>
+          <button
+            className="btn"
+            onClick={() => {
+              addNewReview()
+            }}
+          >
+            Review
+          </button>
         </div>
       </div>
     </>

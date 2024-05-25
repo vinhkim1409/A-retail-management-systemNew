@@ -5,6 +5,26 @@ const Cart = require("../models/cartModel");
 const { default: mongoose } = require("mongoose");
 const authMiddlewares=require("../middlewares/authMiddlewares")
 
+
+async function deleteProductFromCart(conditionCart, idProductInCart) {
+  try {
+    const updateCart = await Cart.findOneAndUpdate(
+      conditionCart,
+      { $pull: { products: { _id: idProductInCart } } },
+      { new: true }
+    );
+    if (!updateCart) {
+      console.log("Cart Order Failed");
+      return false
+    } else {
+      console.log("Cart Order Success");
+      return true
+    }
+  } catch (error) {
+    console.error("Lỗi khi cố gắng xóa sản phẩm khỏi giỏ hàng:", error);
+  }
+}
+
 router.get("/",authMiddlewares.verifyTokenCustomer, async (req, res) => {
   try {
     const getCartCondition = {
@@ -51,4 +71,18 @@ router.put("/add-product",authMiddlewares.verifyTokenCustomer, async (req, res) 
     res.status(500).json({ message: error.message });
   }
 });
+router.put("/delete-product/:id",authMiddlewares.verifyTokenCustomer, async (req, res) => {
+  try {
+
+    const conditionCart = {customerID:new mongoose.Types.ObjectId(req.user[0]._id)}
+    const idProductInCart=req.params.id
+    if(deleteProductFromCart(conditionCart,idProductInCart))
+      {
+        res.json({success:true,data:idProductInCart});
+      }
+   
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+})
 module.exports = router;

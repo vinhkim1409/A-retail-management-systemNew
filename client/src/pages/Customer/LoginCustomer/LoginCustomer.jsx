@@ -3,31 +3,45 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import "./LoginCustomer.scss";
 import google from "../../../assets/google.png";
-import background from "../../../assets/login-background.png"
+import { Snackbar, Alert } from "@mui/material";
+import background from "../../../assets/login-background.png";
 import { loginCustomer } from "../../../redux/apiRequest";
 function LoginCustomer() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {tenantURL}=useParams()
+  const [open, setOpen] = useState(false);
+  const { tenantURL } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleLogin = (e) => {
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     const customer = {
       email: email,
       password: password,
-      tenantURL: tenantURL
+      tenantURL: tenantURL,
     };
 
-    loginCustomer(customer, dispatch,navigate)
-    
+    const login = await loginCustomer(customer, dispatch, navigate);
+    if (login) {
+      navigate(`/${tenantURL}/customer`,{state:{
+        loginState:login
+      }});
+    }
   };
   return (
     <>
       <div className="loginCustomer-form">
         <div className="title">
           <h1>Welcome to CoolMate!</h1>
-          
+
           <img src={background} alt="" className="img" />
         </div>
         <div className="form_container  rounded ">
@@ -66,7 +80,9 @@ function LoginCustomer() {
                 }}
               />
             </div>
-            <button className="btn mb-2" onClick={handleLogin}>Login</button>
+            <button className="btn mb-2" onClick={handleLogin}>
+              Login
+            </button>
             <div className="mb-2 text-center">
               <input
                 type="checkbox"
@@ -82,11 +98,27 @@ function LoginCustomer() {
               Forgot <a href={`/${tenantURL}/forgotpassword`}>Password ?</a>
             </p>
             <p className="">
-              You do not have account yet? <a href={`/${tenantURL}/customer/signup`}>Sign up</a>
+              You do not have account yet?{" "}
+              <a href={`/${tenantURL}/customer/signup`}>Sign up</a>
             </p>
           </form>
         </div>
       </div>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {"Login Success"}!!
+        </Alert>
+      </Snackbar>
     </>
   );
 }

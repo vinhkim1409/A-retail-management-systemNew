@@ -25,16 +25,20 @@ const Checkout = () => {
     if (!customer) {
       navigate(`/${tenantURL}/customer/login`);
     }
-    console.log(location.state);
-    setOrder(location.state);
-    const getShippingFee = async () => {
-      const shippingFee = await shippingAPI.countShippingFee(
-        location.state,
-        customer.resCustomer?.address[addressChoice]
-      );
-      setShippingFee(shippingFee.data.data.total);
-    };
-    getShippingFee();
+    if (!location.state) {
+      navigate(`/${tenantURL}/customer/cart`);
+    } else {
+      console.log(location.state);
+      setOrder(location.state);
+      const getShippingFee = async () => {
+        const shippingFee = await shippingAPI.countShippingFee(
+          location.state,
+          customer.resCustomer?.address[addressChoice]
+        );
+        setShippingFee(shippingFee.data.data.total);
+      };
+      getShippingFee();
+    }
   }, []);
   const expressDeliveryProvinces = ["TPHCM", "Hà Nội", "Đà Nẵng"];
 
@@ -62,26 +66,28 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState(0);
 
   useEffect(() => {
-    setName(
-      `${customer.resCustomer?.address[addressChoice]?.firstName}${customer.resCustomer?.address[addressChoice]?.lastName}`
-    );
-    setPhone(customer.resCustomer?.address[addressChoice]?.phoneNumber);
-    setHasExpress(
-      expressDeliveryProvinces.includes(
-        customer.resCustomer?.address[addressChoice]?.province
-      )
-    );
-   
-    const getShippingFee = async () => {
-      const shippingFee = await shippingAPI.countShippingFee(
-        location.state,
-        customer.resCustomer?.address[addressChoice]
+    if (location.state) {
+      setName(
+        `${customer.resCustomer?.address[addressChoice]?.firstName}${customer.resCustomer?.address[addressChoice]?.lastName}`
       );
-      console.log(shippingFee)
-      setShippingFee(shippingFee.data.data.total);
-    };
-    
-    getShippingFee();
+      setPhone(customer.resCustomer?.address[addressChoice]?.phoneNumber);
+      setHasExpress(
+        expressDeliveryProvinces.includes(
+          customer.resCustomer?.address[addressChoice]?.province
+        )
+      );
+
+      const getShippingFee = async () => {
+        const shippingFee = await shippingAPI.countShippingFee(
+          location.state,
+          customer.resCustomer?.address[addressChoice]
+        );
+        console.log(shippingFee);
+        setShippingFee(shippingFee.data.data.total);
+      };
+
+      getShippingFee();
+    }
   }, [addressChoice]);
 
   const deliveryMethodTexts = [
@@ -142,7 +148,7 @@ const Checkout = () => {
         config
       );
       if (paymentMomo) {
-        window.open(paymentMomo.data.payUrl, "_self");
+        window.open(paymentMomo.data?.momoInfo?.payUrl, "_self");
       }
       console.log(paymentMomo.data);
     } else {

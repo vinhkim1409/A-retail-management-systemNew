@@ -68,7 +68,10 @@ const productSchema = new mongoose.Schema({
     start_date: Date,
     end_date: Date,
     is_check_date: Boolean
-  }
+  },
+  ratingPoint: {type:String,default:"0"},
+  ratingCount: {type:Number,default:0},
+  isDelete:{type:Boolean,default:false}
 }, {
   timestamps: true
 });

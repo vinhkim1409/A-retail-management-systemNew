@@ -26,6 +26,7 @@ import {
 import shirt from "../../../assets/shirt.jpg";
 import axios from "axios";
 import { api } from "../../../constant/constant";
+import { useParams } from 'react-router-dom';
 
 const style = {
   position: "absolute",
@@ -50,6 +51,7 @@ const StyledTable = styled(Table)(() => ({
 }));
 
 function ProductM() {
+  const { tenantURL } = useParams();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -83,12 +85,12 @@ function ProductM() {
         >
           <FontAwesomeIcon icon={faTrashCan} />
         </button>
-        <a href={`/business/product/edit/${row._id}`}>
+        <a href={`product/edit/${row._id}`}>
           <button className="btn-icon">
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
         </a>
-        <a href={`/business/product/edit/${row._id}`}>
+        <a href={`product/edit/${row._id}`}>
           <button className="btn-icon">
             <FontAwesomeIcon icon={faEye} />
           </button>
@@ -105,7 +107,7 @@ function ProductM() {
   //delete product
   const handleDeleteProduct = async () => {
     console.log(idDelete);
-    const deleteProduct = await axios.put(`${api}product/delete/${idDelete}`);
+    const deleteProduct = await axios.delete(`${api}product/${idDelete}`);
     if (deleteProduct.data.success) {
       console.log("Delete Product Success");
     }
@@ -117,16 +119,6 @@ function ProductM() {
     try {
       const Products = await axios.get(`${api}product`);
       let filteredProducts = Products.data;
-      if (filter !== 'All') {
-        filteredProducts = Products.data.filter(product => {
-          if (filter === 'Active') {
-            return !product.isDeleted;
-          } else if (filter === 'Deactive') {
-            return product.isDeleted;
-          }
-          return true; // Default case
-        });
-      }
       setProducts(filteredProducts);
       setLoading(false);
     } catch (error) {
@@ -153,31 +145,9 @@ function ProductM() {
       <div className="ProductM-container">
         <div className="title"> Product Management</div>
         <div className="toolkit">
-          <div className="searchbox">
-            <TextField
-              id="outlined-basic"
-              variant="outlined"
-              size="small"
-              sx={{ mb: 1, borderRadius: "5px", backgroundColor: "white" }}
-              //onChange={handleSearch}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <button
-                      className="search-button"
-                      onClick={() => {
-                        console.log("haha");
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faMagnifyingGlass} />
-                    </button>
-                  </InputAdornment>
-                ),
-              }}
-            ></TextField>
-          </div>
+
           <div className="addbox">
-            <a href="/business/product/add">
+            <a href={`/${tenantURL}/business/product/add`}>
               <button className="btn add-btn edit">Add product</button>
             </a>
           </div>
@@ -203,31 +173,29 @@ function ProductM() {
               </Typography>
             </div>
 
-            <div className="select">
+            {/* <div className="select">
               <select value={filter} onChange={handleFilterChange} className="filter-status">
                 <option value="All">All</option>
                 <option value="Active">Active</option>
                 <option value="Deactive">Deactive</option>
               </select>
-            </div>
+            </div> */}
 
             {!loading ? (
               <StyledTable>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">
-                      <div
-                        style={{
-                          width: "60px",
-                        }}
-                      ></div>
+                    <TableCell align="center"
+                      className="table-label"
+                      sx={{ minWidth: 20 }}>
+                      Image
                     </TableCell>
                     <TableCell
                       align="left"
                       className="table-label"
-                      sx={{ minWidth: 100 }}
+                      sx={{ minWidth: 20 }}
                     >
-                      Code
+                      Product Code
                     </TableCell>
                     <TableCell
                       align="left"
@@ -237,13 +205,13 @@ function ProductM() {
                       Name
                     </TableCell>
                     <TableCell align="left" className="table-label">
+                      Variants
+                    </TableCell>
+                    <TableCell align="left" className="table-label">
                       Selling Price (VND)
                     </TableCell>
                     <TableCell align="left" className="table-label">
                       Quantity
-                    </TableCell>
-                    <TableCell align="center" className="table-label">
-                      Status
                     </TableCell>
                     <TableCell align="center" className="table-label">
                       Action
@@ -254,10 +222,11 @@ function ProductM() {
                   {products
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => (
+                      // Trong hàm render TableRow
                       <TableRow key={index}>
                         <TableCell align="center">
                           <img
-                            src={row.picture[0] ? row.picture[0] : shirt}
+                            src={row.avatar ? row.avatar.picture_url : shirt}
                             style={{
                               width: "60px",
                               height: "50px",
@@ -269,48 +238,52 @@ function ProductM() {
                         <TableCell
                           align="left"
                           className="table-label"
-                          sx={{ maxWidth: 100 }}
+                          sx={{ maxWidth: 50 }}
                         >
-                          ABCS123
+                          {row.sku}
                         </TableCell>
                         <TableCell
                           align="left"
                           className="table-label"
-                          sx={{ maxWidth: 80 }}
+                          sx={{ maxWidth: 150 }}
                         >
                           {row.name}
                         </TableCell>
-                        <TableCell align="left">
-                          <div className="saleInfo">
-                            {row.saleInfo.map((sale, index) => (
-                              <div
-                                className={`${index === 0 ? "salefirst" : "sale"
-                                  }`}
-                                key={index}
-                              >
-                                {new Intl.NumberFormat('en-US').format(sale.sellPrice)}
+                        <TableCell align="left" className="table-label" sx={{ maxWidth: 50 }}>
+                          {row.variants && row.variants.length > 0 ? (
+                            row.variants.map((variant, index) => (
+                              <div key={index}>
+                                {variant.variant_sku}
                               </div>
-                            ))}
+                            ))
+                          ) : (
+                            <p>No variants available</p>
+                          )}
+                        </TableCell>
+                        <TableCell align="left" className="table-label" sx={{ maxWidth: 10 }}>
+                          <div className="flex-row">
+                            {row.variants && row.variants.length > 0 ? (
+                              row.variants.map((variant, index) => (
+                                <div key={index}>
+                                  {variant.variant_special_price}
+                                </div>
+                              ))
+                            ) : (
+                              <p>No variants available</p>
+                            )}
                           </div>
                         </TableCell>
-                        <TableCell align="left">
-                          <div className="saleInfo">
-                            {row.saleInfo.map((sale, index) => (
-                              <div
-                                className={`${index === 0 ? "salefirst" : "sale"
-                                  }`}
-                                key={index}
-                              >
-                                {new Intl.NumberFormat('en-US').format(sale.quantity)}
-                              </div>
-                            ))}
-                          </div>
-                        </TableCell>
-                        <TableCell align="center">
-                          <div className="status">
-                            <div className={row.isDeleted === false ? "active-status" : "deactive"}>
-                              {row.isDeleted === false ? "Active" : "Deactive"}
-                            </div>
+                        <TableCell align="left" className="table-label" sx={{ maxWidth: 10 }}>
+                          <div className="flex-row">
+                            {row.variants && row.variants.length > 0 ? (
+                              row.variants.map((variant, index) => (
+                                <div key={index} className="flex-center">
+                                  {variant.variant_quantity}
+                                </div>
+                              ))
+                            ) : (
+                              <p>No variants available</p>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell align="center">
@@ -327,7 +300,7 @@ function ProductM() {
             )}
           </Box>
           <div className="pages">
-            <div className="pages-number">1-5 of {page + 1}</div>
+            <div className="pages-number">{1 * (page * 5 + 1)}-{5 * (page + 1)} of {totalProducts + 1}</div>
             <button
               className="button-back"
               onClick={() => handleChangePage(page - 1)}
@@ -338,6 +311,7 @@ function ProductM() {
                 className={`${page == 0 ? "icon-back" : "active"}`}
               />
             </button>
+            <div className="number-page">{page + 1}</div>
             <button
               className="button-next"
               onClick={() => handleChangePage(page + 1)}

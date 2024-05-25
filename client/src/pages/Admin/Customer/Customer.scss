@@ -1,55 +1,173 @@
 .CustomerAdmin-container {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
-  padding-right: 10px;
-  .title{
-    font-size: 30px;
+  justify-content: space-between;
+  .title {
+    font-size: 26px;
     font-weight: bold;
-    margin-bottom: 3%;
   }
-  .totalbox {
+  .header {
+    padding: 10px 0;
+    margin-bottom: 1%;
+  }
+  .pages {
+    width: 16%;
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    margin-bottom: 2%;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 2%;
+    margin-top: 1%;
   }
-  
-  .labelbox {
-    display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto auto;
+  .pages-number,
+  .icon-back,
+  .icon-next {
+    color: #808080;
   }
-  .allbox {
-    display: grid;
+  .button-back {
     background-color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .button-next {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .active {
+    color: black;
+  }
+  .active-tag {
+    background-color: black;
+    color: white;
+  }
+  .list-contaniner {
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+  }
+  .order-id {
+    padding-left: 4%;
+    width: 14%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: uppercase;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .customer {
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .date {
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .payment {
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .total {
+    width: 10%;
+    // border: 1px solid lightgray;
+    text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .order-status {
+    width: 10%;
+    // border: 1px solid lightgray;
+    font-family: "Inter", sans-serif;
+    text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lable-order {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 550;
+  }
+  .content-order {
+    color: #475569;
+    font-size: 14px;
+    text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .order-body {
+    cursor: pointer;
+  }
+  .order-body:hover {
+    background-color: #f5f5f5;
+  }
+  .paidTag {
     border-radius: 10px;
-    grid-column: 1;
+    background-color: #198754;
+    color: white;
+    width: 30%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
   }
-  .textlable {
-    margin-left: 8%;
-    font-weight: 700;
-    margin-top: 5px;
-    font-size: 18px;
-    color: gray;
-    text-transform: capitalize;  
-  }
-  .searchbox {
-    margin-top: 3.4%;
-    grid-column: 7;
-    margin-left: 10%;
-  }
-  .sortbox {
-    margin-top: 5.5%;
-    grid-column: 8;
-    margin-left: 9%;
-  }
-  .table {
-  }
-  .searchinput {
-    margin-right: 5px;
+  .wayPaidTag {
     border-radius: 10px;
+    background-color: #ffca2c;
+    color: black;
+    width: 50%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
   }
-  .sortinput {
-    border-radius: 10px;
+  .select-status-box {
+    width: 20%;
+    height: 60%;
+    border-radius: 8px;
+    border: 1px solid lightgray;
+  }
+  .select-status-box:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0d6efd;
+    border: 1px solid white;
+  }
+  .select-status-box:hover {
+    box-shadow: 0 0 5px #0d6efd;
+    border: 1px solid white;
+  }
+  .select-status-box:focus {
+    outline: none;
+    box-shadow: 0 0 5px #0d6efd;
+    border: 1px solid white;
+  }
+  .status {
+    display: flex;
+    padding-left: 4%;
+    align-items: center;
+    height: 60px;
+  }
+  .lable-status {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 550;
+    margin-right: 1%;
+  }
+  .blue {
+    color: #0d6efd;
+    font-weight: 400;
   }
 }

@@ -77,7 +77,7 @@ function App() {
           <Route path="forgot" element={<ForgotPassword />} />
           <Route path="verifycode" element={<VerifyCode />} />
           <Route path="resetpass" element={<ResetPassword />} />
-          <Route path="payment" element={<Payment />} />
+          <Route path="/:tenantID/payment" element={<Payment />} />
           <Route path="infodetail" element={<InfoDetail />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>

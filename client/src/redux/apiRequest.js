@@ -22,7 +22,7 @@ export const loginBusiness = async (user, dispatch, navigate) => {
     console.log(res);
     dispatch(loginSuccess({ user: res.data, tenantURL: user.tenantURL }));
 
-    navigate(`/${user.tenantURL}/business`);
+    navigate(`/${user.tenantURL}/business`, { state: { loginState: true } });
   } catch (error) {
     dispatch(loginFailed());
   }
@@ -47,7 +47,7 @@ export const loginCustomer = async (user, dispatch, navigate) => {
     dispatch(
       loginCustomerSuccess({ user: res.data.data, tenantURL: user.tenantURL })
     );
-    navigate(`/${user.tenantURL}/customer`);
+    return true;
   } catch (error) {
     dispatch(loginCustomerFailed());
   }
@@ -79,11 +79,11 @@ class ShippingAPI {
       }
     );
   };
-  countShippingFee =  (order, address) => {
+  countShippingFee = (order, address) => {
     let maxHeight = 0;
     let maxWidth = 0;
     let maxLength = 0;
-    order.forEach((product) => {
+    order?.forEach((product) => {
       if (
         product.product &&
         product.product.height &&
@@ -107,20 +107,20 @@ class ShippingAPI {
       }
     });
 
-    const weight = order.reduce((total, product) => {
+    const weight = order?.reduce((total, product) => {
       return total + product.product.weight * product.quantity;
     }, 0);
-   
+
     return axios.get(
       "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee",
       {
         params: {
           from_district_id: 3695,
           from_ward_code: "90744",
-          service_id: 53320,  
+          service_id: 53320,
           service_type_id: null,
-          to_district_id: Number(address.district.split('//')[1]),
-          to_ward_code: String(address.ward.split('//')[1]),
+          to_district_id: Number(address.district.split("//")[1]),
+          to_ward_code: String(address.ward.split("//")[1]),
           height: maxHeight,
           length: maxLength,
           weight: weight,

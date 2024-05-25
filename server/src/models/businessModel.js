@@ -10,16 +10,22 @@ const businessSchema = new mongoose.Schema({
     websiteConfig:{ type: mongoose.Schema.Types.ObjectId, ref: "websites" },
     package:{
         type:{
-            typePackage:{type:Number, required: true},
-            duration:{type: Number, required: true},
-            startDate:{type: Date, required: true},
-            endDate:{type: Date, required: true},
+            typePackage:{type:Number, required: true,default:0},
+            duration:{type: Number, required: true,default:30},
+            startDate:{type: Date, required: true,default:new Date()},
+            endDate:{type: Date, required: true,default:
+                () => {
+                    let date = new Date();
+                    date.setDate(date.getDate() + 30);
+                    return date;
+                }
+            },
         },
     },
-    customersWeb:{ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "customers" }] },
+    customersWeb:{ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "customers" }]},
     orderWeb:{ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }] },
     orderThird:{ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }] },
-    status:{type:String} // status: active, ban, pending
+    status:{type:String,default:"Active"} // status: active, ban, pending
 },{
     timestamps:true,
 });

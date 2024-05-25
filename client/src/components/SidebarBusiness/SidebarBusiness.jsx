@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import './SidebarBusiness.scss';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartSimple, faShirt, faBook, faList, faPeopleGroup, faBan, faUsers, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faChartSimple, faShirt, faBook, faList, faPeopleGroup, faBan, faUsers, faGlobe,faCircleUp } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 
 const SidebarAdmin = () => {
     const [activeTab, setActiveTab] = useState(null);
     const [activeSubTabs, setActiveSubTabs] = useState({});
     const tenantURL=useSelector((state)=>state.authBusiness.login?.tenantURL)
+    const userBusiness=useSelector((state)=>state.authBusiness.login?.currentUser?.resUser)
     const handleTabClick = (tab) => {
         if (activeTab === tab) {
             setActiveTab(null);
@@ -86,6 +87,12 @@ const SidebarAdmin = () => {
             name: 'Website',
             path: `/${tenantURL}/business/website`,
             icon: faGlobe,
+            subTabs: []
+        },
+        {
+            name: 'Upgrade',
+            path: `/${tenantURL}/payment`,
+            icon: faCircleUp,
             subTabs: []
         },
 

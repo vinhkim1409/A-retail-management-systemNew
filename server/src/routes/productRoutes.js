@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require("../models/productModel");
 const authMiddleware = require("../middlewares/authMiddlewares");
 
+
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find({});
@@ -23,15 +24,23 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.put("/delete/:id", async (req, res) => {
+router.put('/delete/:id', async (req, res) => {
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { $set: { 'extended_shipping_package.is_self_shipping': true } }, { new: true });
-    if (!updatedProduct) {
-      return res.status(404).json({ message: "Product not found" });
+    const productId = req.params.id;
+
+    // Kiểm tra xem id có phải là ObjectId hợp lệ hay không
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: 'Invalid product ID' });
     }
-    res.json({ message: "Product deleted successfully", updatedProduct });
+    const deletedProduct = await Product.findOneAndUpdate({_id:productId},{isDelete: true});
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json({ message: 'Product deleted successfully', product: deletedProduct });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Error deleting product', error: error.message });
   }
 });
 
@@ -47,12 +56,45 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/edit/:id", async (req, res) => {
+router.put('/edit/:id', async (req, res) => {
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updatedProduct);
+    const productId = req.params.id;
+    const updateData = req.body;
+    const updatedProduct = await Product.findOneAndUpdate({_id:productId}, updateData, { new: true, runValidators: true });
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Error updating product', error });
+  }
+});
+
+router.put('/update-quantity', async (req, res) => {
+  const { id, quantity, variant_sku } = req.body;
+
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    if (product.is_config_variant) {
+      const variant = product.variants.find(v => v.variant_sku === variant_sku);
+      if (!variant) {
+        return res.status(404).json({ message: 'Variant not found' });
+      }
+      variant.variant_quantity = variant.variant_quantity + quantity;
+    } else {
+      product.stock_quantity = product.stock_quantity + quantity;
+    }
+
+    await product.save();
+    res.json({ message: 'Product quantity updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating product quantity', error });
   }
 });
 

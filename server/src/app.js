@@ -81,6 +81,9 @@ function startServer() {
   const paymentRoutes = require("./routes/paymentRoutes");
   const attributeRoutes = require("./routes/attributeRoutes");
   const dashboardRoutes = require("./routes/dashboardRoutes")
+  const reviewRoutes=require("./routes/reviewRoutes")
+  const packageOrderRoutes=require("./routes/packageOrderRoutes")
+  const adminRoutes=require("./routes/adminRoutes")
 
   app.use("/product", productRoutes);
   app.use("/staff", staffRoutes);
@@ -93,6 +96,9 @@ function startServer() {
   app.use("/customer", customerRoutes);
   app.use("/attributes", attributeRoutes);
   app.use("/dashboard", dashboardRoutes);
+  app.use("/review", reviewRoutes);
+  app.use("/package", packageOrderRoutes);
+  app.use("/admin", adminRoutes);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

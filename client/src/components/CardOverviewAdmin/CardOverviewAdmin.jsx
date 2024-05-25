@@ -24,6 +24,15 @@ const CardOverviewAdmin = () => {
       <div className="number-percent">{number}%</div>
     </>
   );
+  const [data, setData] = useState();
+  const getData = async () => {
+    const data = await axios.get(`${api}admin/get-data-card`);
+    console.log(data.data);
+    setData(data.data);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <>
       <div className="CardOverview-container">
@@ -33,9 +42,15 @@ const CardOverviewAdmin = () => {
             <FontAwesomeIcon icon={faUser} className="icon" />
           </div>
           <div className="info-card">
-            <div className="number-card">{"10,000,000"}</div>
-            <div className={`${1 == 1 ? "percent-up" : "percent-down"}`}>
-              {1 == 1 ? percentUp(19.2) : percentDown(19.2)}
+            <div className="number-card">{data?.revenue?.thisMonth}</div>
+            <div
+              className={`${
+                data?.revenue?.percent.type == 1 ? "percent-up" : "percent-down"
+              }`}
+            >
+              {data?.revenue?.percent?.type == 1
+                ? percentUp(data?.revenue?.percent?.value)
+                : percentDown(data?.revenue?.percent?.value)}
             </div>
           </div>
           <div className="action">Compared With Last Month</div>
@@ -46,9 +61,15 @@ const CardOverviewAdmin = () => {
             <FontAwesomeIcon icon={faCartShopping} className="icon" />
           </div>
           <div className="info-card">
-            <div className="number-card">{5}</div>
-            <div className={`${2 == 1 ? "percent-up" : "percent-down"}`}>
-              {2 == 1 ? percentUp(5) : percentDown(5)}
+            <div className="number-card">{data?.paid?.thisMonth}</div>
+            <div
+              className={`${
+                data?.paid?.percent.type == 1 ? "percent-up" : "percent-down"
+              }`}
+            >
+              {data?.paid?.percent.type == 1
+                ? percentUp(data?.paid?.percent?.value)
+                : percentDown(data?.paid?.percent?.value)}
             </div>
           </div>
           <div className="action">Compared With Last Month</div>
@@ -59,9 +80,9 @@ const CardOverviewAdmin = () => {
             <FontAwesomeIcon icon={faCreditCard} className="icon" />
           </div>
           <div className="info-card">
-            <div className="number-card">{10}</div>
-            <div className={`${2 == 1 ? "percent-up" : "percent-down"}`}>
-              {2 == 1 ? percentUp(10) : percentDown(10)}
+            <div className="number-card">{data?.register?.thisMonth}</div>
+            <div className={`${data?.register?.percent.type == 1 ? "percent-up" : "percent-down"}`}>
+              {data?.register?.percent.type == 1 ? percentUp(data?.register?.percent?.value) : percentDown(data?.register?.percent?.value)}
             </div>
           </div>
           <div className="action">Compared With Last Month</div>

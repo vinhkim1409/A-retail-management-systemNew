@@ -72,7 +72,13 @@ const Cart = () => {
     }
   };
 
-  const handleRemoveItem = (index) => {
+  const handleRemoveItem = async (index) => {
+    const deleteProductInCart = await axios.put(
+      `${api}cart/delete-product/${products[index]._id}`,
+      { productid: products[index]._id },
+      config
+    );
+    console.log(deleteProductInCart);
     const newProducts = [...products];
     newProducts.splice(index, 1);
     setProducts(newProducts);
