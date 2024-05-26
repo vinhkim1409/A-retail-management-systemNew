@@ -20,11 +20,27 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import UploadImg from "../../../../components/UploadImg/UploadImg";
 import SaleInfor from "../../../../components/ClassInfor/SaleInfor";
 import SelecIndustry from "../../../../components/SelecIndustry/SelecIndustry";
 import axios from "axios";
+import { Industry } from "../../../../constant/constant";
+import { useNavigate } from "react-router-dom";
+import categories_level1 from "../../Data-Industry/categories_level1";
+import categories_level2 from "../../Data-Industry/categories_level2";
+import categories_level3 from "../../Data-Industry/categories_level3";
 import { Industry } from "../../../../constant/constant";
 import { useNavigate } from "react-router-dom";
 import categories_level1 from "../../Data-Industry/categories_level1";
@@ -43,6 +59,7 @@ import { v4 } from "uuid";
 const styles = {
   backgroundColor: "white",
 };
+
 function EditProduct() {
   const { tenantURL } = useParams();
   const { id } = useParams();
@@ -79,16 +96,38 @@ function EditProduct() {
       setLength(product.length);
       setWidth(product.width);
       setUnit(product.unit_id);
-      setFromDate(product.promotion_from_date);
-      setToDate(product.promotion_to_date);
+      setFromDate(extractDate(product.promotion_from_date));
+      setToDate(extractDate(product.promotion_to_date));
+      setIndustryLevels(product.cat_4_id); // Gọi hàm để đặt các cấp độ ngành
     }
   }, [product]);
 
+  const setIndustryLevels = (cat4Id) => {
+    const level3 = categories_level3.find((cat) => cat.id === cat4Id);
+    if (level3) {
+      setSelectedIndustry3(level3.id);
+      const level2 = categories_level2.find((cat) => cat.id === level3.parent_id);
+      if (level2) {
+        setSelectedIndustry2(level2.id);
+        const filteredSubCategories3 = categories_level3.filter(
+          (cat) => cat.parent_id === level2.id
+        );
+        setSubCategories3(filteredSubCategories3); // Đặt các danh mục con cho cấp độ 3
+        const level1 = categories_level1.find((cat) => cat.id === level2.parent_id);
+        if (level1) {
+          setSelectedIndustry1(level1.id);
+          const filteredSubCategories2 = categories_level2.filter(
+            (cat) => cat.parent_id === level1.id
+          );
+          setSubCategories2(filteredSubCategories2); // Đặt các danh mục con cho cấp độ 2
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     // Giả sử bạn có một cơ chế để xác định các biến thể ban đầu dựa trên sản phẩm, hoặc chỉ đơn giản là khởi tạo rỗng
-    setVariants([
-      { variant_attributes: [], variant_sku: "", variant_price: 0 },
-    ]);
+    setVariants([{ variant_attributes: [], variant_sku: "", variant_price: 0 }]);
   }, []);
 
   const navigate = useNavigate();
@@ -229,7 +268,10 @@ function EditProduct() {
   };
 
   const generateAttributeCombinations = () => {
-    // Duyệt qua mỗi thuộc tính được chọn, tạo ra các kết hợp dựa trên giá trị đã chọn
+    const selectedAttributeIds = attributeData
+      .filter((attr) => attr.is_checkout === "true" && selectedAttributes[attr.id])
+      .map((attr) => attr.id);
+
     const combinations = attributeData
       .filter(
         (attr) => attr.is_checkout === "true" && selectedAttributes[attr.id]
@@ -243,16 +285,20 @@ function EditProduct() {
         });
       });
 
-    // Tạo các kết hợp sản phẩm dựa trên các thuộc tính đã chọn
-    return combinations.length
-      ? combinations.reduce(
+    return {
+      combinations: combinations.length
+        ? combinations.reduce(
           (acc, next) => {
             return acc.flatMap((a) => next.map((n) => [...a, n]));
           },
           [[]]
         )
-      : [];
+        : [],
+      selectedAttributeIds,
+    };
   };
+
+  const { combinations: attributeCombinations, selectedAttributeIds } = generateAttributeCombinations();
 
   const handleChangeIndustry1 = (event) => {
     setSelectedIndustry1(event.target.value);
@@ -301,7 +347,31 @@ function EditProduct() {
       });
   };
 
-  const attributeCombinations = generateAttributeCombinations();
+  useEffect(() => {
+    if (selectedIndustry3) {
+      axios
+        .get(`${api}category-info/${selectedIndustry3}`)
+        .then((response) => {
+          const attributes = response.data.attributes;
+          const attributeData = attributes.map((attribute) => {
+            return {
+              id: attribute.id,
+              name: attribute.name,
+              control_type: attribute.control_type,
+              is_checkout: attribute.is_checkout ? "true" : "false",
+              attribute_values: attribute.attribute_values.map((value) => ({
+                id: value.id,
+                value: value.value,
+              })),
+            };
+          });
+          setAttributeData(attributeData);
+        })
+        .catch((error) => {
+          console.error("Error fetching attribute data:", error);
+        });
+    }
+  }, [selectedIndustry3]);
 
   console.log("attribute Combinations", attributeCombinations);
 
@@ -366,17 +436,17 @@ function EditProduct() {
         attribute_is_checkout: attr.is_checkout === "true",
         attribute_values: selectedAttributes[attr.id]
           ? selectedAttributes[attr.id].selectedOptionIds.map((valueId) => {
-              const valueInfo = attr.attribute_values.find(
-                (value) => value.id === valueId
-              );
-              return {
-                id: valueId,
-                value: valueInfo ? valueInfo.value : "",
-                attribute_img: "string",
-                is_selected: false,
-                is_custom: false,
-              };
-            })
+            const valueInfo = attr.attribute_values.find(
+              (value) => value.id === valueId
+            );
+            return {
+              id: valueId,
+              value: valueInfo ? valueInfo.value : "",
+              attribute_img: "string",
+              is_selected: false,
+              is_custom: false,
+            };
+          })
           : [],
       };
     });
@@ -432,6 +502,8 @@ function EditProduct() {
       .catch((error) => {
         console.error("Error updating product:", error);
       });
+
+    navigate(`/${tenantURL}/business/product`);
   };
   return (
     <>
@@ -827,7 +899,7 @@ function EditProduct() {
 
         <div className="detail" style={{ display: "flex", flexWrap: "wrap" }}>
           <Paper style={{ padding: "3% 3% 3% 3%", flexGrow: 1 }}>
-            <div className="title-small"> Detail Information</div>
+            <div className="title-small">Detail Information</div>
             <Grid container spacing={4}>
               {attributeData.map(
                 (attribute, index) =>
@@ -942,7 +1014,7 @@ function EditProduct() {
             <TableHead>
               <TableRow>
                 {attributeData
-                  .filter((attr) => attr.is_checkout === "true")
+                  .filter((attr) => selectedAttributeIds.includes(attr.id))
                   .map((attr) => (
                     <TableCell key={attr.name}>{attr.name}</TableCell>
                   ))}
@@ -955,7 +1027,7 @@ function EditProduct() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {generateAttributeCombinations().map((combo, idx) => (
+              {attributeCombinations.map((combo, idx) => (
                 <TableRow key={idx}>
                   {combo.map((value, valueIdx) => (
                     <TableCell key={valueIdx}>{value}</TableCell>
@@ -964,11 +1036,7 @@ function EditProduct() {
                     <TextField
                       type="number"
                       onChange={(e) =>
-                        handleVariantChange(
-                          idx,
-                          "variant_price",
-                          e.target.value
-                        )
+                        handleVariantChange(idx, "variant_price", e.target.value)
                       }
                     />
                   </TableCell>
@@ -1012,11 +1080,7 @@ function EditProduct() {
                     <TextField
                       type="number"
                       onChange={(e) =>
-                        handleVariantChange(
-                          idx,
-                          "variant_quantity",
-                          e.target.value
-                        )
+                        handleVariantChange(idx, "variant_quantity", e.target.value)
                       }
                     />
                   </TableCell>

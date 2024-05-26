@@ -17,28 +17,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import axios from 'axios';
 import { api } from '../../../constant/constant';
-const products = [
-  {
-    image: product1,
-    name: "Áo khoác dù trắng phối xéo",
-    price: 350000,
-  },
-  {
-    image: product2,
-    name: "Áo khoác dù phối 2 lớp",
-    price: 350000,
-  },
-  {
-    image: product3,
-    name: "Áo khoác dù dây kéo xéo",
-    price: 320000,
-  },
-  {
-    image: product4,
-    name: "Áo khoác dù phối túi",
-    price: 295000,
-  },
-];
 
 function HomePage() {
   const { tenantURL } = useParams();
@@ -51,10 +29,11 @@ function HomePage() {
     // console.log(website.data[0].featureProduct)
   }
   const getOutstandingProducts = async () => {
-    const products = await axios.get(`${api}product`)
-    setFeatProduct(products.data)
-    console.log("featProduct",products)
-  }
+    const products = await axios.get(`${api}product`);
+    const filteredProducts = products.data.slice(0, 4);
+    setFeatProduct(filteredProducts);
+    console.log("featProduct", filteredProducts);
+  };
   useEffect(() => {
     getWebsite()
     getOutstandingProducts()
@@ -90,11 +69,13 @@ function HomePage() {
       <div className="outstanding-products-container">
         <div className="outstanding-products">
           {featProduct.map((product, index) => (
-            <div className="product" key={index}>
-              <img src={product.avatar.picture_url} alt={`Product ${index + 1}`} className="img-product" />
-              <div className="name-product">{product.name}</div>
-              <div className="price-product">{product.special_price}</div>
-            </div>
+            <Link to={`/${tenantURL}/customer/detail-product/${product._id}`} key={index} className="product">
+              <div >
+                <img src={product.avatar.picture_url} alt={`Product ${index + 1}`} className="img-product" />
+                <div className="name-product">{product.name}</div>
+                <div className="price-product">{product.special_price}</div>
+              </div>
+            </Link>
           ))}
         </div>
         <button className="button-gotoshop">

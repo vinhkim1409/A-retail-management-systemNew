@@ -181,6 +181,10 @@ function AddProduct() {
 
   const generateAttributeCombinations = () => {
     // Duyệt qua mỗi thuộc tính được chọn, tạo ra các kết hợp dựa trên giá trị đã chọn
+    const selectedAttributeIds = attributeData
+      .filter((attr) => attr.is_checkout === "true" && selectedAttributes[attr.id])
+      .map((attr) => attr.id);
+
     const combinations = attributeData
       .filter(
         (attr) => attr.is_checkout === "true" && selectedAttributes[attr.id]
@@ -194,15 +198,17 @@ function AddProduct() {
         });
       });
 
-    // Tạo các kết hợp sản phẩm dựa trên các thuộc tính đã chọn
-    return combinations.length
-      ? combinations.reduce(
+    return {
+      combinations: combinations.length
+        ? combinations.reduce(
           (acc, next) => {
             return acc.flatMap((a) => next.map((n) => [...a, n]));
           },
           [[]]
         )
-      : [];
+        : [],
+      selectedAttributeIds,
+    };
   };
 
   const handleChangeIndustry1 = (event) => {
@@ -251,10 +257,6 @@ function AddProduct() {
         console.error("Error fetching attribute data:", error);
       });
   };
-
-  const attributeCombinations = generateAttributeCombinations();
-
-  console.log("attribute Combinations", attributeCombinations);
 
   const getAllCombinations = (attributes) => {
     const generateCombinations = (currentAttributes) => {
@@ -316,17 +318,17 @@ function AddProduct() {
         attribute_is_checkout: attr.is_checkout === "true",
         attribute_values: selectedAttributes[attr.id]
           ? selectedAttributes[attr.id].selectedOptionIds.map((valueId) => {
-              const valueInfo = attr.attribute_values.find(
-                (value) => value.id === valueId
-              );
-              return {
-                id: valueId,
-                value: valueInfo ? valueInfo.value : "",
-                attribute_img: "string",
-                is_selected: false,
-                is_custom: false,
-              };
-            })
+            const valueInfo = attr.attribute_values.find(
+              (value) => value.id === valueId
+            );
+            return {
+              id: valueId,
+              value: valueInfo ? valueInfo.value : "",
+              attribute_img: "string",
+              is_selected: false,
+              is_custom: false,
+            };
+          })
           : [],
       };
     });
@@ -352,7 +354,7 @@ function AddProduct() {
       unit_id: unit,
       avatar: {
         picture_url:
-        imgArray[0],
+          imgArray[0],
       },
       pictures: picture,
       is_promotion: true,
@@ -383,8 +385,11 @@ function AddProduct() {
       .catch((error) => {
         console.error("Error adding product:", error);
       });
+
+    navigate(`/${tenantURL}/business/product`);
   };
 
+  const { combinations: attributeCombinations, selectedAttributeIds } = generateAttributeCombinations();
 
   return (
     <>
@@ -885,7 +890,7 @@ function AddProduct() {
             <TableHead>
               <TableRow>
                 {attributeData
-                  .filter((attr) => attr.is_checkout === "true")
+                  .filter((attr) => selectedAttributeIds.includes(attr.id))
                   .map((attr) => (
                     <TableCell key={attr.name}>{attr.name}</TableCell>
                   ))}
@@ -898,7 +903,7 @@ function AddProduct() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {generateAttributeCombinations().map((combo, idx) => (
+              {attributeCombinations.map((combo, idx) => (
                 <TableRow key={idx}>
                   {combo.map((value, valueIdx) => (
                     <TableCell key={valueIdx}>{value}</TableCell>
@@ -907,11 +912,7 @@ function AddProduct() {
                     <TextField
                       type="number"
                       onChange={(e) =>
-                        handleVariantChange(
-                          idx,
-                          "variant_price",
-                          e.target.value
-                        )
+                        handleVariantChange(idx, "variant_price", e.target.value)
                       }
                     />
                   </TableCell>
@@ -955,11 +956,7 @@ function AddProduct() {
                     <TextField
                       type="number"
                       onChange={(e) =>
-                        handleVariantChange(
-                          idx,
-                          "variant_quantity",
-                          e.target.value
-                        )
+                        handleVariantChange(idx, "variant_quantity", e.target.value)
                       }
                     />
                   </TableCell>

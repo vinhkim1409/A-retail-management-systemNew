@@ -89,6 +89,9 @@ function startServer() {
   const adminRoutes=require("./routes/adminRoutes")
   // const infoRoutes = require("./routes/infoRoutes");
   const attributeApiRoutes = require('./scripts/attribute_api');
+  const infoConnectRoutes = require("./routes/infoConnectRoutes")
+  const attributeApiRoutes = require('./scripts/attribute_api');
+  const reviewRoutes = require('./routes/reviewRoutes');
 
   app.use("/product", productRoutes);
   app.use("/staff", staffRoutes);
@@ -105,6 +108,7 @@ function startServer() {
   app.use("/package", packageOrderRoutes);
   app.use("/admin", adminRoutes);
   // app.use("/info", infoRoutes);
+  app.use("/info-connect", infoConnectRoutes);
   app.use("/category-info", attributeApiRoutes);
   app.use("/review", reviewRoutes);
 
