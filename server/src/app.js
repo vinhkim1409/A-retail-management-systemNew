@@ -89,7 +89,6 @@ function startServer() {
   const adminRoutes=require("./routes/adminRoutes")
   // const infoRoutes = require("./routes/infoRoutes");
   const attributeApiRoutes = require('./scripts/attribute_api');
-  const reviewRoutes = require('./routes/reviewRoutes');
 
   app.use("/product", productRoutes);
   app.use("/staff", staffRoutes);
