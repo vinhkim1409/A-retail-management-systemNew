@@ -30,7 +30,7 @@ const wayPaidTag = <div className="wayPaidTag">Wait Pay</div>;
 
 const DetailOrderBusiness = () => {
   const [order, setOrder] = useState();
-  const { tenatURL, id } = useParams();
+  const { tenantURL, id } = useParams();
   const customer = useSelector(
     (state) => state.authCustomer.login?.currentUser
   );

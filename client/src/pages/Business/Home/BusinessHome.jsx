@@ -25,7 +25,8 @@ function BusinessHome() {
     dayOfMonth: [],
   });
   const [productsList, setProductsList] = useState([]);
-  const {tenatURL}=useParams()
+  const {tenantURL}=useParams()
+  
   const getDashboardData = async () => {
     const dashboardData = await axios.get(`${api}dashboard/get-revenue`);
     console.log(dashboardData.data.data);
@@ -50,7 +51,7 @@ function BusinessHome() {
   return (
     <div className="Businesshome-container">
       <h2 className="label">Dashboard</h2>
-      <CardOverView tenantURL={tenatURL} />
+      <CardOverView tenantURL={tenantURL} />
       <Grid container spacing={3}>
         <Grid item xs={12} lg={8}>
           <SalesOverview

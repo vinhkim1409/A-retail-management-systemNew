@@ -1,4 +1,4 @@
-export const api = "http://localhost:3001/";
+export const api = "https://bkmanagement.onrender.com/"; 
 export const Industry = {
   industry1: [
     "Detail1",

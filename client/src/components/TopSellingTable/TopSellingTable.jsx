@@ -71,7 +71,7 @@ const TopSellingTable = ({ productsList }) => {
   const bgError = palette.error.main;
   const bgPrimary = palette.primary.main;
   const bgSecondary = palette.secondary.main;
-  const {tenatURL}=useParams()
+  const {tenantURL}=useParams()
   return (
     <Card
       elevation={3}
@@ -162,7 +162,7 @@ const TopSellingTable = ({ productsList }) => {
                 </TableCell>
 
                 <TableCell sx={{ px: 0 }} colSpan={1}>
-                  <Link to={`/${tenatURL}/business`}>
+                  <Link to={`/${tenantURL}/business`}>
                     <button className="btn">
                       <FontAwesomeIcon icon={faPenToSquare} />
                     </button>
