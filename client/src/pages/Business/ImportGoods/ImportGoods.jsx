@@ -63,6 +63,8 @@ function ImportGoods() {
             variant_sku: variant_sku
         };
 
+        console.log("productData", productData)
+
         axios.put(`${api}product/update-quantity`, productData)
             .then(response => {
                 console.log("Product quantity updated successfully:", response.data);

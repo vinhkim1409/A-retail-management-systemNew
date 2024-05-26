@@ -84,7 +84,7 @@ function startServer() {
   const paymentRoutes = require("./routes/paymentRoutes");
   const attributeRoutes = require("./routes/attributeRoutes");
   const dashboardRoutes = require("./routes/dashboardRoutes")
-  // const infoRoutes = require("./routes/infoRoutes");
+  const infoConnectRoutes = require("./routes/infoConnectRoutes")
   const attributeApiRoutes = require('./scripts/attribute_api');
   const reviewRoutes = require('./routes/reviewRoutes');
 
@@ -99,7 +99,7 @@ function startServer() {
   app.use("/customer", customerRoutes);
   app.use("/attributes", attributeRoutes);
   app.use("/dashboard", dashboardRoutes);
-  // app.use("/info", infoRoutes);
+  app.use("/info-connect", infoConnectRoutes);
   app.use("/category-info", attributeApiRoutes);
   app.use("/review", reviewRoutes);
 

@@ -40,7 +40,7 @@ router.delete('/:id', async (req, res) => {
 
     res.status(200).json({ message: 'Product deleted successfully', product: deletedProduct });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting product', error: error.message });
+    res.status(500).json({ message: 'Error deleting product1', error: error.message });
   }
 });
 
@@ -53,6 +53,34 @@ router.get("/:id", async (req, res) => {
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+router.put('/update-quantity', async (req, res) => {
+  const { id, quantity, variant_sku } = req.body;
+
+  const intQuantity = parseInt(quantity);
+  try {
+    // const productId = mongoose.Types.ObjectId(id);
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    if (product.is_config_variant) {
+      const variant = product.variants.find(v => v.variant_sku === variant_sku);
+      if (!variant) {
+        return res.status(404).json({ message: 'Variant not found' });
+      }
+      variant.variant_quantity = variant.variant_quantity + intQuantity;
+    } else {
+      product.stock_quantity = product.stock_quantity + intQuantity;
+    }
+
+    await product.save();
+    res.json({ message: 'Product quantity updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating product quantity', error });
   }
 });
 
@@ -72,30 +100,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.put('/update-quantity', async (req, res) => {
-  const { id, quantity, variant_sku } = req.body;
 
-  try {
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    if (product.is_config_variant) {
-      const variant = product.variants.find(v => v.variant_sku === variant_sku);
-      if (!variant) {
-        return res.status(404).json({ message: 'Variant not found' });
-      }
-      variant.variant_quantity = variant.variant_quantity + quantity;
-    } else {
-      product.stock_quantity = product.stock_quantity + quantity;
-    }
-
-    await product.save();
-    res.json({ message: 'Product quantity updated successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating product quantity', error });
-  }
-});
 
 module.exports = router;
