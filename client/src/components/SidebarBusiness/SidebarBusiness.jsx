@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './SidebarBusiness.scss';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartSimple, faShirt, faBook, faList, faPeopleGroup, faBan, faUsers, faGlobe, faUpload, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { faChartSimple, faShirt, faBook, faList, faPeopleGroup, faBan, faUsers, faGlobe, faUpload, faCircleInfo,faCircleUp } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import logo from "../../assets/logo.png"
 

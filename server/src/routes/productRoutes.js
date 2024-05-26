@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/productModel");
 const authMiddleware = require("../middlewares/authMiddlewares");
-
+const { default: mongoose } = require("mongoose");
 
 router.get("/", async (req, res) => {
   try {
@@ -14,9 +14,9 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/add", async (req, res) => {
-  const productData = req.body;
-  const newProduct = new Product(productData);
   try {
+    const productData = req.body;
+    const newProduct = new Product(productData);
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (error) {
@@ -24,23 +24,30 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
 
     // Kiểm tra xem id có phải là ObjectId hợp lệ hay không
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: 'Invalid product ID' });
+      return res.status(400).json({ message: "Invalid product ID" });
     }
-    const deletedProduct = await Product.findByIdAndDelete(productId);
+    const deletedProduct = await Product.findOneAndDelete({_id:productId});
 
     if (!deletedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(200).json({ message: 'Product deleted successfully', product: deletedProduct });
+    res
+      .status(200)
+      .json({
+        message: "Product deleted successfully",
+        product: deletedProduct,
+      });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting product', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting product", error: error.message });
   }
 });
 
@@ -56,35 +63,46 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
     const updateData = req.body;
-    const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, { new: true, runValidators: true });
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      updateData,
+      { new: true, runValidators: true }
+    );
 
     if (!updatedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
+    res
+      .status(200)
+      .json({
+        message: "Product updated successfully",
+        product: updatedProduct,
+      });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating product', error });
+    res.status(500).json({ message: "Error updating product", error });
   }
 });
 
-router.put('/update-quantity', async (req, res) => {
+router.put("/update-quantity", async (req, res) => {
   const { id, quantity, variant_sku } = req.body;
 
   try {
     const product = await Product.findById(id);
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
     if (product.is_config_variant) {
-      const variant = product.variants.find(v => v.variant_sku === variant_sku);
+      const variant = product.variants.find(
+        (v) => v.variant_sku === variant_sku
+      );
       if (!variant) {
-        return res.status(404).json({ message: 'Variant not found' });
+        return res.status(404).json({ message: "Variant not found" });
       }
       variant.variant_quantity = variant.variant_quantity + quantity;
     } else {
@@ -92,9 +110,9 @@ router.put('/update-quantity', async (req, res) => {
     }
 
     await product.save();
-    res.json({ message: 'Product quantity updated successfully' });
+    res.json({ message: "Product quantity updated successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating product quantity', error });
+    res.status(500).json({ message: "Error updating product quantity", error });
   }
 });
 

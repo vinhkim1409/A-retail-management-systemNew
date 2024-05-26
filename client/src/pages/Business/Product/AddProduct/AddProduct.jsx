@@ -260,7 +260,7 @@ function AddProduct() {
   }, [attributeData, selectedAttributes]);
 
 
-  const handleAddProduct = () => {
+  const handleAddProduct =async () => {
     const attributes = attributeData.map(attr => {
       return {
         attribute_id: attr.id,
@@ -324,7 +324,7 @@ function AddProduct() {
 
     console.log('productData', productData)
 
-    axios.post("https://localhost:3001/product/add", productData)
+   await axios.post(`${api}product/add`, productData)
       .then(response => {
         console.log("Product added successfully:", response.data);
       })

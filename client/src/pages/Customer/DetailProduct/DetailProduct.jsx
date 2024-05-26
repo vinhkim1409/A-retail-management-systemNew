@@ -407,7 +407,7 @@ function DetailProduct() {
           <div className="review-product">
             <div className="spec_evaluate">
               <div className="bold while_background title_rp">
-                Product reviews
+                Product reviews: {review?.length} reviews
               </div>
               <div className="Start_rating rating_grid">
                 <div className="while_background evaluate_product">
@@ -448,7 +448,7 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${star_1}%` }}
+                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==1).length/review.length*100)}%` }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"
@@ -472,7 +472,7 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${star_2}%` }}
+                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==2).length/review.length*100)}%` }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"
@@ -496,7 +496,7 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${star_3}%` }}
+                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==3).length/review.length*100)}%` }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"
@@ -520,7 +520,7 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${star_4}%` }}
+                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==4).length/review.length*100)}%` }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"
@@ -544,7 +544,7 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${star_5}%` }}
+                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==5).length/review.length*100)}%` }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"
