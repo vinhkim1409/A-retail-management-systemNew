@@ -36,13 +36,13 @@ function DetailProduct() {
   const handleDecrement = () => {
     if (quantity > 0) {
       setQuantity((prevCount) => prevCount - 1);
-  const handleDecrement = () => {
-    if (quantity > 0) {
-      setQuantity((prevCount) => prevCount - 1);
+      const handleDecrement = () => {
+        if (quantity > 0) {
+          setQuantity((prevCount) => prevCount - 1);
+        }
+      };
     }
   };
-  };
-}
 
   const handleIncrement = () => {
     setQuantity((prevCount) => prevCount + 1);
@@ -76,7 +76,7 @@ function DetailProduct() {
   const [showAddToCartSuccess, setShowAddToCartSuccess] = useState(false);
 
   const handleAttributeClick = (attributeName, value) => {
-    const attribute = attributeName.find(attr => attr.values.includes(value));
+    const attribute = attributeName.find((attr) => attr.values.includes(value));
     if (attribute) {
       const optionId = attribute.option_ids[attribute.values.indexOf(value)];
       setSelectedAttributes((prevState) => ({
@@ -84,23 +84,26 @@ function DetailProduct() {
         [attribute.name]: {
           value: value,
           attribute_id: attribute.attribute_id,
-          option_id: optionId
-        }
+          option_id: optionId,
+        },
       }));
     }
   };
 
   const getVariantSku = () => {
     if (product && product.variants) {
-      const selectedOptions = Object.values(selectedAttributes).map(attr => ({
+      const selectedOptions = Object.values(selectedAttributes).map((attr) => ({
         attribute_id: attr.attribute_id,
-        option_id: attr.option_id
+        option_id: attr.option_id,
       }));
 
-      const matchedVariant = product.variants.find(variant => {
-        return selectedOptions.every(selectedOption => {
-          return variant.variant_attributes.some(attr =>
-            attr.attribute_id === selectedOption.attribute_id && attr.option_id === selectedOption.option_id);
+      const matchedVariant = product.variants.find((variant) => {
+        return selectedOptions.every((selectedOption) => {
+          return variant.variant_attributes.some(
+            (attr) =>
+              attr.attribute_id === selectedOption.attribute_id &&
+              attr.option_id === selectedOption.option_id
+          );
         });
       });
 
@@ -118,51 +121,61 @@ function DetailProduct() {
   };
 
   const getReview = async () => {
-    const review = await axios.get(`${api}review/get-by-product/${id}`)
-    setReview(review.data.data)
-  }
+    const review = await axios.get(`${api}review/get-by-product/${id}`);
+    setReview(review.data.data);
+  };
 
   const processAttributes = () => {
     let attributes = [];
 
     const is_config_variant = product ? product.is_config_variant : false;
     if (is_config_variant) {
-      product.variants.forEach(variant => {
+      product.variants.forEach((variant) => {
         const variantAttributes = variant.variant_attributes;
 
-        variantAttributes.forEach(attr => {
-          let attribute = attributes.find(a => a.attribute_id === attr.attribute_id);
+        variantAttributes.forEach((attr) => {
+          let attribute = attributes.find(
+            (a) => a.attribute_id === attr.attribute_id
+          );
 
           if (attribute) {
             attribute.option_ids.push(attr.option_id);
           } else {
             attributes.push({
               attribute_id: attr.attribute_id,
-              option_ids: [attr.option_id]
+              option_ids: [attr.option_id],
             });
           }
         });
       });
     }
 
-    const attributeName = attributes.map(attr => {
-      const attributeDataItem = attributeData.find(ad => ad.id === attr.attribute_id);
-      if (attributeDataItem) {
-        const uniqueOptionIds = Array.from(new Set(attr.option_ids));
-        const uniqueValues = uniqueOptionIds.map(option_id => {
-          const valueItem = attributeDataItem.attribute_values.find(av => av.id === option_id);
-          return valueItem ? valueItem.value : null;
-        }).filter(value => value !== null);
+    const attributeName = attributes
+      .map((attr) => {
+        const attributeDataItem = attributeData.find(
+          (ad) => ad.id === attr.attribute_id
+        );
+        if (attributeDataItem) {
+          const uniqueOptionIds = Array.from(new Set(attr.option_ids));
+          const uniqueValues = uniqueOptionIds
+            .map((option_id) => {
+              const valueItem = attributeDataItem.attribute_values.find(
+                (av) => av.id === option_id
+              );
+              return valueItem ? valueItem.value : null;
+            })
+            .filter((value) => value !== null);
 
-        return {
-          attribute_id: attr.attribute_id,
-          name: attributeDataItem.name,
-          option_ids: uniqueOptionIds,
-          values: uniqueValues
-        };
-      }
-      return null;
-    }).filter(attr => attr !== null);
+          return {
+            attribute_id: attr.attribute_id,
+            name: attributeDataItem.name,
+            option_ids: uniqueOptionIds,
+            values: uniqueValues,
+          };
+        }
+        return null;
+      })
+      .filter((attr) => attr !== null);
 
     setAttributeName(attributeName);
   };
@@ -170,46 +183,56 @@ function DetailProduct() {
   const cat_4_id = product ? product.cat_4_id : 0;
 
   const getAttributes = async () => {
-    axios.get(`${api}category-info/${cat_4_id}`)
-      .then(response => {
+    axios
+      .get(`${api}category-info/${cat_4_id}`)
+      .then((response) => {
         const attributes = response.data.attributes;
-        const attributeData = attributes.map(attribute => {
+        const attributeData = attributes.map((attribute) => {
           return {
             id: attribute.id,
             name: attribute.name,
-            attribute_values: attribute.attribute_values.map(value => ({
+            attribute_values: attribute.attribute_values.map((value) => ({
               id: value.id,
-              value: value.value
-            }))
+              value: value.value,
+            })),
           };
         });
         setAttributeData(attributeData);
       })
-      .catch(error => {
-        console.error('Error fetching attribute data:', error);
+      .catch((error) => {
+        console.error("Error fetching attribute data:", error);
       });
-  }
+  };
 
   const addToCart = async () => {
-    if(quantity>0){
-    if (!customer) {
-      navigate(`/${tenantURL}/customer/login`);
-    } else {
-      const products = {
-        productId: product._id,
-        variant: 1,
-        quantity: quantity,
-      };
-      const addtoCart = await axios.put(`${api}cart/add-product`, products, config);
-
-      // Hiển thị thông báo
-      setShowAddToCartSuccess(true);
-      setTimeout(() => {
-        setShowAddToCartSuccess(false);
-      }, 2000);
+    if (quantity > 0) {
+      if (!customer) {
+        navigate(`/${tenantURL}/customer/login`);
+      } else {
+        const variantSku = getVariantSku();
+        let variantNumber = product.variants.findIndex(
+          (variant) => variant.variant_sku == variantSku
+        );
+        const products = {
+          productId: product._id,
+          variant: variantNumber + 1,
+          quantity: quantity,
+        };
+        const addtoCart = await axios.put(
+          `${api}cart/add-product`,
+          products,
+          config
+        );
+        if (addtoCart.data.success) {
+          // Hiển thị thông báo
+          setShowAddToCartSuccess(true);
+          setTimeout(() => {
+            setShowAddToCartSuccess(false);
+          }, 2000);
+        }
+      }
     }
-  }
-  return
+    return;
   };
 
   useEffect(() => {
@@ -246,7 +269,10 @@ function DetailProduct() {
                 ))}
               </div>
               <div className="main-image-container">
-                <img src={product.pictures[selectedImage].picture_url} alt="Main" />
+                <img
+                  src={product.pictures[selectedImage].picture_url}
+                  alt="Main"
+                />
               </div>
             </div>
             <div className="name-price">
@@ -255,14 +281,21 @@ function DetailProduct() {
               {attributeName.map((attribute, index) => (
                 <div key={index} className="color">
                   <div className="title-color">
-                    Choose {attribute.name}: <strong>{selectedAttributes[attribute.name]?.value}</strong>
+                    Choose {attribute.name}:{" "}
+                    <strong>{selectedAttributes[attribute.name]?.value}</strong>
                   </div>
                   <div className="color-content">
                     {attribute.values.map((value, valueIndex) => (
                       <div
                         key={valueIndex}
-                        className={`color-container ${selectedAttributes[attribute.name]?.value === value ? "active" : ""}`}
-                        onClick={() => handleAttributeClick(attributeName, value)}
+                        className={`color-container ${
+                          selectedAttributes[attribute.name]?.value === value
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          handleAttributeClick(attributeName, value)
+                        }
                       >
                         {value}
                       </div>
@@ -300,7 +333,6 @@ function DetailProduct() {
                   <button className="add_wishlist_button" onClick={addToCart}>
                     Add to cart
                   </button>
-
                 </div>
                 <div className="cart_section">
                   <button className="buy_now_button">Buy Now</button>
@@ -330,9 +362,7 @@ function DetailProduct() {
           </div>
           <div className="review-product">
             <div className="spec_evaluate">
-              <div className="bold while_background title_rp">
-                Review
-              </div>
+              <div className="bold while_background title_rp">Review</div>
               <div className="Start_rating rating_grid">
                 <div className="while_background evaluate_product">
                   <div>
@@ -561,4 +591,4 @@ function DetailProduct() {
   );
 }
 
-export default DetailProduct
+export default DetailProduct;

@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Website = require("../models/websiteModel");
 const Product = require("../models/productModel");
+const Business = require("../models/businessModel");
 const mongoose = require("mongoose");
 const authMiddlewares = require("../middlewares/authMiddlewares");
-router.get("/", async (req, res) => {
+router.get("/:tenantURL", async (req, res) => {
   try {
-    const website = await Website.find();
+    const business = await Business.find({ tenantURL: req.params.tenantURL });
+    const website = await Website.find({tenantID:business[0]._id});
     res.json(website);
   } catch (error) {
     res.status(500).json({ message: error.message });
