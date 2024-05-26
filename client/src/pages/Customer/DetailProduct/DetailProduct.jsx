@@ -42,6 +42,7 @@ function DetailProduct() {
     }
   };
   };
+}
 
   const handleIncrement = () => {
     setQuantity((prevCount) => prevCount + 1);
@@ -190,6 +191,7 @@ function DetailProduct() {
   }
 
   const addToCart = async () => {
+    if(quantity>0){
     if (!customer) {
       navigate(`/${tenantURL}/customer/login`);
     } else {
@@ -206,6 +208,8 @@ function DetailProduct() {
         setShowAddToCartSuccess(false);
       }, 2000);
     }
+  }
+  return
   };
 
   useEffect(() => {
@@ -557,4 +561,4 @@ function DetailProduct() {
   );
 }
 
-export default DetailProduct;
+export default DetailProduct
