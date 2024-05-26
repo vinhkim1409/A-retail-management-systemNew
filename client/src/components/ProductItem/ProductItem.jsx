@@ -34,7 +34,7 @@ function ProductItem({ product, index }) {
         <div className="price-product">
           {new Intl.NumberFormat("en-US").format(product.price)}
         </div>
-        <Rating value={4.5} precision={0.5} readOnly />
+        <Rating value={product?.ratingPoint} precision={0.5} readOnly />
       </div>
     </div>
   );

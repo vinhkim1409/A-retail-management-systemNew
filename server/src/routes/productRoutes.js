@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/productModel");
+const Order = require("../models/orderModel");
 const authMiddleware = require("../middlewares/authMiddlewares");
 const { default: mongoose } = require("mongoose");
 
@@ -8,6 +9,35 @@ router.get("/", async (req, res) => {
   try {
     const products = await Product.find({});
     res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+router.get("/get/top-sale", async (req, res) => {
+  try {
+    const products = await Product.find({});
+    const totalOrder = await Order.find();
+    const listProducts = [];
+    for (let order in totalOrder) {
+      for (let product in totalOrder[order].products) {
+        listProducts.push(totalOrder[order].products[product]);
+      }
+    }
+    const productCount = {};
+    listProducts.forEach((product) => {
+      const productId = product.product;
+      if (productCount[productId]) {
+        productCount[productId] += product.quantity;
+      } else {
+        productCount[productId] = product.quantity;
+      }
+    });
+    const productList = Object.keys(productCount).map((productId) => ({
+      productId,
+      count: productCount[productId],
+    }));
+    productList.sort((a, b) => b.count - a.count);
+    res.json(productList);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

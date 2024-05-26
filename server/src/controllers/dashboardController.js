@@ -59,7 +59,7 @@ function getPercent(thisMonth, lastMonth) {
 const dashboardController = {
   getDataOrderWeek: async (req, res) => {
     const InitialorderInWeek = get7Days();
-    const totalOrder = await Order.find();
+    const totalOrder = await Order.find({tenantID:req.tenantID});
     const orderInWeek = InitialorderInWeek.map((day) => {
       let numOrderWebsite = totalOrder.reduce(function (total, order) {
         if (
@@ -87,7 +87,7 @@ const dashboardController = {
   },
   getDataRevenue: async (req, res) => {
     const InitialorderInWeek = get7Days();
-    const totalOrder = await Order.find();
+    const totalOrder = await Order.find({tenantID:req.tenantID});
     const RevenueInWeek = InitialorderInWeek.map((day) => {
       let numOrderWebsite = totalOrder.reduce(function (total, order) {
         if (
@@ -203,7 +203,7 @@ const dashboardController = {
     });
   },
   getTopSelling: async (req, res) => {
-    const totalOrder = await Order.find();
+    const totalOrder = await Order.find({tenantID:req.tenantID});
     const listProducts = [];
     for (let order in totalOrder) {
       for (let product in totalOrder[order].products) {
@@ -228,9 +228,10 @@ const dashboardController = {
       .slice(0, 5)
       .map((product) => product.productId);
     const topProducts = await Product.find({ _id: { $in: topProductID } }); // theo tenantID nua
+    // product List chứa product và count
     const topProductList = productList.slice(0, 5).map((product) => {
       const getProduct = topProducts.filter(
-        (productInTop) => productInTop._id == "663852ee97a1eae0ebe1f3ac"
+        (productInTop) => productInTop._id == product.productId
       );
 
       return {
@@ -245,7 +246,7 @@ const dashboardController = {
     const today = new Date();
     const thisMonth = today.getMonth() + 1;
     const lastMonth = today.getMonth();
-    const totalOrder = await Order.find();
+    const totalOrder = await Order.find({tenantID:req.tenantID});
     const orderThisMonth = totalOrder.filter(
       (order) => order.createdAt.getMonth() + 1 == thisMonth
     );
@@ -273,7 +274,7 @@ const dashboardController = {
       }, 0);
       return total + countProduct;
     }, 0);
-    const totalCustomer = await Customer.find();
+    const totalCustomer = await Customer.find({tenantID:req.tenantID});
     const countTotalCustomer = totalCustomer.length;
     const countThisMonthCustomer = totalCustomer.filter(
       (product) => product.createdAt.getMonth() + 1 == thisMonth

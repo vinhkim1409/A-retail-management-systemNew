@@ -71,7 +71,11 @@ const productSchema = new mongoose.Schema({
   },
   ratingPoint: {type:String,default:"0"},
   ratingCount: {type:Number,default:0},
-  isDelete:{type:Boolean,default:false}
+  isDelete:{type:Boolean,default:false},
+  tenantID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "business",
+  },
 }, {
   timestamps: true
 });

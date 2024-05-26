@@ -45,7 +45,7 @@ const Order = () => {
     setPage(newPage);
   };
   const navigate=useNavigate()
-  const {tenatURL}=useParams()
+  const {tenantURL}=useParams()
   const userBusiness = useSelector(
     (state) => state.authBusiness.login?.currentUser
   );
@@ -151,7 +151,7 @@ const Order = () => {
                     <TableRow
                       key={index}
                       onClick={() => {
-                        navigate(`/${tenatURL}/business/order/${item._id}`);
+                        navigate(`/${tenantURL}/business/order/${item._id}`);
                       }}
                       className="order-body"
                     >
