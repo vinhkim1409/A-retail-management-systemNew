@@ -32,7 +32,7 @@ function ProductItem({ product, index }) {
       <div className="info">
         <div className="name">{product.name}</div>
         <div className="price-product">
-          {new Intl.NumberFormat("en-US").format(product.price)}
+          {new Intl.NumberFormat("en-US").format(product.special_price)}
         </div>
         <Rating value={4.5} precision={0.5} readOnly />
       </div>

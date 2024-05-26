@@ -14,9 +14,9 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/add", async (req, res) => {
-  const productData = req.body;
-  const newProduct = new Product(productData);
   try {
+    const productData = req.body;
+    const newProduct = new Product(productData);
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (error) {
@@ -24,23 +24,30 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
 
     // Kiểm tra xem id có phải là ObjectId hợp lệ hay không
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: 'Invalid product ID' });
+      return res.status(400).json({ message: "Invalid product ID" });
     }
-    const deletedProduct = await Product.findByIdAndDelete(productId);
+    const deletedProduct = await Product.findOneAndDelete({ _id: productId });
 
     if (!deletedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(200).json({ message: 'Product deleted successfully', product: deletedProduct });
+    res
+      .status(200)
+      .json({
+        message: "Product deleted successfully",
+        product: deletedProduct,
+      });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting product1', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting product", error: error.message });
   }
 });
 
@@ -84,22 +91,29 @@ router.put('/update-quantity', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
     const updateData = req.body;
-    const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, { new: true, runValidators: true });
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      updateData,
+      { new: true, runValidators: true }
+    );
 
     if (!updatedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
+    res
+      .status(200)
+      .json({
+        message: "Product updated successfully",
+        product: updatedProduct,
+      });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating product', error });
+    res.status(500).json({ message: "Error updating product", error });
   }
 });
-
-
 
 module.exports = router;

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faCaretRight } from "@fortawesome/free-solid-svg-icons";
-import ProductItem from "../../../components/ProductItem/ProductItem";
+import ProductItem from "../../../components/ProductItem/ProductItem"
 import axios from "axios";
 import { api } from "../../../constant/constant";
 import { useNavigate } from "react-router-dom";
@@ -118,11 +118,10 @@ function Shop() {
             Category
           </div>
           <div
-            className={`${
-              categoryStatus === "All"
+            className={`${categoryStatus === "All"
                 ? "lable-category category-active"
                 : "lable-category"
-            }`}
+              }`}
             onClick={() => {
               handleChangeCategory("All");
             }}
@@ -136,11 +135,10 @@ function Shop() {
           </div>
           {category.map((item, index) => (
             <div
-              className={`${
-                categoryStatus === item._id
+              className={`${categoryStatus === item._id
                   ? "lable-category category-active non-all"
                   : "lable-category non-all"
-              }`}
+                }`}
               onClick={() => {
                 handleChangeCategory(item._id);
               }}
@@ -159,11 +157,10 @@ function Shop() {
           <div className="sort-box">
             <div className="lable-sort">Sort by</div>
             <div
-              className={`${
-                sort === 1
+              className={`${sort === 1
                   ? "tag-sort top-sales sort-active"
                   : "tag-sort top-sales"
-              }`}
+                }`}
               onClick={() => {
                 setSort(1);
               }}
@@ -172,9 +169,8 @@ function Shop() {
               Top Sales
             </div>
             <div
-              className={`${
-                sort === 2 ? "tag-sort latest sort-active" : "tag-sort latest"
-              }`}
+              className={`${sort === 2 ? "tag-sort latest sort-active" : "tag-sort latest"
+                }`}
               onClick={() => {
                 setSort(2);
               }}
@@ -183,11 +179,10 @@ function Shop() {
               Latest
             </div>
             <div
-              className={`${
-                sort === 3
+              className={`${sort === 3
                   ? "tag-sort price-high sort-active"
                   : "tag-sort price-high"
-              }`}
+                }`}
               onClick={() => {
                 setSort(3);
               }}
@@ -195,11 +190,10 @@ function Shop() {
               Price: High To Low
             </div>
             <div
-              className={`${
-                sort === 4
+              className={`${sort === 4
                   ? "tag-sort price-low sort-active"
                   : "tag-sort price-low"
-              }`}
+                }`}
               onClick={() => {
                 setSort(4);
               }}
