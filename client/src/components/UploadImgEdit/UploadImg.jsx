@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Grid, ImageList, ImageListItem } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faUpload,faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "./UploadImg.scss";
 
-const UploadImg = ({ setImg, img }) => {
+const UploadImg = ({ setImg }) => {
   const [multipleFile, setMultipleFile] = useState([]);
-  const [check1x1, setCheck1x1] = useState([]);
+  const [check1x1,setCheck1x1]=useState([]);
   const uploadMultipleFiles = async (event) => {
     console.log(event.target.files);
     const files = event.target.files;
     const newImages = [];
     for (let i = 0; i < files.length; i++) {
-      if (i >= 5 - multipleFile.lenght) {
+      if (i >= (5-multipleFile.lenght)) {
         break;
       }
       const base64 = await readFile(files[i]);
       newImages.push(base64);
     }
-    setMultipleFile([...multipleFile, ...newImages]);
+    setMultipleFile([...multipleFile,...newImages]);
 
     const imagePromises = Array.from(files).map((file) => {
       return new Promise((resolve) => {
@@ -37,17 +37,23 @@ const UploadImg = ({ setImg, img }) => {
     });
 
     Promise.all(imagePromises).then((dimensions) => {
-      const newCheck = [];
-      dimensions.map((dim) => {
-        if (dim.width === dim.height) {
-          newCheck.push(true);
-        } else {
-          newCheck.push(false);
+      const newCheck=[]
+      dimensions.map((dim)=>{
+        if(dim.width ===dim.height)
+        {
+          newCheck.push(true)
         }
-      });
-      setCheck1x1([...check1x1, ...newCheck]);
+        else{
+          newCheck.push(false)
+        }
+      })
+      setCheck1x1([...check1x1,...newCheck])
     });
+
+
   };
+
+
 
   const readFile = (file) => {
     return new Promise((resolve, reject) => {
@@ -72,14 +78,14 @@ const UploadImg = ({ setImg, img }) => {
   useEffect(() => {
     setImg(multipleFile);
   }, [multipleFile]);
+
   return (
     <>
       <form>
-        <div
-          onClick={() => {
-            console.log(check1x1);
-          }}
-        ></div>
+      <div onClick={()=>{
+        console.log(check1x1)
+      }}>
+      </div>
         <div className="Upload-container">
           {multipleFile.length != 0 &&
             multipleFile.map((url, index) => (

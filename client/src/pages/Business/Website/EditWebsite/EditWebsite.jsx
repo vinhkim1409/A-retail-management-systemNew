@@ -4,9 +4,24 @@ import shirt from "../../../../assets/shirt.jpg";
 import ChooseFeatProduct from "../../../../components/ChooseFeatProduct/ChooseFeatProduct";
 import axios from "axios";
 import { api } from "../../../../constant/constant";
+import { imageDB } from "../../../../firebase/firebaseConfig";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadString,
+} from "firebase/storage";
+import { v4 } from "uuid";
+import { useSelector } from "react-redux";
+
 function EditWebsite() {
   const [businessImgFile, setBusinessImgFile] = useState([]);
-
+  const userBusiness=useSelector((state)=>state.authBusiness.login?.currentUser)
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
   const uploadBusinessImgFiles = async (event) => {
     const files = event.target.files;
     const newImages = [];
@@ -90,11 +105,17 @@ function EditWebsite() {
     ]);
   };
   const editWebsite = async () => {
+    const imgArray = [];
+    for (let i = 0; i < businessImgFile.length; i++) {
+      const imgRef = ref(imageDB, `files/${v4()}`);
+      const snapshot = await uploadString(imgRef, businessImgFile[i], "data_url");
+      const url = await getDownloadURL(snapshot.ref);
+      imgArray.push(url);
+    }
     const website = {
-      picture: businessImgFile,
-      featProduct: featProduct,
+      picture: imgArray,
     };
-    const editRes = await axios.put(`${api}website/edit`, website);
+    const editRes = await axios.put(`${api}website/edit`, website,config);
     console.log(editRes);
   };
   const getWebsite = async () => {
