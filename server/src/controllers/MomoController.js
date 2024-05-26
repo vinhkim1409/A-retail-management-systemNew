@@ -29,7 +29,7 @@ const MonoController = {
     const lang = "vi";
     const requestType = "linkWallet";
     const orderInfo = "Thanh toán qua ví MoMo";
-    const ipnUrl = "http://localhost:3001/order/notify_payment";
+    const ipnUrl = process.env.IPN_URL_ORDER;
     const redirectUrl = `${process.env.REDIRECT_URL_ORDER}${req.body.tenantURL}/customer/cart`;
     const partnerClientId = process.env.PARTNER_CLIENT_ID;
 
@@ -111,8 +111,8 @@ const MonoController = {
     const lang = "vi";
     const requestType = "linkWallet";
     const orderInfo = "Thanh toán qua ví MoMo";
-    const ipnUrl = "http://localhost:3001/payment/notify_payment_package";
-    const redirectUrl = `http://localhost:3000/login`;
+    const ipnUrl = process.env.IPN_URL_PACKAGE;
+    const redirectUrl = `${process.env.REDIRECT_URL_ORDER}${req.body.tenantURL}/business`;
     const partnerClientId = process.env.PARTNER_CLIENT_ID;
 
     const today = new Date();
