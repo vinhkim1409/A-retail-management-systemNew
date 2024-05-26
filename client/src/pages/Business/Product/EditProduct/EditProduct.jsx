@@ -8,7 +8,6 @@ import {
   OutlinedInput,
   Paper,
   Stack,
-  Select,
   MenuItem,
   Checkbox,
   ListItemText,
@@ -20,32 +19,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Select,
-  MenuItem,
-  Checkbox,
-  ListItemText,
-  TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Select
 } from "@mui/material";
 import UploadImg from "../../../../components/UploadImg/UploadImg";
 import SaleInfor from "../../../../components/ClassInfor/SaleInfor";
 import SelecIndustry from "../../../../components/SelecIndustry/SelecIndustry";
 import axios from "axios";
-import { Industry } from "../../../../constant/constant";
 import { useNavigate } from "react-router-dom";
 import categories_level1 from "../../Data-Industry/categories_level1";
 import categories_level2 from "../../Data-Industry/categories_level2";
 import categories_level3 from "../../Data-Industry/categories_level3";
 import { Industry } from "../../../../constant/constant";
-import { useNavigate } from "react-router-dom";
-import categories_level1 from "../../Data-Industry/categories_level1";
-import categories_level2 from "../../Data-Industry/categories_level2";
-import categories_level3 from "../../Data-Industry/categories_level3";
+
 import { api } from "../../../../constant/constant";
 import { imageDB } from "../../../../firebase/firebaseConfig";
 import {
@@ -55,6 +40,7 @@ import {
   uploadString,
 } from "firebase/storage";
 import { v4 } from "uuid";
+import { useSelector } from "react-redux";
 
 const styles = {
   backgroundColor: "white",
@@ -64,7 +50,15 @@ function EditProduct() {
   const { tenantURL } = useParams();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+  
   const getProduct = async () => {
     try {
       const Products = await axios.get(`${api}product/${id}`);
@@ -419,10 +413,15 @@ function EditProduct() {
   const handleChangeProduct = async () => {
     const imgArray = [];
     for (let i = 0; i < img.length; i++) {
+      if(img[i].lenght>100){
       const imgRef = ref(imageDB, `files/${v4()}`);
       const snapshot = await uploadString(imgRef, img[i], "data_url");
       const url = await getDownloadURL(snapshot.ref);
       imgArray.push(url);
+      }
+      else {
+        imgArray.push(img[i]);
+      }
     }
     const picture = imgArray.map((img) => {
       return { picture_url: img };
@@ -495,7 +494,7 @@ function EditProduct() {
     console.log("productData", productData);
 
     await axios
-      .put(`${api}product/${id}`, productData)
+      .put(`${api}product/${id}`, productData,config)
       .then((response) => {
         console.log("Product updated successfully:", response.data);
       })
@@ -649,7 +648,7 @@ function EditProduct() {
                   >
                     Picture
                   </InputLabel>
-                  <UploadImg setImg={setImg} img={img} />
+                  <UploadImg setImg={setImg}/>
                 </Stack>
               </Grid>
 

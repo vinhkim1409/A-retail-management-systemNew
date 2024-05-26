@@ -38,6 +38,7 @@ import categories_level1 from "../../Data-Industry/categories_level1";
 import categories_level2 from "../../Data-Industry/categories_level2";
 import categories_level3 from "../../Data-Industry/categories_level3";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { api } from "../../../../constant/constant";
 
 const styles = {
@@ -45,6 +46,17 @@ const styles = {
 };
 function AddProduct() {
   const { tenantURL } = useParams();
+
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+
+
   useEffect(() => {
     // Giả sử bạn có một cơ chế để xác định các biến thể ban đầu dựa trên sản phẩm, hoặc chỉ đơn giản là khởi tạo rỗng
     setVariants([
@@ -378,7 +390,7 @@ function AddProduct() {
     console.log("productData", productData);
 
     await axios
-      .post(`${api}product/add`, productData)
+      .post(`${api}product/add`, productData,config)
       .then((response) => {
         console.log("Product added successfully:", response.data);
       })

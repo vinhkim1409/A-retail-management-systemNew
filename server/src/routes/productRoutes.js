@@ -2,148 +2,34 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/productModel");
 const Order = require("../models/orderModel");
+const Business = require("../models/businessModel");
 const authMiddleware = require("../middlewares/authMiddlewares");
 const { default: mongoose } = require("mongoose");
+const productController = require("../controllers/productController");
 
-router.get("/", async (req, res) => {
-  try {
-    const products = await Product.find({});
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-router.get("/get/top-sale", async (req, res) => {
-  try {
-    const products = await Product.find({});
-    const totalOrder = await Order.find();
-    const listProducts = [];
-    for (let order in totalOrder) {
-      for (let product in totalOrder[order].products) {
-        listProducts.push(totalOrder[order].products[product]);
-      }
-    }
-    const productCount = {};
-    listProducts.forEach((product) => {
-      const productId = product.product;
-      if (productCount[productId]) {
-        productCount[productId] += product.quantity;
-      } else {
-        productCount[productId] = product.quantity;
-      }
-    });
-    const productList = Object.keys(productCount).map((productId) => ({
-      productId,
-      count: productCount[productId],
-    }));
-    productList.sort((a, b) => b.count - a.count);
-    res.json(productList);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+router.get("/by-tenantURL/:tenantURL", productController.getByTenantURL);
+router.get("/get/top-sale/:tenantURL", productController.getTopSale);
 
-router.post("/add", async (req, res) => {
-  try {
-    const productData = req.body;
-    const newProduct = new Product(productData);
-    await newProduct.save();
-    res.status(201).json(newProduct);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+router.post(
+  "/add",
+  authMiddleware.verifyToken,
+  productController.addNewProduct
+);
 
-router.delete("/:id", async (req, res) => {
-  try {
-    const productId = req.params.id;
+router.delete(
+  "/:id",
+  authMiddleware.verifyToken,
+  productController.deleteProduct
+);
 
-    // Kiểm tra xem id có phải là ObjectId hợp lệ hay không
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: "Invalid product ID" });
-    }
-    const deletedProduct = await Product.findOneAndDelete({_id:productId});
+router.get("/:id", productController.getById);
 
-    if (!deletedProduct) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+router.put(
+  "/update-quantity",
+  authMiddleware.verifyToken,
+  productController.updateQuantity
+);
 
-    res
-      .status(200)
-      .json({
-        message: "Product deleted successfully",
-        product: deletedProduct,
-      });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error deleting product", error: error.message });
-  }
-});
-
-router.get("/:id", async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-    res.json(product);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-router.put('/update-quantity', async (req, res) => {
-  const { id, quantity, variant_sku } = req.body;
-
-  const intQuantity = parseInt(quantity);
-  try {
-    // const productId = mongoose.Types.ObjectId(id);
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    if (product.is_config_variant) {
-      const variant = product.variants.find(v => v.variant_sku === variant_sku);
-      if (!variant) {
-        return res.status(404).json({ message: 'Variant not found' });
-      }
-      variant.variant_quantity = variant.variant_quantity + intQuantity;
-    } else {
-      product.stock_quantity = product.stock_quantity + intQuantity;
-    }
-
-    await product.save();
-    res.json({ message: 'Product quantity updated successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating product quantity', error });
-  }
-});
-
-router.put("/:id", async (req, res) => {
-  try {
-    const productId = req.params.id;
-    const updateData = req.body;
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      updateData,
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedProduct) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    res
-      .status(200)
-      .json({
-        message: "Product updated successfully",
-        product: updatedProduct,
-      });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating product", error });
-  }
-});
+router.put("/:id", authMiddleware.verifyToken, productController.updateProduct);
 
 module.exports = router;

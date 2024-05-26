@@ -3,8 +3,12 @@ import { Box, Button, Grid, ImageList, ImageListItem } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "./UploadImg.scss";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import {api} from "../../constant/constant"
 
-const UploadImg = ({ setImg, img }) => {
+const UploadImg = ({ setImg }) => {
+  const { id } = useParams();
   const [multipleFile, setMultipleFile] = useState([]);
   const [check1x1, setCheck1x1] = useState([]);
   const uploadMultipleFiles = async (event) => {
@@ -72,6 +76,20 @@ const UploadImg = ({ setImg, img }) => {
   useEffect(() => {
     setImg(multipleFile);
   }, [multipleFile]);
+
+  const getImgEdit= async()=>{
+    const Products = await axios.get(`${api}product/${id}`);
+    const imgs=Products.data.pictures
+    const imgArray=imgs.map((img)=>{
+      return img.picture_url
+    })
+    setMultipleFile(imgArray)
+  }
+  useEffect(() => {
+    if (id) {
+      getImgEdit()
+    }
+  }, []);
   return (
     <>
       <form>

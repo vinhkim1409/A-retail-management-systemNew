@@ -27,6 +27,7 @@ import shirt from "../../../assets/shirt.jpg";
 import axios from "axios";
 import { api } from "../../../constant/constant";
 import { useParams } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -58,6 +59,17 @@ function ProductM() {
   const [products, setProducts] = useState([]);
   const totalProducts = products.length;
   const totalPages = Math.ceil(totalProducts / 5);
+
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+
+
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -107,7 +119,7 @@ function ProductM() {
   //delete product
   const handleDeleteProduct = async () => {
     console.log(idDelete);
-    const deleteProduct = await axios.delete(`${api}product/${idDelete}`);
+    const deleteProduct = await axios.delete(`${api}product/${idDelete}`,config);
     if (deleteProduct.data.success) {
       console.log("Delete Product Success");
     }
@@ -117,7 +129,7 @@ function ProductM() {
   };
   const getAllProducts = async () => {
     try {
-      const Products = await axios.get(`${api}product`);
+      const Products = await axios.get(`${api}product/by-tenantURL/${tenantURL}`);
       let filteredProducts = Products.data;
       setProducts(filteredProducts);
       setLoading(false);
