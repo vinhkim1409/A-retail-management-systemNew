@@ -15,6 +15,7 @@ import SalesOverview from "../../../components/Dashboard/SalesOverview";
 import MonthRevenue from "../../../components/Dashboard/MonthRevenue";
 import CardOverView from "../../../components/CardOverview/CardOverview";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function BusinessHome() {
   const [weekRow, setWeekRow] = useState([]);
@@ -26,9 +27,16 @@ function BusinessHome() {
   });
   const [productsList, setProductsList] = useState([]);
   const {tenantURL}=useParams()
-  
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
   const getDashboardData = async () => {
-    const dashboardData = await axios.get(`${api}dashboard/get-revenue`);
+    const dashboardData = await axios.get(`${api}dashboard/get-revenue`,config);
     console.log(dashboardData.data.data);
     const data = dashboardData.data.data;
     const dataweek = data.week;
@@ -42,7 +50,7 @@ function BusinessHome() {
     setWeekRow(weekRow);
     setRevenueWeek(revenueWeek);
     setDataMonth(data.month);
-    const productsList = await axios.get(`${api}dashboard/top-selling`);
+    const productsList = await axios.get(`${api}dashboard/top-selling`,config);
     setProductsList(productsList.data);
   };
   useEffect(() => {

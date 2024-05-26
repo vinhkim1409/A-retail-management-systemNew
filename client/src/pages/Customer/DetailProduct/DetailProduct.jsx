@@ -16,119 +16,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import { useSelector } from "react-redux";
 import moment from "moment";
 
-
 function DetailProduct() {
-  const BookList = [
-    {
-      name: "Chainsaw Man - Tập 8 - Tặng kèm lót ly",
-      image: images.checkoutBook2,
-      nxb: "Trẻ",
-      author: "Tatsuki Fujimoto",
-      book_cover: "Bìa mềm",
-      price: "45.000",
-      rating: "5",
-      id: "8934974185147",
-      publish_Year: "2023",
-      language: "Tiếng Việt",
-      description:
-        "Câu chuyện của Chainsaw Man mô tả một thế giới nơi ma quỷ và con người cùng tồn tại trên Trái đất, và trong đó con người có thể lập hiệp ước để đạt được sức mạnh của quỷ. Nhân vật chính là Denji, để hoàn trả số nợ khổng lồ của cha để lại, Denji cùng con quỷ nhỏ Pochita làm tất cả mọi công việc để có thể hoàn nợ. Sau một tai nạn, Denji bị giết, Pochita đã hòa làm một với Denji, giúp cậu hồi sinh và ....",
-    },
-    {
-      name: "Chainsaw Man - Tập 9 - Tặng kèm lót ly",
-      image: images.checkoutBook1,
-      nxb: "Trẻ",
-      author: "Tatsuki Fujimoto",
-      book_cover: "Bìa mềm",
-      price: "50.000",
-      rating: "4",
-      id: "8934974185147",
-      publish_Year: "2023",
-      language: "Tiếng Việt",
-      description: "Đây là 1 đoạn miêu tả",
-    },
-    {
-      name: "Chainsaw Man - Tập 10 - Tặng kèm lót ly",
-      image: images.checkoutBook2,
-      nxb: "Trẻ",
-      author: "Tatsuki Fujimoto",
-      book_cover: "Bìa mềm",
-      price: "65.000",
-      rating: "3",
-      id: "8934974185147",
-      publish_Year: "2023",
-      language: "Tiếng Việt",
-      description: "Đây là 1 đoạn miêu tả",
-    },
-    {
-      name: "Chainsaw Man - Tập 11 - Tặng kèm lót ly",
-      image: images.checkoutBook1,
-      nxb: "Trẻ",
-      author: "Tatsuki Fujimoto",
-      book_cover: "Bìa mềm",
-      price: "75.000",
-      rating: "2",
-      id: "8934974185147",
-      publish_Year: "2023",
-      language: "Tiếng Việt",
-      description: "Đây là 1 đoạn miêu tả",
-    },
-    {
-      name: "Chainsaw Man - Tập 12 - Tặng kèm lót ly",
-      image: images.checkoutBook2,
-      nxb: "Trẻ",
-      author: "Tatsuki Fujimoto",
-      book_cover: "Bìa mềm",
-      price: "15.000",
-      rating: "1",
-      id: "8934974185147",
-      publish_Year: "2023",
-      language: "Tiếng Việt",
-      description: "Đây là 1 đoạn miêu tả",
-    },
-  ];
-
-
-  const Comments = [
-    {
-      title: "Amazing Story! You will LOVE it",
-      rating: "5",
-      content:
-        "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
-      time: "Staci, February 22, 2020",
-    },
-    {
-      title: "Amazing Story! You will LOVE it",
-      rating: "4",
-      content:
-        "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
-      time: "Staci, February 22, 2020",
-    },
-    {
-      title: "Amazing Story! You will LOVE it",
-      rating: "3",
-      content:
-        "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
-      time: "Staci, February 22, 2020",
-    },
-    {
-      title: "Amazing Story! You will LOVE it",
-      rating: "1",
-      content:
-        "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
-      time: "Staci, February 22, 2020",
-    },
-    {
-      title: "Amazing Story! You will LOVE it",
-      rating: "1",
-      content:
-        "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
-      time: "Staci, February 22, 2020",
-    },
-  ];
-
-
-
-
   const customer = useSelector(
     (state) => state.authCustomer.login?.currentUser
   );
@@ -156,7 +44,6 @@ function DetailProduct() {
   };
 
   // Xu li ham read more cho phan related product
-  const resultArray = isReadMore ? BookList.slice(0, 4) : BookList;
 
   function toggleIsReadMore() {
     SetIsReadMore(!isReadMore);
@@ -170,40 +57,14 @@ function DetailProduct() {
   var star_4 = 0;
   var star_5 = 0;
 
-  for (let i = 0; i < Comments.length; i++) {
-    if (Comments[i].rating === "1") star_1++;
-    if (Comments[i].rating === "2") star_2++;
-    if (Comments[i].rating === "3") star_3++;
-    if (Comments[i].rating === "4") star_4++;
-    if (Comments[i].rating === "5") star_5++;
-  }
-
-  star_1 = (star_1 / Comments.length) * 100;
-  star_2 = (star_2 / Comments.length) * 100;
-  star_3 = (star_3 / Comments.length) * 100;
-  star_4 = (star_4 / Comments.length) * 100;
-  star_5 = (star_5 / Comments.length) * 100;
-
   const [selectedImage, setSelectedImage] = useState(0);
 
   const handleImageClick = (index) => {
     setSelectedImage(index);
   };
 
-  const imagess = [
-    images.checkoutBook1,
-    images.checkoutBook2,
-    images.checkoutBook1,
-    images.checkoutBook2,
-    images.checkoutBook1,
-    images.checkoutBook2,
-    images.checkoutBook1,
-    images.checkoutBook2,
-  ];
-
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [showAddToCartSuccess, setShowAddToCartSuccess] = useState(false);
-
 
   const handleAttributeClick = (attributeName, value) => {
     setSelectedAttributes((prevState) => ({
@@ -211,114 +72,127 @@ function DetailProduct() {
       [attributeName]: value,
     }));
   };
-
   ///get product
   const [product, setProduct] = useState();
-  const [review,setReview] = useState([]);
+  const [review, setReview] = useState([]);
   const getProduct = async () => {
     const product = await axios.get(`${api}product/${id}`);
+    console.log(product.data);
     setProduct(product.data);
   };
 
-  const getReview=async()=>{
-    const review = await axios.get(`${api}review/get-by-product/${id}`)
+  const getReview = async () => {
+    const review = await axios.get(`${api}review/get-by-product/${id}`);
     console.log(review.data);
-    setReview(review.data.data)
-  }
-
-  console.log("product.............", product)
-
+    setReview(review.data.data);
+  };
 
   const processAttributes = () => {
     let attributes = [];
 
     const is_config_variant = product ? product.is_config_variant : false;
     if (is_config_variant) {
-      product.variants.forEach(variant => {
+      product.variants.forEach((variant) => {
         const variantAttributes = variant.variant_attributes;
 
-        variantAttributes.forEach(attr => {
-          let attribute = attributes.find(a => a.attribute_id === attr.attribute_id);
+        variantAttributes.forEach((attr) => {
+          let attribute = attributes.find(
+            (a) => a.attribute_id === attr.attribute_id
+          );
 
           if (attribute) {
             attribute.option_ids.push(attr.option_id);
           } else {
             attributes.push({
               attribute_id: attr.attribute_id,
-              option_ids: [attr.option_id]
+              option_ids: [attr.option_id],
             });
           }
         });
       });
     }
 
-    const attributeName = attributes.map(attr => {
-      const attributeDataItem = attributeData.find(ad => ad.id === attr.attribute_id);
-      if (attributeDataItem) {
-        return {
-          attribute_id: attr.attribute_id,
-          name: attributeDataItem.name,
-          option_ids: attr.option_ids,
-          values: attr.option_ids.map(option_id => {
-            const valueItem = attributeDataItem.attribute_values.find(av => av.id === option_id);
-            return valueItem ? valueItem.value : null;
-          }).filter(value => value !== null)
-        };
-      }
-      return null;
-    }).filter(attr => attr !== null);
+    const attributeName = attributes
+      .map((attr) => {
+        const attributeDataItem = attributeData.find(
+          (ad) => ad.id === attr.attribute_id
+        );
+        if (attributeDataItem) {
+          return {
+            attribute_id: attr.attribute_id,
+            name: attributeDataItem.name,
+            option_ids: attr.option_ids,
+            values: attr.option_ids
+              .map((option_id) => {
+                const valueItem = attributeDataItem.attribute_values.find(
+                  (av) => av.id === option_id
+                );
+                return valueItem ? valueItem.value : null;
+              })
+              .filter((value) => value !== null),
+          };
+        }
+        return null;
+      })
+      .filter((attr) => attr !== null);
 
     setAttributeName(attributeName);
   };
 
-  console.log("attributeName", attributeName);
-
   const cat_4_id = product ? product.cat_4_id : 0;
 
-  console.log("cat_4_id", cat_4_id)
-
   const getAttributes = async () => {
-    axios.get(`${api}category-info/${cat_4_id}`)
-      .then(response => {
+    axios
+      .get(`${api}category-info/${cat_4_id}`)
+      .then((response) => {
         const attributes = response.data.attributes;
-        const attributeData = attributes.map(attribute => {
+        const attributeData = attributes.map((attribute) => {
           return {
             id: attribute.id,
             name: attribute.name,
-            attribute_values: attribute.attribute_values.map(value => ({
+            attribute_values: attribute.attribute_values.map((value) => ({
               id: value.id,
-              value: value.value
-            }))
+              value: value.value,
+            })),
           };
         });
         setAttributeData(attributeData);
       })
-      .catch(error => {
-        console.error('Error fetching attribute data:', error);
+      .catch((error) => {
+        console.error("Error fetching attribute data:", error);
       });
-  }
-
-  console.log("attributeData", attributeData)
+  };
 
   const addToCart = async () => {
-    if (!customer) {
-      navigate(`/${tenantURL}/customer/login`);
-    } else {
-      const products = {
-        productId: product._id,
-        variant: 1,
-        quantity: quantity,
-      };
-      console.log(products);
-      const addtoCart = await axios.put(`${api}cart/add-product`, products, config);
-      console.log(addtoCart);
+    if(quantity>0){      
+      if (!customer) {
+        navigate(`/${tenantURL}/customer/login`);
+      } else {
+        const numberVariant=product.variants.filter
 
+        const products = {
+          productId: product._id,
+          variant: 1,
+          quantity: quantity,
+        };
+      console.log(products);
+      const addtoCart = await axios.put(
+        `${api}cart/add-product`,
+        products,
+        config
+      );
+      console.log(addtoCart);
+      
       // Hiển thị thông báo
       setShowAddToCartSuccess(true);
       setTimeout(() => {
         setShowAddToCartSuccess(false);
       }, 2000);
     }
+  }
+  else{
+    return
+  }
   };
 
   useEffect(() => {
@@ -355,7 +229,10 @@ function DetailProduct() {
               </div>
               <div className="main-image-container">
                 {/* <img src={product.pictures[selectedImage]} alt="Main" /> */}
-                <img src={product.pictures[selectedImage].picture_url} alt="Main" />
+                <img
+                  src={product.pictures[selectedImage].picture_url}
+                  alt="Main"
+                />
               </div>
             </div>
             <div className="name-price">
@@ -364,14 +241,22 @@ function DetailProduct() {
               {attributeName.map((attribute, index) => (
                 <div key={index} className="color">
                   <div className="title-color">
-                    Choose {attribute.name}: <strong>{selectedAttributes[attribute.name]}</strong>
+                    Choose {attribute.name}:{" "}
+                    <strong>{selectedAttributes[attribute.name]}</strong>
                   </div>
                   <div className="color-content">
                     {attribute.values.map((value, valueIndex) => (
                       <div
                         key={valueIndex}
-                        className={`color-container ${selectedAttributes[attribute.name] === value ? "active" : ""}`}
-                        onClick={() => handleAttributeClick(attribute.name, value)}
+                        className={`color-container ${
+                          selectedAttributes[attribute.name] === value
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          handleAttributeClick(attribute.name, value);
+                          console.log(valueIndex)
+                        }}
                       >
                         {value}
                       </div>
@@ -415,7 +300,6 @@ function DetailProduct() {
                   <button className="add_wishlist_button" onClick={addToCart}>
                     Add to cart
                   </button>
-
                 </div>
                 <div className="cart_section">
                   <button className="buy_now_button">Buy Now</button>
@@ -427,9 +311,6 @@ function DetailProduct() {
                   Add to cart successfully
                 </div>
               )}
-
-
-
             </div>
           </div>
           <div className="detail-product">
@@ -492,7 +373,15 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==1).length/review.length*100)}%` }}
+                            style={{
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 1
+                                ).length /
+                                  review.length) *
+                                100
+                              }%`,
+                            }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"
@@ -516,7 +405,15 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==2).length/review.length*100)}%` }}
+                            style={{
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 2
+                                ).length /
+                                  review.length) *
+                                100
+                              }%`,
+                            }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"
@@ -540,7 +437,15 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==3).length/review.length*100)}%` }}
+                            style={{
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 3
+                                ).length /
+                                  review.length) *
+                                100
+                              }%`,
+                            }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"
@@ -564,7 +469,15 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==4).length/review.length*100)}%` }}
+                            style={{
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 4
+                                ).length /
+                                  review.length) *
+                                100
+                              }%`,
+                            }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"
@@ -588,7 +501,15 @@ function DetailProduct() {
                             class="progress-bar bg-warning"
                             role="progressbar"
                             aria-label="Basic example"
-                            style={{ width: `${(review.filter((comment)=>comment.ratingPoint==5).length/review.length*100)}%` }}
+                            style={{
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 5
+                                ).length /
+                                  review.length) *
+                                100
+                              }%`,
+                            }}
                             aria-valuenow="25"
                             aria-valuemin="0"
                             aria-valuemax="100"

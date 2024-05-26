@@ -52,21 +52,10 @@ function Shop() {
       setTyp([...typ, item]);
     }
   };
-  // useEffect(()=>{
-  //   if(typ.length!==0)
-  //   {
-  //     const newProducts=products.filter(item=>typ.includes(item.typ));
-  //     setProductTable(newProducts)
 
-  //   }
-  //   else
-  //   {
-  //     setProductTable(products)
-  //   }
-  // },[typ])
   const getProduct = async () => {
     const products = await axios.get(`${api}product`);
-    console.log(products.data)
+    console.log(products.data);
     setProductTable(products.data);
     setAllProducts(products.data);
   };
@@ -75,10 +64,22 @@ function Shop() {
   const [categoryStatus, setCategoryStatus] = useState("All");
   const [sort, setSort] = useState(0);
   const [categoryStart, setCategoryStart] = useState(0);
+  const numberRating = allProducts.reduce((total, product) => {
+    return total + product.ratingCount;
+  }, 0);
+  const Ratingpoint =
+    allProducts.reduce((total, product) => {
+      return total + product.ratingPoint * product.ratingCount;
+    }, 0) / numberRating;
+  const [topSale, setTopSale] = useState([]);
 
   const getCategory = async () => {
     const category = await axios.get(`${api}category`);
     setCategory(category.data);
+  };
+  const getTopSale = async () => {
+    const topsale = await axios.get(`${api}product/get/top-sale`);
+    setTopSale(topsale.data);
   };
   const handleChangeCategory = (id) => {
     if (id === "All") {
@@ -92,10 +93,29 @@ function Shop() {
       );
       setProductTable(newProducts);
     }
+    setSort(0);
+  };
+  const getLastest = () => {
+    setCategoryStatus("All");
+    const allproduct = [...allProducts];
+    setProductTable(allproduct.reverse());
+  };
+  const topsale = () => {
+    const topProdut = topSale.map((productID) => {
+      const productget = allProducts.filter(
+        (product) => product._id === productID.productId
+      );
+      return productget[0];
+    });
+    const arrayProduct=topProdut.concat(allProducts);
+    const unitArrayProduct = [... new Set(arrayProduct)]
+    setProductTable(unitArrayProduct)
+    setCategoryStatus("All");
   };
   useEffect(() => {
     getProduct();
     getCategory();
+    getTopSale();
   }, []);
   return (
     <div className="Shop-container">
@@ -105,9 +125,9 @@ function Shop() {
           <div className="name-business">Coolmate - Ho Chi Minh</div>
         </div>
         <div className="info-business">
-          <div className="total-product">Product: 120</div>
-          <div className="rating">{"Rating: 4.9 (145,2k Rating) "}</div>
-          <div className="total-customer">{"Customer: 1200"}</div>
+          <div className="total-product">Product: {allProducts.length}</div>
+          <div className="rating">{`Rating: ${Ratingpoint} (${numberRating} Rating) `}</div>
+          <div className="total-customer">{"Customer: 2"}</div>
         </div>
       </div>
 
@@ -166,6 +186,7 @@ function Shop() {
               }`}
               onClick={() => {
                 setSort(1);
+                topsale()
               }}
             >
               {" "}
@@ -177,10 +198,11 @@ function Shop() {
               }`}
               onClick={() => {
                 setSort(2);
+                getLastest();
               }}
             >
               {" "}
-              Latest
+              Lastest
             </div>
             <div
               className={`${

@@ -11,8 +11,17 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { api } from "../../constant/constant";
+import { useSelector } from "react-redux";
 const CardOverView = ({ tenantURL }) => {
   console.log(tenantURL);
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
   const percentUp = (number) => (
     <>
       <FontAwesomeIcon icon={faArrowUp} />
@@ -28,7 +37,7 @@ const CardOverView = ({ tenantURL }) => {
   const navigate = useNavigate();
   const [cardData, setCardData] = useState();
   const getCardData = async () => {
-    const cardData = await axios.get(`${api}dashboard/card-data`);
+    const cardData = await axios.get(`${api}dashboard/card-data`,config);
     setCardData(cardData.data);
   };
   useEffect(() => {
