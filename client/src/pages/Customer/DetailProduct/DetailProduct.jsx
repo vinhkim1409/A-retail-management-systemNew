@@ -16,6 +16,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import { useSelector } from "react-redux";
 import moment from "moment";
 
+
 function DetailProduct() {
   const BookList = [
     {
@@ -30,7 +31,7 @@ function DetailProduct() {
       publish_Year: "2023",
       language: "Tiếng Việt",
       description:
-        "Áo thun Adidas 3 Colors Future Icons Sportswear H39787 màu trắng, XL",
+        "Câu chuyện của Chainsaw Man mô tả một thế giới nơi ma quỷ và con người cùng tồn tại trên Trái đất, và trong đó con người có thể lập hiệp ước để đạt được sức mạnh của quỷ. Nhân vật chính là Denji, để hoàn trả số nợ khổng lồ của cha để lại, Denji cùng con quỷ nhỏ Pochita làm tất cả mọi công việc để có thể hoàn nợ. Sau một tai nạn, Denji bị giết, Pochita đã hòa làm một với Denji, giúp cậu hồi sinh và ....",
     },
     {
       name: "Chainsaw Man - Tập 9 - Tặng kèm lót ly",
@@ -104,28 +105,28 @@ function DetailProduct() {
     },
     {
       title: "Amazing Story! You will LOVE it",
-      rating: "5",
+      rating: "3",
       content:
         "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
       time: "Staci, February 22, 2020",
     },
     {
       title: "Amazing Story! You will LOVE it",
-      rating: "5",
+      rating: "1",
       content:
         "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
       time: "Staci, February 22, 2020",
     },
     {
       title: "Amazing Story! You will LOVE it",
-      rating: "4",
+      rating: "1",
       content:
         "Such an incredibly complex story! I had to buy it because there was a waiting list of 30+ at the local library for this book. Thrilled that I made the purchase",
       time: "Staci, February 22, 2020",
     },
   ];
 
-  
+
 
 
   const customer = useSelector(
@@ -141,6 +142,8 @@ function DetailProduct() {
   const [quantity, setQuantity] = useState(0);
   const [rating_product, setRating] = useState(0);
   const [isReadMore, SetIsReadMore] = useState(true);
+  const [attributeData, setAttributeData] = useState([]);
+  const [attributeName, setAttributeName] = useState([]);
 
   const handleDecrement = () => {
     if (quantity > 0) {
@@ -175,10 +178,6 @@ function DetailProduct() {
     if (Comments[i].rating === "5") star_5++;
   }
 
-  var aver_star =
-    (star_1 * 1 + star_2 * 2 + star_3 * 3 + star_4 * 4 + star_5 * 5) /
-    Comments.length;
-
   star_1 = (star_1 / Comments.length) * 100;
   star_2 = (star_2 / Comments.length) * 100;
   star_3 = (star_3 / Comments.length) * 100;
@@ -202,39 +201,22 @@ function DetailProduct() {
     images.checkoutBook2,
   ];
 
-  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedAttributes, setSelectedAttributes] = useState({});
+  const [showAddToCartSuccess, setShowAddToCartSuccess] = useState(false);
 
-  const handleSizeClick = (size) => {
-    setSelectedSize(size);
+
+  const handleAttributeClick = (attributeName, value) => {
+    setSelectedAttributes((prevState) => ({
+      ...prevState,
+      [attributeName]: value,
+    }));
   };
-  const sizes = ["M", "L"];
-
-  const [selectedColor, setSelectedColor] = useState("");
-
-  const handleColorClick = (color) => {
-    setSelectedColor(color);
-  };
-  const colors = [
-    {
-      name: "Đỏ",
-      image: colorRed,
-    },
-    {
-      name: "Xanh lá",
-      image: colorGreen,
-    },
-    {
-      name: "Xanh da trời",
-      image: colorBlue,
-    },
-  ];
 
   ///get product
   const [product, setProduct] = useState();
   const [review,setReview] = useState([]);
   const getProduct = async () => {
     const product = await axios.get(`${api}product/${id}`);
-    console.log('data-product', product.data);
     setProduct(product.data);
   };
 
@@ -243,6 +225,80 @@ function DetailProduct() {
     console.log(review.data);
     setReview(review.data.data)
   }
+
+  console.log("product.............", product)
+
+
+  const processAttributes = () => {
+    let attributes = [];
+
+    const is_config_variant = product ? product.is_config_variant : false;
+    if (is_config_variant) {
+      product.variants.forEach(variant => {
+        const variantAttributes = variant.variant_attributes;
+
+        variantAttributes.forEach(attr => {
+          let attribute = attributes.find(a => a.attribute_id === attr.attribute_id);
+
+          if (attribute) {
+            attribute.option_ids.push(attr.option_id);
+          } else {
+            attributes.push({
+              attribute_id: attr.attribute_id,
+              option_ids: [attr.option_id]
+            });
+          }
+        });
+      });
+    }
+
+    const attributeName = attributes.map(attr => {
+      const attributeDataItem = attributeData.find(ad => ad.id === attr.attribute_id);
+      if (attributeDataItem) {
+        return {
+          attribute_id: attr.attribute_id,
+          name: attributeDataItem.name,
+          option_ids: attr.option_ids,
+          values: attr.option_ids.map(option_id => {
+            const valueItem = attributeDataItem.attribute_values.find(av => av.id === option_id);
+            return valueItem ? valueItem.value : null;
+          }).filter(value => value !== null)
+        };
+      }
+      return null;
+    }).filter(attr => attr !== null);
+
+    setAttributeName(attributeName);
+  };
+
+  console.log("attributeName", attributeName);
+
+  const cat_4_id = product ? product.cat_4_id : 0;
+
+  console.log("cat_4_id", cat_4_id)
+
+  const getAttributes = async () => {
+    axios.get(`${api}category-info/${cat_4_id}`)
+      .then(response => {
+        const attributes = response.data.attributes;
+        const attributeData = attributes.map(attribute => {
+          return {
+            id: attribute.id,
+            name: attribute.name,
+            attribute_values: attribute.attribute_values.map(value => ({
+              id: value.id,
+              value: value.value
+            }))
+          };
+        });
+        setAttributeData(attributeData);
+      })
+      .catch(error => {
+        console.error('Error fetching attribute data:', error);
+      });
+  }
+
+  console.log("attributeData", attributeData)
 
   const addToCart = async () => {
     if (!customer) {
@@ -254,18 +310,28 @@ function DetailProduct() {
         quantity: quantity,
       };
       console.log(products);
-      const addtoCart = await axios.put(
-        `${api}cart/add-product`,
-        products,
-        config
-      );
+      const addtoCart = await axios.put(`${api}cart/add-product`, products, config);
       console.log(addtoCart);
+
+      // Hiển thị thông báo
+      setShowAddToCartSuccess(true);
+      setTimeout(() => {
+        setShowAddToCartSuccess(false);
+      }, 2000);
     }
   };
+
   useEffect(() => {
     getProduct();
     getReview();
   }, []);
+
+  useEffect(() => {
+    if (product) {
+      getAttributes();
+      processAttributes();
+    }
+  }, [product, attributeData]);
   return (
     <>
       {product ? (
@@ -288,56 +354,31 @@ function DetailProduct() {
                 ))}
               </div>
               <div className="main-image-container">
-                <img src={product.avatar.picture_url} alt="Main" />
+                {/* <img src={product.pictures[selectedImage]} alt="Main" /> */}
+                <img src={product.pictures[selectedImage].picture_url} alt="Main" />
               </div>
             </div>
             <div className="name-price">
               <div className="name">{product.name}</div>
-              <div className="price"></div>
-              {/* chua co */}
-              {/* <div className="color">
-                <div className="title-color">
-                  Chọn màu sắc: <strong>{selectedColor.name}</strong>
-                </div>
-                <div className="color-content">
-                  {colors.map((color, index) => (
-                    <div
-                      key={index}
-                      className={`color-container ${
-                        selectedColor.name === color.name ? "active" : ""
-                      }`}
-                      onClick={() => handleColorClick(color)}
-                    >
-                      <div className="color-image">
-                        <img
-                          src={color.image}
-                          alt="red"
-                          className="color-img"
-                        />
+
+              {attributeName.map((attribute, index) => (
+                <div key={index} className="color">
+                  <div className="title-color">
+                    Choose {attribute.name}: <strong>{selectedAttributes[attribute.name]}</strong>
+                  </div>
+                  <div className="color-content">
+                    {attribute.values.map((value, valueIndex) => (
+                      <div
+                        key={valueIndex}
+                        className={`color-container ${selectedAttributes[attribute.name] === value ? "active" : ""}`}
+                        onClick={() => handleAttributeClick(attribute.name, value)}
+                      >
+                        {value}
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div> */}
-              {/* chua co */}
-              <div className="size">
-                <div className="title-size">
-                  Choose size: <strong>{selectedSize}</strong>{" "}
-                </div>
-                <div className="size-content">
-                  {sizes.map((size, index) => (
-                    <div
-                      key={index}
-                      className={`size-container ${selectedSize === size ? "active" : ""
-                        }`}
-                      onClick={() => handleSizeClick(size)}
-                    >
-                      {size}
-                    </div>
-                  ))}
-                </div>
-                <div className="table-size">Size conversion table</div>
-              </div>
+              ))}
               {/* chua co */}
               <div className="quantity">
                 <div className="quantity-name">Quantity:</div>
@@ -365,7 +406,7 @@ function DetailProduct() {
                         accumulator + currentValue.quantity,
                       0
                     )}{" "} */}
-                    10 products available
+                    {product.stock_quantity} products available
                   </div>
                 </div>
               </div>
@@ -374,33 +415,36 @@ function DetailProduct() {
                   <button className="add_wishlist_button" onClick={addToCart}>
                     Add to cart
                   </button>
+
                 </div>
                 <div className="cart_section">
                   <button className="buy_now_button">Buy Now</button>
                 </div>
               </div>
+
+              {showAddToCartSuccess && (
+                <div className="add-to-cart-success">
+                  Add to cart successfully
+                </div>
+              )}
+
+
+
             </div>
           </div>
           <div className="detail-product">
             <div className="spec_info">
               <div className="bold while_background title_rp">
-                Information Product
+                Thông tin sản phẩm
               </div>
               <table className="while_background spec_product_table">
-                {/* {product.detailInfo.map((detail, index) => (
-                  <tr key={index}>
-                    <td>{detail.name}</td>
-                    <td>{detail.info}</td>
-                  </tr>
-                ))} */}
-
                 <tr>
-                  <td>Content: </td>
+                  <td>Nội dung: </td>
                 </tr>
               </table>
               <div className="spec_descrip">
                 {/* dangerouslySetInnerHTML={{ __html: content }} */}
-                <ReadMore>{BookList[0].description}</ReadMore>
+                <ReadMore>{product.description}</ReadMore>
               </div>
             </div>
           </div>
@@ -441,7 +485,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>1 star</div>
+                      <div>1 sao</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div
@@ -465,7 +509,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>2 stars</div>
+                      <div>2 sao</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div
@@ -489,7 +533,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>3 stars</div>
+                      <div>3 sao</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div
@@ -513,7 +557,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>4 stars</div>
+                      <div>4 sao</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div
@@ -537,7 +581,7 @@ function DetailProduct() {
                         alignItems: "center",
                       }}
                     >
-                      <div>5 stars</div>
+                      <div>5 sao</div>
                       <div style={{ width: "90%", paddingLeft: "15px" }}>
                         <div class="progress">
                           <div

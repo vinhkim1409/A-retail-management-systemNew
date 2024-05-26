@@ -89,6 +89,7 @@ function startServer() {
   const adminRoutes=require("./routes/adminRoutes")
   // const infoRoutes = require("./routes/infoRoutes");
   const attributeApiRoutes = require('./scripts/attribute_api');
+  const reviewRoutes = require('./routes/reviewRoutes');
 
   app.use("/product", productRoutes);
   app.use("/staff", staffRoutes);
@@ -106,6 +107,7 @@ function startServer() {
   app.use("/admin", adminRoutes);
   // app.use("/info", infoRoutes);
   app.use("/category-info", attributeApiRoutes);
+  app.use("/review", reviewRoutes);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
