@@ -3,11 +3,14 @@ import './FooterMain.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faPhone } from '@fortawesome/free-solid-svg-icons';
+import logo from "../../assets/logo.png";
 
 const Footer = () => {
     return (
         <div className="footer-main">
-            <div className="logo">Logo</div>
+            <div className="logo">
+                
+            </div>
             <div className="email">
                 <div className="icon-email">
                     <FontAwesomeIcon icon={faEnvelope} />

@@ -6,6 +6,7 @@ import Footer from '../../components/FooterCustomer/FooterCustomer'
 import { Outlet } from 'react-router-dom'
 
 const CustomerLayout = () => {
+    const checkTenantURL=async()=>{}
     return (
         <div className="CustomerLayoutContainer">
             <div className="navbar">

@@ -1,0 +1,224 @@
+.detailorder-container {
+  .title {
+    font-size: 26px;
+    font-weight: bold;
+  }
+  .header {
+    padding: 10px 0;
+    margin-bottom: 1%;
+  }
+  .detail-info {
+    display: flex;
+    justify-content: space-between;
+  }
+  .order-info {
+    width: 61%;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5% 1% 0% 2%;
+  }
+  .another-info {
+    width: 37%;
+
+    .order-summary {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding-top: 1%;
+      padding-bottom: 1%;
+      height: auto;
+      margin-bottom: 1%;
+      .summary-label {
+        margin-left: 4%;
+        margin-bottom: 2%;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        font-size: 17px;
+        color: #334155;
+      }
+    }
+    .ship-info {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 1% 0% 0% 5%;
+      .phone-number {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .ship-status {
+        margin-bottom: 4%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .person-info {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .address {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .ship-label {
+        margin-bottom: 2%;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        font-size: 17px;
+        color: #334155;
+      }
+    }
+  }
+  .label-frame {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2%;
+    align-items: center;
+  }
+  .content-label {
+    width: 70%;
+    // border: 1px solid gray;
+  }
+  .action {
+    width: 22%;
+    display: flex;
+    align-items: center;
+    padding: 1% 1% 1% 2%;
+    font-weight: 600;
+    border-radius: 10px;
+    background-color: #0d6efd;
+    color: white;
+    height: 80%;
+    font-size: 14px;
+    border: 1px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .action:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0d6efd;
+    border: 1px solid #0d6efd;
+  }
+  .action:hover {
+    box-shadow: 0 0 5px #0d6efd;
+    border: 1px solid #0d6efd;
+    text-shadow: 0 0 5px white;
+  }
+  .mini-label {
+    display: flex;
+    width: 100%;
+    margin-top: 1%;
+  }
+  .paidTag {
+    border-radius: 10px;
+    background-color: #198754;
+    color: white;
+    width: 30%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .wayPaidTag {
+    border-radius: 10px;
+    background-color: #ffca2c;
+    color: black;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0% 0% 0% 0%;
+  }
+  .payment-status {
+    display: flex;
+    align-items: center;
+    width: 14%;
+    margin-left: 2%;
+  }
+  .order-date {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+  }
+  .order-id {
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    font-size: 17px;
+    color: #334155;
+  }
+  .lable-product {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 550;
+  }
+  .product {
+    width: 50%;
+    padding-left: 4%;
+    // border: 1px solid gray;
+    .img {
+      width: 20%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+    .product-container {
+      display: flex;
+      align-items: center;
+    }
+    .name-frame {
+      margin-left: 1%;
+    }
+    .name-product {
+      max-width: 80%;
+      font-family: "Inter", sans-serif;
+      color: #334155;
+      font-weight: 550;
+      text-transform: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sku {
+      font-family: "Inter", sans-serif;
+      color: #334155;
+    }
+  }
+  .description {
+    padding-left: 4%;
+
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    width: 50%;
+  }
+  .quantity {
+    width: 15%;
+    // border: 1px solid gray
+  }
+  .amount {
+    width: 15%;
+    // border: 1px solid gray
+  }
+}

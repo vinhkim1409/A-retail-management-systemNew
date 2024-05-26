@@ -5,9 +5,7 @@ const Product = require("../models/productModel");
 const mongoose = require("mongoose");
 router.get("/", async (req, res) => {
   try {
-    const website = await Website.find({
-      _id: "65f46182d5b409e1e06b8960",
-    }).populate("featureProduct");
+    const website = await Website.find()
     res.json(website);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -1,19 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./NavbarAdminBusiness.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faUser,faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import avt from "../../assets/avtadmin1.jpg";
+import { useSelector } from "react-redux";
 
 const NavbarAdminBusiness = () => {
+  const userBusiness=useSelector((state)=>state.authBusiness.login?.currentUser?.resUser)
+  useEffect(()=>{
+    console.log(userBusiness)
+  },[])
   return (
     <div className="navbar-admin-business">
-      <div className="search">
-        <FontAwesomeIcon icon={faMagnifyingGlass} className="icon-search" />
-      </div>
-
       <div className="avt">
         <div className="info">
-          <div className="name">Minh Hung</div>
+          <div className="name">{userBusiness?.lastname}</div>
 
           <img src={avt} alt="avt" />
         </div>

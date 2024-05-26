@@ -79,30 +79,33 @@ function EditWebsite() {
   const handleClose = () => {
     setOpen(false);
   };
-  const removeAllProduct=()=>{
-    setFeatProduct([])
-  }
-  const removeProduct=(index)=>{
-    console.log(index)
-    setFeatProduct([...featProduct.slice(0,index),...featProduct.slice(index+1,featProduct.length)])
-  }
-  const editWebsite= async()=>{
-    const website={
-      picture:businessImgFile,
-      featProduct:featProduct
-    }
-    const editRes=await axios.put(`${api}website/edit`,website)
-    console.log(editRes)
-
-  }
-  const getWebsite= async()=>{
-    const website=await axios.get(`${api}website`)
-    setBusinessImgFile(website.data[0].businessImg)
-    setFeatProduct(website.data[0].featureProduct)
-  }
-  useEffect(()=>{
-    getWebsite()
-  },[])
+  const removeAllProduct = () => {
+    setFeatProduct([]);
+  };
+  const removeProduct = (index) => {
+    console.log(index);
+    setFeatProduct([
+      ...featProduct.slice(0, index),
+      ...featProduct.slice(index + 1, featProduct.length),
+    ]);
+  };
+  const editWebsite = async () => {
+    const website = {
+      picture: businessImgFile,
+      featProduct: featProduct,
+    };
+    const editRes = await axios.put(`${api}website/edit`, website);
+    console.log(editRes);
+  };
+  const getWebsite = async () => {
+    const website = await axios.get(`${api}website`);
+    console.log(website.data)
+    setBusinessImgFile(website.data[0]?.businessImg);
+    setFeatProduct(website.data[0]?.featureProduct);
+  };
+  useEffect(() => {
+    getWebsite();
+  }, []);
   return (
     <>
       <div className="Editwebsite-container">
@@ -155,7 +158,7 @@ function EditWebsite() {
             )}
           </div>
         </div>
-
+        {/* 
         <div className="product">
           <div className="label">
             <div className="label-business">Featured Product</div>
@@ -174,7 +177,7 @@ function EditWebsite() {
               <div className="upload-business" onClick={removeAllProduct}>Delete All</div>
             </div>
           </div>
-          <div className="product-feat">
+          {/* <div className="product-feat">
             {featProduct.map((item, index) => (
               <div className="feat-box">
                 <div key={index} className="detail-product">
@@ -200,8 +203,8 @@ function EditWebsite() {
                   </button>
               </div>
             ))}
-          </div>
-        </div>
+          </div> }
+        </div> */}
         <div className="button-box">
           <button className="btn cancle">Cancel</button>
           <button
@@ -214,11 +217,11 @@ function EditWebsite() {
           </button>
         </div>
       </div>
-      <ChooseFeatProduct
+      {/* <ChooseFeatProduct
         open={open}
         handleClose={handleClose}
         setFeatProduct={setFeatProduct}
-      />
+      /> */}
     </>
   );
 }

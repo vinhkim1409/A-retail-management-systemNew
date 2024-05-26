@@ -1,0 +1,66 @@
+.AddNewAddress-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(230, 230, 230); 
+    h1{
+        font-size: 30px;
+        font-weight: bold;
+    }
+    .header{
+        width: 80%;
+        margin-top: 10px;
+    }
+    .content{
+        width: 80%;
+        padding-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 80px;
+    }
+    .field{
+        width: 40%;
+        text-align: right;
+        font-size: 16px;
+    }
+    .infor{
+        width: 59%;
+        text-align: left;
+        font-size: 16px;
+    }
+    input {
+        width: 300px;
+    }
+    
+    .button{
+        width: 80%;
+        padding-bottom: 30px;
+        display: flex;
+        justify-content: center;
+    }
+    .button-detail{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 14rem;
+    }
+    .button-save, .button-cancel{
+        font-size: 16px;
+        width: 6rem;
+        height: 2.5rem;
+        border-radius: 10px;
+        background-color: #000000;
+        color: white;
+        cursor: pointer;
+        border: none;
+        font-weight: 500;
+    }
+    
+    .field div, .infor div{
+        height: 40px;
+    }
+    
+    
+    
+}

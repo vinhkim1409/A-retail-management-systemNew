@@ -3,41 +3,13 @@ const router = express.Router();
 
 //load model
 const Category = require("../models/categoryModel");
-const { default: mongoose } = require("mongoose");
+const authMiddlewares =require("../middlewares/authMiddlewares")
+const CategoryController=require("../controllers/categoryController")
 
-router.get("/", async (req, res, next) => {
-  try {
-    const categorys = await Category.find({ isDeleted: false });
-    res.json(categorys);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-router.post("/", async (req, res, next) => {
-  try {
-    const newCategorys = new Category({ ...req.body, isDeleted: false });
-    await newCategorys.save();
-    res.json(newCategorys);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-router.put("/add-product/:id", async (req, res, next) => {
-  try {
-    const { product } = req.body;
-    const addProductCondition = { _id: req.params.id };
-    const listProduct = product.map((item) => {
-      return new mongoose.Types.ObjectId(item);
-    });
-    const addProduct = await Category.findOneAndUpdate(
-      addProductCondition,
-      { $set: { product: listProduct } },
-      { new: true }
-    );
-    res.json(addProduct);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+
+router.get("/",CategoryController.getAllCategory );
+router.get("/:id",CategoryController.getCategoryById);
+router.post("/",CategoryController.addNewCategory);
+router.put("/add-product/:id",CategoryController.addProductToCategory);
 
 module.exports = router;

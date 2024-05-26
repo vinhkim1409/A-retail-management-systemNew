@@ -1,23 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./SaleInfor.scss";
-import {
-  Button,
-  Card,
-  Grid,
-  InputLabel,
-  OutlinedInput,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Grid, InputLabel, OutlinedInput, Paper, Stack } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMagnifyingGlass,
-  faPenToSquare,
-  faLessThan,
-  faGreaterThan,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 function SaleInfor({ setTypeSale, setSaleInfor }) {
   const [numClass1, setNumClass1] = useState(0);
@@ -41,14 +26,16 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
     },
   ]);
   const AddSingleInfo = (value, index) => {
-    
     const newArray = saleInfo;
-    if(index===0)
-    {newArray.buy=value}
-    if(index===1)
-    {newArray.sell=value}
-    if(index===1)
-    {newArray.quantity=value}
+    if (index === 0) {
+      newArray.buy = value;
+    }
+    if (index === 1) {
+      newArray.sell = value;
+    }
+    if (index === 1) {
+      newArray.quantity = value;
+    }
     setSaleInfo(newArray);
   };
   const AddClass1 = (event, index) => {
@@ -104,31 +91,158 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
     });
     setClassSale(newClassSale);
   };
-
-  useEffect(() => {
-    let arrayClass = [];
-    let row = numClass1 > 0 ? numClass1 : 1;
+  const checkInSale = (array, id1, id2) => {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].color.id === id1 && array[i].size.id === id2) {
+        return true;
+      }
+    }
+    return false;
+  };
+  const AddNumClass1 = () => {
+    setNumClass1(numClass1 + 1);
+    console.log(numClass1);
+    let arrayClass = classSale;
+    let row = numClass1 > 0 ? numClass1 + 1 : 1;
     let col = numClass2 > 0 ? numClass2 : 1;
     if (numClass1 > 0 || numClass2 > 0) {
       for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
           const element = {
             color: { id: i, name: "" },
+            size: { id: j, name: class2s[j] },
+            buy: "",
+            sell: "",
+            quantity: "",
+          };
+
+          console.log(checkInSale(arrayClass, i, j));
+          if (!checkInSale(arrayClass, i, j)) {
+            arrayClass.push(element);
+          }
+        }
+      }
+    }
+    setClassSale(arrayClass);
+  };
+  const AddNumClass2 = () => {
+    setNumClass2(numClass2 + 1);
+    let arrayClass = classSale;
+    let row = numClass1 > 0 ? numClass1 : 1;
+    let col = numClass2 > 0 ? numClass2 + 1 : 1;
+    if (numClass1 > 0 || numClass2 > 0) {
+      for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+          const element = {
+            color: { id: i, name: class1s[i] },
             size: { id: j, name: "" },
             buy: "",
             sell: "",
             quantity: "",
           };
-          arrayClass.push(element);
+          if (!checkInSale(arrayClass, i, j)) {
+            arrayClass.push(element);
+          }
         }
       }
     }
     setClassSale(arrayClass);
-    const newClass1s = new Array(row).fill("");
-    setClass1(newClass1s);
-    const newClass2s = new Array(col).fill("");
-    setClass2(newClass2s);
-  }, [numClass1, numClass2]);
+  };
+  const DeleteClass1 = (index) => {
+    if (numClass1 === 1 && index === 0) {
+      const newSaleInfo = classSale.map((sale) => {
+        if (sale.color.id === index)
+          return {
+            ...sale,
+            color: { ...sale.color, name: "" },
+            buy: "",
+            sell: "",
+            quantity: "",
+          };
+        return sale;
+      });
+      setNumClass1(0);
+      setClassSale(newSaleInfo);
+      setClass1([]);
+    } else {
+      const newArray = classSale.filter((sale) => sale.color.id != index);
+      const newSaleInfo = newArray.map((sale) => {
+        if (sale.color.id > index)
+          return {
+            ...sale,
+            color: { ...sale.color, id: sale.color.id - 1 },
+          };
+        return sale;
+      });
+
+      setClassSale(newSaleInfo);
+      const newClass1s = newSaleInfo.map((item) => {
+        return item.color.name;
+      });
+      setClass1([...new Set(newClass1s)]);
+      setNumClass1(numClass1 - 1);
+    }
+  };
+
+  const DeleteClass2 = (index) => {
+    if (numClass2 === 1 && index === 0) {
+      const newSaleInfo = classSale.map((sale) => {
+        if (sale.size.id === index)
+          return {
+            ...sale,
+            size: { ...sale.size, name: "" },
+            buy: "",
+            sell: "",
+            quantity: "",
+          };
+        return sale;
+      });
+      setNumClass2(0);
+      setClassSale(newSaleInfo);
+      setClass2([]);
+    } else {
+      const newArray = classSale.filter((sale) => sale.size.id != index);
+      const newSaleInfo = newArray.map((sale) => {
+        if (sale.size.id > index)
+          return {
+            ...sale,
+            size: { ...sale.size, id: sale.size.id - 1 },
+          };
+        return sale;
+      });
+
+      setClassSale(newSaleInfo);
+      const newClass2s = newSaleInfo.map((item) => {
+        return item.size.name;
+      });
+      setClass2([...new Set(newClass2s)]);
+      setNumClass2(numClass2 - 1);
+    }
+  };
+  // useEffect(() => {
+  //   let arrayClass = [];
+  //   let row = numClass1 > 0 ? numClass1 : 1;
+  //   let col = numClass2 > 0 ? numClass2 : 1;
+  //   if (numClass1 > 0 || numClass2 > 0) {
+  //     for (let i = 0; i < row; i++) {
+  //       for (let j = 0; j < col; j++) {
+  //         const element = {
+  //           color: { id: i, name: "" },
+  //           size: { id: j, name: "" },
+  //           buy: "",
+  //           sell: "",
+  //           quantity: "",
+  //         };
+  //         arrayClass.push(element);
+  //       }
+  //     }
+  //   }
+  //   setClassSale(arrayClass);
+  //   const newClass1s = new Array(row).fill("");
+  //   setClass1(newClass1s);
+  //   const newClass2s = new Array(col).fill("");
+  //   setClass2(newClass2s);
+  // }, [numClass1, numClass2]);
   useEffect(() => {
     if (numClass1 > 0 || numClass2 > 0) {
       setSaleInfor(classSale);
@@ -145,7 +259,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
         <div className="title"> Sale Information</div>
         <div className="content">
           <div className="class">
-            <InputLabel item htmlFor="title" className="title-small">
+            <InputLabel htmlFor="title" className="title-small">
               Product categorization
             </InputLabel>
             <div className="add-product1">
@@ -153,7 +267,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                 <>
                   <button
                     onClick={() => {
-                      setNumClass1(numClass1 + 1);
+                      AddNumClass1();
                       setClass1([...class1s, ""]);
                       AddSingleInfo("", 0);
                       AddSingleInfo("", 1);
@@ -192,14 +306,19 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                             }
                             onChange={(event) => AddClass1(event, index)}
                           />
-                          <button className="btn">
+                          <button
+                            className="btn"
+                            onClick={() => {
+                              DeleteClass1(index);
+                            }}
+                          >
                             <FontAwesomeIcon icon={faTrashCan} />
                           </button>
                         </div>
                       ))}
                       <button
                         onClick={() => {
-                          setNumClass1(numClass1 + 1);
+                          AddNumClass1();
                           setClass1([...class1s, ""]);
                         }}
                         className="btn"
@@ -217,7 +336,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                 <>
                   <button
                     onClick={() => {
-                      setNumClass2(numClass2 + 1);
+                      AddNumClass2();
                       setClass2([...class2s, ""]);
                       AddSingleInfo("", 0);
                       AddSingleInfo("", 1);
@@ -255,14 +374,19 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
                             }
                             onChange={(event) => AddClass2(event, index)}
                           />
-                          <button className="btn">
+                          <button
+                            className="btn"
+                            onClick={() => {
+                              DeleteClass2(index);
+                            }}
+                          >
                             <FontAwesomeIcon icon={faTrashCan} />
                           </button>
                         </div>
                       ))}
                       <button
                         onClick={() => {
-                          setNumClass2(numClass2 + 1);
+                          AddNumClass2();
                           setClass2([...class2s, ""]);
                         }}
                         className="btn"
@@ -601,7 +725,7 @@ function SaleInfor({ setTypeSale, setSaleInfor }) {
       </Paper>
       {/* <button
         onClick={() => {
-          console.log(class1s);
+          console.table(classSale);
           //AddSaleInfo();
         }}
       >

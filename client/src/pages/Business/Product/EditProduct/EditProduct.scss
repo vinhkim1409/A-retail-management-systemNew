@@ -1,10 +1,10 @@
-.editproduct-container {
+.addproduct-container {
   display: flex;
   flex-direction: column;
   .title {
     font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 3%;
+    font-weight: bold; 
+    margin-bottom: 2%;
     margin-top: 2%;
   }
   .title-small {
@@ -19,8 +19,19 @@
   // .desc {
   //   margin-top: 3%;
   // }
+  .desc{
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
   .detail {
     margin-top: 2%;
+  }
+  .variants{
+    margin-top: 2%;
+    margin-bottom: 2%;
+  }
+  .table{
+    margin-bottom: 2%;
   }
   .pic {
     display: inline-block;
@@ -55,6 +66,19 @@
     font-weight: 600;
     cursor: pointer;
   }
+  .btn-cancel{
+    background-color: #dd3333;
+    border: none;
+    color: white;
+    padding: 12px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 10px;
+  }
   .btn-add{
     width: 100%;
     display: flex;
@@ -77,5 +101,9 @@
   .btn:hover{
     box-shadow: 0 0 5px #0d6efd;
     text-shadow: 0 0 5px white;
+  }
+  .editor{
+    width: 200px;
+    height: 200px;
   }
 }

@@ -38,6 +38,8 @@ import StaffList from "./pages/Business/Staff/StaffList";
 import CustomerBlacklist from "./pages/Business/CustomerBlacklist/CustomerBlacklist"
 import EditWebsite from "./pages/Business/Website/EditWebsite/EditWebsite";
 import CategoryM from "./pages/Business/Category/CategoryM/CategoryM";
+import ImportGoods from "./pages/Business/ImportGoods/ImportGoods";
+import InfoShop from "./pages/Business/InfoShop/InfoShop";
 
 
 
@@ -52,10 +54,14 @@ import DetailOrder from "./pages/Customer/DetailOrder/DetailOrder";
 import Cart from "./pages/Customer/Cart/Cart";
 import Shop from "./pages/Customer/Shop/Shop";
 import Review from "./pages/Customer/Review/AddNewReview/AddNewReview"
+import LoginCustomer from "./pages/Customer/LoginCustomer/LoginCustomer";
+import SignupCustomer from "./pages/Customer/SignupCustomer/SignupCustomer";
 
 //Error
 import Error from "./pages/Error/Error";
 import EditProduct from "./pages/Business/Product/EditProduct/EditProduct";
+import AddNewAddress from "./pages/Customer/AddNewAddress/AddNewAddress";
+import DetailOrderBusiness from "./pages/Business/Order/DetailOrder/DetailOrder";
 
 
 function App() {
@@ -83,10 +89,8 @@ function App() {
           <Route path="business" element={<Business />} />
         </Route>
 
-        <Route path="/business" element={<BusinessLayout />}>
+        <Route path="/:tenantURL/business" element={<BusinessLayout />}>
           <Route index element={<BusinessHome />} />
-          <Route path="item" element={<DashboardAdmin />} />
-          <Route path="transaction" element={<DashboardAdmin />} />
           <Route path="customer" element={<CustomerList />} />
           <Route path="employee" element={<StaffList />} />
           <Route path="warehouse" element={<Warehouse />} />
@@ -96,22 +100,29 @@ function App() {
           <Route path="product/detail/:id" element={<DetailProduct />} />
           <Route path="customer-information" element={<CustomerInformation />} />
           <Route path="order" element={<OrderBusiness />} />
+          <Route path="order/:id" element={<DetailOrderBusiness />} />
           <Route path="customer-blacklist" element={<CustomerBlacklist />} />
           <Route path="website" element={<EditWebsite />} />
           <Route path="category" element={<CategoryM />} />
+          <Route path="import-goods" element={<ImportGoods />} />
+          <Route path="info-shop" element={<InfoShop />} />
         </Route>
 
-        <Route path="/customer" element={<CustomerLayout />}>
+        <Route path="/:tenantURL/customer" element={<CustomerLayout />}>
           <Route index element={<Home />} />
+          <Route path="detail-product/:id" element={<DetailProductCustomer />} />
           <Route path="detail-product" element={<DetailProductCustomer />} />
           <Route path="address" element={<Address />} />
           <Route path="address-edit" element={<AddressEdit />} />
+          <Route path="address-addnew" element={<AddNewAddress />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="order" element={<OrderCustomer />} />
           <Route path="detail-order" element={<DetailOrder />} />
           <Route path="cart" element={<Cart />} />
           <Route path="shop" element={<Shop />} />
-          <Route path="review" element={<Review />} />
+          <Route path="review/:id" element={<Review />} />
+          <Route path="login" element={<LoginCustomer />} />
+          <Route path="signup" element={<SignupCustomer />} />
         </Route>
 
         <Route path="/*" element={<Error />} />

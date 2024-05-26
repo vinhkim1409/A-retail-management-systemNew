@@ -1,169 +1,225 @@
-import React, { useState } from 'react';
-import './Order.scss';
-import { getPriceExpr } from "../../../utils/getPriceRepr"
+import React, { useEffect, useState } from "react";
+import "./Order.scss";
+import { getPriceExpr } from "../../../utils/getPriceRepr";
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  styled,
+} from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import img1 from "./../../../assets/checkout-item.png";
 import img2 from "./../../../assets/checkout-item2.png";
+import axois from "axios";
+import { api } from "../../../constant/constant";
+import moment from "moment";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+
+const StyledTable = styled(Table)(() => ({
+  whiteSpace: "pre",
+  "& thead": {
+    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
+  },
+  "& tbody": {
+    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
+  },
+}));
+
+const paidTag = <div className="paidTag">Paid</div>;
+const wayPaidTag = <div className="wayPaidTag">Wait Pay</div>;
 
 const Order = () => {
-    const [activeTab, setActiveTab] = useState('All');
-
-    const handleTabClick = (event, cityName) => {
-        setActiveTab(cityName);
-    };
-
-    const orderbook = [{
-        id: "1",
-        name: "Thay đổi cuộc sống với nhân số học",
-        image: img1,
-        price: 248000,
-        discount: 20,
-        count: 1,
+  const [activeTab, setActiveTab] = useState("All");
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  };
+  const navigate=useNavigate()
+  const {tenatURL}=useParams()
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
     },
-    {
-        id: "2",
-        name: "Hiểu về trái tim (Tái bản 2023)",
-        image: img2,
-        price: 118500,
-        discount: 25,
-        count: 2,
+  };
+  
+  const handleTabClick = (event) => {
+    if (event.target.value == "All") {
+      setActiveTab(event.target.value);
+      setOrderList(initialOrderList);
+    } else {
+      setActiveTab(event.target.value);
+      setOrderList(
+        initialOrderList.filter(
+          (order) => order.statusPayment == event.target.value
+        )
+      );
     }
-    ];
+  };
+  const [initialOrderList, setInitialOrderList] = useState([]);
+  const [orderList, setOrderList] = useState([]);
 
-    const getTotalPrice = (deliveryFee = 0) =>
-        getPriceExpr(
-            orderbook.reduce((prev, curr) => {
-                return prev + curr.price * (1 - curr.discount / 100) * curr.count;
-            }, deliveryFee)
-        );
+  const totalPages = Math.ceil(orderList.length / 10);
+  const getOrder = async () => {
+    const orders = await axois.get(`${api}order`, config);
+    console.log(orders.data);
+    setOrderList(orders.data.data);
+    setInitialOrderList(orders.data.data);
+  };
+  useEffect(() => {
+    getOrder();
+  }, []);
 
-    return (
-        <div className='Order-container'>
-            <div className='header'>
-                <div className="title">Đơn hàng Website</div>
-            </div>
+  //   const getTotalPrice = (deliveryFee = 0) =>
+  //     getPriceExpr(
+  //       orderbook.reduce((prev, curr) => {
+  //         return prev + curr.price * (1 - curr.discount / 100) * curr.count;
+  //       }, deliveryFee)
+  //     );
 
-            <div className='tab'>
-                <button
-                    className={`tablinks ${activeTab === 'All' ? "active" : ""}`}
-                    onClick={(e) => handleTabClick(e, 'All')}
-                >
-                    Tất cả
-                </button>
-                <button
-                    className={`tablinks ${activeTab === 'Wait-pay' ? "active" : ""}`}
-                    onClick={(e) => handleTabClick(e, 'Wait-pay')}
-                >
-                    Chờ thanh toán
-                </button>
-                <button
-                    className={`tablinks ${activeTab === 'Transport' ? "active" : ""}`}
-                    onClick={(e) => handleTabClick(e, 'Transport')}
-                >
-                    Đang vận chuyển
-                </button>
-                <button
-                    className={`tablinks ${activeTab === 'Delivered' ? "active" : ""}`}
-                    onClick={(e) => handleTabClick(e, 'Delivered')}
-                >
-                    Đã giao
-                </button>
-                <button
-                    className={`tablinks ${activeTab === 'Cancelled' ? "active" : ""}`}
-                    onClick={(e) => handleTabClick(e, 'Cancelled')}
-                >
-                    Đã hủy
-                </button>
-            </div>
-
-            <div className='content'>
-                <div className={`tabcontent ${activeTab === 'All' ? "active" : ""}`}>
-                    <div className="username">
-                        <div className="username-content">user_123</div>
-                    </div>
-
-                    {orderbook.map((item) => (
-                        <div key={item.id}>
-                            <div className="book-detail">
-                                <div className="book-info">
-                                    <div className="image">
-                                        <img src={item.image} alt="img" width="86px" height="122px" />
-                                    </div>
-                                    <div className="name-count">
-                                        <p>{item.name}</p>
-                                        <p>x{item.count}</p>
-                                    </div>
-                                </div>
-                                <div className="price">
-                                    <div className="initial-price">
-                                        <p>{getPriceExpr(item.price)}</p>
-                                    </div>
-                                    <div className="last-price">
-                                        <p>{getPriceExpr(item.price, item.discount)}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-
-                    <div className="total">
-                        <div className="sumprice">
-                            <span className="sum">Tổng tiền:</span>
-                            <span className="total-price">{getTotalPrice()}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={`tabcontent ${activeTab === 'Wait-pay' ? "active" : ""}`}>
-                    <h3>Hiện tại không có đơn hàng nào</h3>
-                </div>
-
-                <div className={`tabcontent ${activeTab === 'Transport' ? "active" : ""}`}>
-                    <h3>Hiện tại không có đơn hàng nào</h3>
-                </div>
-
-                <div className={`tabcontent ${activeTab === 'Delivered' ? "active" : ""}`}>
-                    <div className="username">
-                        <div className="username-content">user_123</div>
-                    </div>
-
-                    {orderbook.map((item) => (
-                        <div key={item.id}>
-                            <div className="book-detail">
-                                <div className="book-info">
-                                    <div className="image">
-                                        <img src={item.image} alt="img" width="86px" height="122px" />
-                                    </div>
-                                    <div className="name-count">
-                                        <p>{item.name}</p>
-                                        <p>x{item.count}</p>
-                                    </div>
-                                </div>
-                                <div className="price">
-                                    <div className="initial-price">
-                                        <p>{getPriceExpr(item.price)}</p>
-                                    </div>
-                                    <div className="last-price">
-                                        <p>{getPriceExpr(item.price, item.discount)}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-
-                    <div className="total">
-                        <div className="sumprice">
-                            <span className="sum">Tổng tiền:</span>
-                            <span className="total-price">{getTotalPrice()}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={`tabcontent ${activeTab === 'Cancelled' ? "active" : ""}`}>
-                    <h3>Hiện tại không có đơn hàng nào</h3>
-                </div>
-            </div>
+  return (
+    <div className="Order-container">
+      <div className="header">
+        <div className="title">Orders</div>
+      </div>
+      <div className="list-contaniner">
+        <div className="status">
+          <div className="lable-status">Status</div>
+          <select
+            name="selectStatusShipp"
+            id=""
+            value={activeTab}
+            onChange={handleTabClick}
+            className="select-status-box"
+          >
+            <option value="All">All</option>
+            <option value="Unpaid">Wait Pay</option>
+            {/* <option value="Transport">Transport</option> */}
+            <option value="Paid">Paid</option>
+            {/* <option value="Cancelled">Cancelled</option> */}
+          </select>
         </div>
-    );
+        <Box
+          width="100%"
+          overflow="auto"
+          backgroundColor="white"
+          minHeight={450}
+        >
+          <StyledTable>
+            <TableHead>
+              <TableRow
+                sx={{
+                  backgroundColor: "#F5F5F5",
+                }}
+              >
+                <TableCell align="left" className="order-id lable-order" >
+                  Order ID
+                </TableCell>
+                <TableCell align="left" className="customer lable-order">
+                  Customer
+                </TableCell>
+                <TableCell align="left" className="date lable-order">
+                  Date
+                </TableCell>
+                <TableCell align="left" className="payment lable-order">
+                  Payment Status
+                </TableCell>
+                <TableCell align="left" className="total lable-order">
+                  Total
+                </TableCell>
+                <TableCell align="left" className="order-status lable-order">
+                  Order Status
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {orderList.length > 0 &&
+                orderList
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((item, index) => (
+                    <TableRow
+                      key={index}
+                      onClick={() => {
+                        navigate(`/${tenatURL}/business/order/${item._id}`);
+                      }}
+                      className="order-body"
+                    >
+                      <TableCell
+                        align="left"
+                        className="order-id blue"
+                        sx={{ maxWidth: 173,minWidth: 140 }}
+                      >
+                        {item._id}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        className="customer content-order"
+                        sx={{ maxWidth: 140 }}
+                      >
+                        {item.customerID?.firstName}
+                        {item.customerID?.lastName}
+                      </TableCell>
+                      <TableCell align="left" className="date content-order">
+                        {moment(item.createdAt).format("D MMM, YYYY h:mm A")}
+                      </TableCell>
+                      <TableCell align="left" className="payment">
+                        {item.statusPayment === "Unpaid" ? wayPaidTag : paidTag}
+                      </TableCell>
+                      <TableCell align="left" className="total content-order">
+                        {item.totalPrice}
+                        {""} đ
+                      </TableCell>
+                      <TableCell align="left" className="order-status">
+                        In Shipped
+                      </TableCell>
+                    </TableRow>
+                  ))}
+            </TableBody>
+          </StyledTable>
+        </Box>
+        <div className="pages">
+          <div className="pages-number">
+            {1 * (page + 1)}-
+            {page == totalPages - 1 ? orderList.length : 5 * (page + 1)} of{" "}
+            {orderList.length}
+          </div>
+          <button
+            className="button-back"
+            onClick={() => handleChangePage(page - 1)}
+            disabled={page == 0}
+          >
+            <FontAwesomeIcon
+              icon={faChevronLeft}
+              className={`${page == 0 ? "icon-back" : "active"}`}
+            />
+          </button>
+          <div className="number-page">{page + 1}</div>
+          <button
+            className="button-next"
+            onClick={() => handleChangePage(page + 1)}
+            disabled={page == totalPages - 1}
+          >
+            <FontAwesomeIcon
+              icon={faChevronRight}
+              className={`${page == totalPages - 1 ? "icon-next" : "active"}`}
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Order;

@@ -16,7 +16,7 @@ const style = {
   border: "1px solid white",
 };
 
-const AddProductCatalog = ({ open, handleClose, id,categorys,setCategorys }) => {
+const AddProductCatalog = ({ open, handleClose, id, categorys, setCategorys }) => {
   const [product, setProduct] = useState([]);
   useEffect(() => {
     const newArray = [];
@@ -61,16 +61,16 @@ const AddProductCatalog = ({ open, handleClose, id,categorys,setCategorys }) => 
   };
 
   const handleChooseProduct = async () => {
-    const listProduct={
-      product:ids
+    const listProduct = {
+      product: ids
     }
-    const addProduct=await axios.put(`${api}category/add-product/${id}`,listProduct)
+    const addProduct = await axios.put(`${api}category/add-product/${id}`, listProduct)
     console.log(addProduct)
-    setCategorys(categorys.map((category)=>{
-      if(category._id===id){
+    setCategorys(categorys.map((category) => {
+      if (category._id === id) {
         return {
           ...category,
-          product:ids
+          product: ids
         }
       }
       return category
@@ -107,16 +107,16 @@ const AddProductCatalog = ({ open, handleClose, id,categorys,setCategorys }) => 
                       }}
                       inputProps={{ "aria-label": "primary checkbox" }}
                     />
-                    {item.name}
                     <div className="img-product">
-                      <img src={item.picture[0]} alt="" className="img" />
+                      <img src={item.avatar.picture_url} alt="" className="img" />
                     </div>
+                    {item.name}
                   </div>
 
                   <div className="num-product">
-                    {item.saleInfo[0].sellPrice}
+                    {item.special_price}
                   </div>
-                  <div className="quantity">{item.saleInfo[0].quantity}</div>
+                  <div className="quantity">{item.stock_quantity}</div>
                 </div>
               ))}
             </div>
