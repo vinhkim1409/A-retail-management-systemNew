@@ -14,6 +14,8 @@ import AddNewCategory from "../../../../components/AddNewCategory/AddNewCategory
 import AddProductCatalog from "../AddProductCatalog/AddProductCatalog";
 import axios from "axios";
 import { api } from "../../../../constant/constant";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -40,6 +42,16 @@ const style = {
 function CategoryM() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+  const { tenantURL } = useParams();
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -78,7 +90,9 @@ function CategoryM() {
   const getCatergory = async () => {
     const Category = await axios.get(`${api}category`);
     setCategorys(Category.data);
+    console.log(Category)
   };
+
   useEffect(() => {
     getCatergory();
   }, []);

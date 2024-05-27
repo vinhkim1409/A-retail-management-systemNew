@@ -1,153 +1,254 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./DetailOrder.scss";
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  styled,
+} from "@mui/material";
+import axios from "axios";
+import { api } from "../../../constant/constant";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import moment from "moment";
 import { getPriceExpr } from "../../../utils/getPriceRepr";
-import img1 from "./../../../assets/checkout-item.png";
-import img2 from "./../../../assets/checkout-item2.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
-const DetailOrderB = () => {
-  const orderbook = [
-    {
-      id: "1",
-      name: "Thay đổi cuộc sống với nhân số học",
-      image: img1,
-      price: 248000,
-      discount: 20,
-      count: 1,
-    },
-    {
-      id: "2",
-      name: "Hiểu về trái tim (Tái bản 2023)",
-      image: img2,
-      price: 118500,
-      discount: 25,
-      count: 2,
-    },
-  ];
+const StyledTable = styled(Table)(() => ({
+  whiteSpace: "pre",
+  "& thead": {
+    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
+  },
+  "& tbody": {
+    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
+  },
+}));
+const paidTag = <div className="paidTag">Paid</div>;
+const wayPaidTag = <div className="wayPaidTag">Wait Pay</div>;
 
+const DetailOrderBusiness = () => {
+  const [order, setOrder] = useState();
+  const { tenantURL, id } = useParams();
+  const customer = useSelector(
+    (state) => state.authCustomer.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${customer?.accessToken}`,
+    },
+  };
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const getOrder = async () => {
+    const order = await axios.get(`${api}order/customer/${id}`, config);
+    console.log(order.data.data);
+    setOrder(order.data.data[0]);
+  };
   const getTotalPrice = (deliveryFee = 0) =>
     getPriceExpr(
-      orderbook.reduce((prev, curr) => {
-        return prev + curr.price * (1 - curr.discount / 100) * curr.count;
+      order?.products.reduce((prev, curr) => {
+        return (
+          prev +
+          (curr.variant > 0
+            ? curr.product.variants[curr.variant - 1].variant_special_price
+            : curr.product.price) *
+            curr.quantity
+        );
       }, deliveryFee)
     );
-
-  const delivery = [
-    {
-      time: "25/02/2024 15:12:13",
-      status: "Lấy hàng thành công tại Hà Nội",
-    },
-    {
-      time: "25/02/2024 21:12:13",
-      status: "Đã đến kho ABC quận Hoàng Mai, Hà Nội",
-    },
-    {
-      time: "25/02/2024 23:12:13",
-      status: "Đang trung chuyển đến HCM",
-    },
-    {
-      time: "27/02/2024 15:12:13",
-      status: "Đã đến kho Quận Tân Bình, TPHCM",
-    },
-  ];
-
+  useEffect(() => {
+    getOrder();
+  }, []);
   return (
-    <div className="DetailOrderM-container">
-      <div className="header">
-        <div className="title">Chi tiết đơn hàng</div>
-      </div>
-
-      <div className="delivery">
-        <div className="address">
-          <div className="title-address">Địa chỉ nhận hàng</div>
-          <div className="content-address">
-            <div className="name-address">
-              <div className="lable">Name:</div>
-              Nguyễn Minh Hưng
-            </div>
-            <div className="phone-address">
-              <div className="lable">Phone Number:</div> 012345678
-            </div>
-            <div className="detail-address">
-              <div className="lable">Address:</div>Bcons Plaza, đường Thống
-              Nhất, Đông Hòa, Dĩ An, Bình Dương
-            </div>
-          </div>
+    <>
+      <div className="detailordercustomer-container">
+        <div className="header">
+          <div className="title">Order Detail</div>
         </div>
-        <div className="detail-delivery">
-          <div className="title-delivery">Hành trình đơn hàng</div>
-          <div className="content-delivery">
-            {delivery.map((item, index) => (
-              <div key={index} className="time-status-delivery">
-                <div className="time-delivery">
-                  <FontAwesomeIcon icon={faCircle} className="icon-circle" />{" "}
-                  {item.time}
-                </div>
-                <div className="status-delivery">{item.status}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="order">
-        <div className="tabcontent">
-          <div className="username">
-            <div className="username-content">Giao hàng thành công</div>
-          </div>
-
-          {orderbook.map((item) => (
-            <div key={item.id}>
-              <div className="book-detail">
-                <div className="book-info">
-                  <div className="image">
-                    <img
-                      src={item.image}
-                      alt="img"
-                      width="86px"
-                      height="122px"
-                    />
+        <div className="detail-info">
+          <div className="order-info">
+            <div className="label-frame">
+              <div className="content-label">
+                <div className="order-id">Order ID: #{order?._id}</div>
+                <div className="mini-label">
+                  <div className="order-date">
+                    Order Date:
+                    {moment(order?.createdAt).format("D MMM, YYYY h:mm A")}
                   </div>
-                  <div className="name-count">
-                    <p>{item.name}</p>
-                    <p>x{item.count}</p>
-                  </div>
-                </div>
-                <div className="price">
-                  <div className="initial-price">
-                    <p>{getPriceExpr(item.price)}</p>
-                  </div>
-                  <div className="last-price">
-                    <p>{getPriceExpr(item.price, item.discount)}</p>
+                  <div className="payment-status">
+                    {order?.statusPayment == "Paid" ? paidTag : wayPaidTag}
                   </div>
                 </div>
               </div>
             </div>
-          ))}
-
-          <div className="total">
-            <div className="sumprice">
-              <span className="sum">Tổng tiền:</span>
-              <span className="total-price">{getTotalPrice()}</span>
+            <div className="list-product">
+              <Box
+                width="100%"
+                overflow="auto"
+                backgroundColor="white"
+                minHeight={450}
+              >
+                <StyledTable>
+                  <TableHead>
+                    <TableRow
+                      sx={{
+                        backgroundColor: "#F5F5F5",
+                      }}
+                    >
+                      <TableCell align="left" className="product lable-product">
+                        Product
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        className="quantity lable-product"
+                      >
+                        Quantity
+                      </TableCell>
+                      <TableCell align="left" className="amount lable-product">
+                        Amounts
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {order?.products
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((item, index) => (
+                        <TableRow key={index} className="order-body">
+                          <TableCell align="left" className="product">
+                            <div className="product-container">
+                              <img
+                                src={item?.product?.avatar?.picture_url}
+                                alt=""
+                                className="img"
+                              />
+                              <div className="name-frame">
+                                <div className="name-product">
+                                  {item.product.name}
+                                </div>
+                                <div className="sku">SKU:1</div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="quantity content-order"
+                            // sx={{ maxWidth: 140 }}
+                          >
+                            {item?.quantity}
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="amount content-order"
+                          >
+                            {(item?.variant > 0
+                              ? item.product.variants[item.variant - 1]
+                                  .variant_special_price
+                              : item.product.price) * item?.quantity}
+                            đ
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </StyledTable>
+              </Box>
             </div>
-            <div className="sumprice">
-              <span className="sum">Phí vận chuyển:</span>
-              <span className="total-price">{getPriceExpr(20000)}</span>
+          </div>
+          <div className="another-info">
+            <div className="order-summary">
+              <div className="summary-label">Order Summary</div>
+              <Box
+                width="100%"
+                overflow="auto"
+                backgroundColor="white"
+                sx={{marginBottom:1}}
+              >
+                <StyledTable>
+                  <TableHead>
+                    <TableRow
+                      sx={{
+                        backgroundColor: "#F5F5F5",
+                      }}
+                    >
+                      <TableCell align="left" className="description lable-product">
+                        Descriptions
+                      </TableCell>
+                      <TableCell align="left" className="amount lable-product">
+                        Amounts
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow className="order-body">
+                      <TableCell align="left" className="description">
+                        Sub Total :
+                      </TableCell>
+                      <TableCell align="left" className="amount content-order">
+                        {getTotalPrice()}đ
+                      </TableCell>
+                    </TableRow>
+                    <TableRow className="order-body">
+                      <TableCell align="left" className="description">
+                      Discount :
+                      </TableCell>
+                      <TableCell align="left" className="amount content-order">
+                        {0}đ
+                      </TableCell>
+                    </TableRow>
+                    <TableRow className="order-body">
+                      <TableCell align="left" className="description">
+                      Shipping Charge :
+                      </TableCell>
+                      <TableCell align="left" className="amount content-order">
+                        {getPriceExpr(Number(order?.shipPrice))}đ
+                      </TableCell>
+                    </TableRow>
+                    <TableRow className="order-body" sx={{borderBottom:2,borderColor:"white"}}>
+                      <TableCell align="left" className="description">
+                      Total Amount :
+                      </TableCell>
+                      <TableCell align="left" className="amount content-order">
+                        {getTotalPrice(Number(order?.shipPrice))}đ
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </StyledTable>
+              </Box>
             </div>
-            <div className="sumprice">
-              <span className="sum">Giảm giá:</span>
-              <span className="total-price">{getPriceExpr(10000)}</span>
-            </div>
-            <div className="sumprice">
-              <span className="sum">Thành tiền:</span>
-              <span className="final-price">{getPriceExpr(386150)}</span>
+            <div className="ship-info">
+              <div className="ship-label">Delivery Infomation</div>
+              <div className="person-info">
+                <div className="label">Name:</div> {order?.buyer_firstName}{" "}
+                {order?.buyer_lastName}
+              </div>
+              <div className="phone-number">
+                <div className="label"> Phone Number:</div>{" "}
+                {order?.buyer_phoneNumber}
+              </div>
+              <div className="address">
+                <div className="label">Address:</div>{" "}
+                {order?.buyer_address_detail}
+                {","}
+                {order?.buyer_ward.split("//")[0]}
+                {","}
+                {order?.buyer_district.split("//")[0]}
+                {","}
+                {order?.buyer_province.split("//")[0]}
+              </div>
+              <div className="ship-status">
+                <div className="label"> Shipping Status:</div>
+                {"Transaction"}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
-
-export default DetailOrderB;
+export default DetailOrderBusiness;

@@ -1,80 +1,35 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/productModel");
+const Order = require("../models/orderModel");
+const Business = require("../models/businessModel");
+const authMiddleware = require("../middlewares/authMiddlewares");
+const { default: mongoose } = require("mongoose");
+const productController = require("../controllers/productController");
 
-// Route để lấy toàn bộ dữ liệu sản phẩm
-router.get("/", async (req, res) => {
-  try {
-    const products = await Product.find({ isDeleted: false });
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-//[POST] /product/add
-router.post("/add", async (req, res) => {
-  const { name, industry, picture, decsciption, detailInfo, saleInfo } =
-    req.body;
-  const saleInfoProduct = saleInfo.map((info) => {
-    return {
-      class1: {
-        id: info.color.id,
-        name: info.color.name,
-      },
-      class2: {
-        id: info.size.id,
-        name: info.size.name,
-      },
-      buyPrice: info.buy,
-      sellPrice: info.sell,
-      quantity: info.quantity,
-    };
-  });
-  const newProduct = new Product({
-    name: name,
-    industry: industry,
-    picture: picture,
-    decsciption: "decsciption",
-    detailInfo: detailInfo,
-    saleInfo: saleInfoProduct,
-    isDeleted: false,
-  });
-  await newProduct.save();
-  res.json(newProduct);
-});
-router.put("/delete/:id", async (req, res) => {
-  try {
-    const productDeleteCondition = { _id: req.params.id }; // tenantId:tenantId
-    const deleteProduct = await Product.findByIdAndUpdate(
-      productDeleteCondition,
-      { $set: { isDeleted: true } }
-    );
-    if (!deleteProduct) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Product not found" });
-    }
-    res.json({
-      success: true,
-      message: "Product deleted successfully",
-      staff: deleteProduct,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
-});
-router.get("/:id", async (req, res) => {
-  try {
-    const product = await Product.findOne({ _id: req.params.id });
-    res.json(product);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-router.put("/edit/:id", async (req, res) => {
-  const updateProductConditon = {_id: req.params.id}
-  const updateProduct= await Product.findOneAndUpdate(updateProductConditon,req.body,{new:true})
-  res.json(updateProduct);
-});
+router.get("/by-tenantURL/:tenantURL", productController.getByTenantURL);
+router.get("/get/top-sale/:tenantURL", productController.getTopSale);
+
+router.post(
+  "/add",
+  authMiddleware.verifyToken,
+  productController.addNewProduct
+);
+
+router.delete(
+  "/:id",
+  authMiddleware.verifyToken,
+  productController.deleteProduct
+);
+
+router.get("/:id", productController.getById);
+
+router.put(
+  "/update-quantity",
+  authMiddleware.verifyToken,
+  productController.updateQuantity
+);
+
+router.put("/:id", authMiddleware.verifyToken, productController.updateProduct);
+
 module.exports = router;

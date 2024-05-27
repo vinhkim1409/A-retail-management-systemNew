@@ -31,13 +31,7 @@ const Sidebar = () => {
             subTabs: []
         },
         {
-            name: 'Product',
-            path: '/admin/product',
-            icon: faUser,
-            subTabs: []
-        },
-        {
-            name: 'Customer',
+            name: 'Business',
             path: '/admin/customer',
             icon: faUser,
             subTabs: []

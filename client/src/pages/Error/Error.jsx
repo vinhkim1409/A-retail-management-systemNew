@@ -14,17 +14,17 @@ const Error = () => {
 
         <div className="text">
           <h1>
-            Rất tiếc, không thể tìm thấy trang này
+            Sorry, this page could not be found!
           </h1>
           <p>
-            Trang bạn đang tìm kiếm có thể đã bị xóa, thay đổi tên hoặc tạm thời không khả dụng.
+            The page you are looking for may have been removed, renamed, or temporarily unavailable.
           </p>
         </div>
 
         <div className="button">
           <button className="button-back" onClick={() => window.location.href = '/'}>
             <FontAwesomeIcon icon={faArrowLeft} className="icon-back" />
-            Trở về trang chủ
+            Return to home page
           </button>
         </div>
 

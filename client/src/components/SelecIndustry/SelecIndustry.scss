@@ -2,6 +2,7 @@
   .title {
     font-size: 30px;
     font-weight: 600;
+    margin-bottom: 2%;
   }
   .industry-container {
     display: flex;
@@ -9,8 +10,11 @@
   }
   .industry {
     margin-right: 10%;
-    background-color: rgba(217, 217, 217, 0.2);
+    background-color: rgba(255, 255, 255, 1);
     padding: 2% 2% 2% 2%;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   .selected {
@@ -18,13 +22,14 @@
   }
   .inds {
     width: 150px;
-    border: 1px solid lightgray;
     margin-bottom: 5%;
     font-size: 20px;
     font-weight: 600;
-   padding-top: 3%;
-   padding-bottom: 3%;
     text-align: center;
-    border-radius: 5px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 3% 0% 3% 1%;
+    cursor: pointer;
   }
 }

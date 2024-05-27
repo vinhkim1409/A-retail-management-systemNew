@@ -1,86 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./BusinessHome.scss";
-import { BarChart, LineChart, PieChart, SparkLineChart,Bar } from "@mui/x-charts";
-import { Box, Card, Paper, styled, useTheme } from "@mui/material";
-import StatCards2 from "../../../components/StatCard/StatCard";
-import DoughnutChart from "../../../components/DoughnutChart";
+import {
+  BarChart,
+  LineChart,
+  PieChart,
+  SparkLineChart,
+  Bar,
+} from "@mui/x-charts";
+import { Box, Card, Paper, styled, useTheme, Grid } from "@mui/material";
 import TopSellingTable from "../../../components/TopSellingTable/TopSellingTable";
-
-const Title = styled("span")(() => ({
-  fontSize: "20px",
-  fontWeight: "500",
-  marginRight: "8%",
-  textTransform: "capitalize",
-  marginLeft: "2%",
-}));
-const TitleCircle = styled("span")(() => ({
-  fontSize: "20px",
-  fontWeight: "500",
-  marginRight: "8%",
-  textTransform: "capitalize",
-  marginLeft: "5%",
-}));
-
-const SubTitle = styled("span")(({ theme }) => ({
-  fontSize: "14px",
-  color: theme.palette.text.secondary,
-}));
-
-
+import axios from "axios";
+import { api } from "../../../constant/constant";
+import SalesOverview from "../../../components/Dashboard/SalesOverview";
+import MonthRevenue from "../../../components/Dashboard/MonthRevenue";
+import CardOverView from "../../../components/CardOverview/CardOverview";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function BusinessHome() {
-  
+  const [weekRow, setWeekRow] = useState([]);
+  const [revenueWeek, setRevenueWeek] = useState([{ data: [] }, { data: [] }]);
+  const [dashboardRow, setDashboardRow] = useState([]);
+  const [dataMonth, setDataMonth] = useState({
+    RevenueMonth: [],
+    dayOfMonth: [],
+  });
+  const [productsList, setProductsList] = useState([]);
+  const {tenantURL}=useParams()
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+  const getDashboardData = async () => {
+    const dashboardData = await axios.get(`${api}dashboard/get-revenue`,config);
+    console.log(dashboardData.data.data);
+    const data = dashboardData.data.data;
+    const dataweek = data.week;
+    let weekRow = [];
+    let revenueWeek = [{ data: [] }, { data: [] }];
+    for (let i = 0; i <= 6; i++) {
+      weekRow.push(dataweek[i].dayOfWeek);
+      revenueWeek[0].data.push(dataweek[i].numberOfOrder[0]);
+      revenueWeek[1].data.push(dataweek[i].numberOfOrder[1]);
+    }
+    setWeekRow(weekRow);
+    setRevenueWeek(revenueWeek);
+    setDataMonth(data.month);
+    const productsList = await axios.get(`${api}dashboard/top-selling`,config);
+    setProductsList(productsList.data);
+  };
+  useEffect(() => {
+    getDashboardData();
+  }, []);
   return (
     <div className="Businesshome-container">
       <h2 className="label">Dashboard</h2>
-      <div className="overview">
-      <div className="title">Overview</div>
-        <StatCards2 value1="10000" value2="2.88" value3="1000" />
-      </div>
-
-      <div className="title">Statistics</div>
-      <div className="chart">
-        
-        <Card style={{ paddingTop: "1%", width: "75%" }}>
-          <Title>Customer</Title>
-          <BarChart
-          
-            xAxis={[
-              {
-                scaleType: "band",
-                data: [
-                  "T1",
-                  "T2",
-                  "T3",
-                  "T4",
-                  "T5",
-                  "T6",
-                  "T7",
-                  "T8",
-                  "T9",
-                  "T10",
-                  "T11",
-                  "T12",
-                ],
-                stroke: "white",
-              },
-            ]}
-            series={[
-              { data: [4, 3, 5, 6, 7, 8, 9, 10, 11, 14, 15, 17] },
-              { data: [4, 3, 5, 6, 7, 8, 9, 10, 11, 14, 15, 17] },
-            ]}
-            height={450}
-            label={{ fill: "white" }}
+      <CardOverView tenantURL={tenantURL} />
+      <Grid container spacing={3}>
+        <Grid item xs={12} lg={8}>
+          <SalesOverview
+            row={weekRow}
+            data1={revenueWeek[0]}
+            data2={revenueWeek[1]}
           />
-        </Card>
-        <Card style={{ width: "22%", paddingTop: "1%" }} minHeight="50%">
-          <TitleCircle>Customer</TitleCircle>
-          <SubTitle>Last 30 days</SubTitle>
+        </Grid>
+        <Grid item xs={12} lg={4}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <MonthRevenue data={dataMonth} /> 
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
 
-          <DoughnutChart />
-        </Card>
-      </div>
-      <TopSellingTable />
+      <TopSellingTable productsList={productsList} />
     </div>
   );
 }

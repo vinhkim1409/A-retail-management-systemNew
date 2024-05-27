@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Customer.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMagnifyingGlass,
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import TableDashboard from "../../../components/TableDashboard/TableDashboard";
 import TagShowTotal from "../../../components/TagShowTotal/TagShowTotal";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-// import SearchIcon from "@mui/icons-material/Search";
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  styled,
+} from "@mui/material";
+import axios from "axios";
+import { api } from "../../../constant/constant";
 
 const SearchBar = ({ onSearch }) => {
   const handleSearch = (event) => {
@@ -34,39 +47,131 @@ const SearchBar = ({ onSearch }) => {
   );
 };
 
+const StyledTable = styled(Table)(() => ({
+  whiteSpace: "pre",
+  "& thead": {
+    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
+  },
+  "& tbody": {
+    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
+  },
+}));
+
 function Customer() {
+  const [business, setBusiness] = useState([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const totalPages = Math.ceil(business.length / 10);
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  };
+  const getBusiness = async () => {
+    const business = await axios.get(`${api}admin/get-business`);
+    setBusiness(business.data.data);
+  };
+  useEffect(() => {
+    getBusiness();
+  }, []);
   return (
     <div className="CustomerAdmin-container">
-      <div className="title">Customer List</div>
+      <div className="title">Businesses List</div>
       <div className="allbox">
         <div className="labelbox">
-          <p className="textlable">All Customers</p>
-          <div className="searchbox">
-            {/* <input type="text" className="searchinput" />
-            <FontAwesomeIcon icon={faMagnifyingGlass} /> */}
-            <SearchBar />
-          </div>
-          <div className="sortbox">
-            <FormControl sx={{ mb: 1, minWidth: 120 }} size="small">
-              <Select
-                labelId="demo-select-small-label"
-                id="demo-select-small"
-                //value={age}
-                label="Age"
-                //onChange={handleChange}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>Jane Cooper</MenuItem>
-                <MenuItem value={20}>Sea food</MenuItem>
-                <MenuItem value={30}>Thu Duc </MenuItem>
-              </Select>
-            </FormControl>
-          </div>
+          <p className="textlable">All Businesses</p>
         </div>
-        <div className="table">
-          <TableDashboard />
+        <div className="list-contaniner">
+          <Box
+            width="100%"
+            overflow="auto"
+            backgroundColor="white"
+            minHeight={450}
+          >
+            <StyledTable>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    backgroundColor: "#F5F5F5",
+                  }}
+                >
+                  <TableCell align="left" className="order-id lable-order">
+                    Business Name
+                  </TableCell>
+                  <TableCell align="left" className="customer lable-order">
+                    Phone Number
+                  </TableCell>
+                  <TableCell align="left" className="date lable-order">
+                    Email
+                  </TableCell>
+                  <TableCell align="left" className="payment lable-order">
+                    Location
+                  </TableCell>
+                  <TableCell align="left" className="total lable-order">
+                    Status
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {business.length > 0 &&
+                  business
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((item, index) => (
+                      <TableRow key={index} className="order-body">
+                        <TableCell
+                          align="left"
+                          className="order-id blue"
+                          sx={{ maxWidth: 173, minWidth: 140 }}
+                        >
+                          {item.name}
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          className="customer content-order"
+                          sx={{ maxWidth: 140 }}
+                        >
+                          {"013456789"}
+                        </TableCell>
+                        <TableCell align="left" className="date content-order">
+                          {item.email}
+                        </TableCell>
+                        <TableCell align="left" className="payment">
+                          {item.location[0]}
+                        </TableCell>
+                        <TableCell align="left" className="total content-order">
+                          {item?.package?.typePackage != 0 ? "Active" : "Preview"}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+              </TableBody>
+            </StyledTable>
+          </Box>
+          <div className="pages">
+            <div className="pages-number">
+              {1 * (page + 1)}-
+              {page == totalPages - 1 ? business.length : 5 * (page + 1)} of{" "}
+              {business.length}
+            </div>
+            <button
+              className="button-back"
+              onClick={() => handleChangePage(page - 1)}
+              disabled={page == 0}
+            >
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                className={`${page == 0 ? "icon-back" : "active"}`}
+              />
+            </button>
+            <div className="number-page">{page + 1}</div>
+            <button
+              className="button-next"
+              onClick={() => handleChangePage(page + 1)}
+              disabled={page == totalPages - 1}
+            >
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className={`${page == totalPages - 1 ? "icon-next" : "active"}`}
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>

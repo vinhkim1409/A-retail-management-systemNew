@@ -71,7 +71,7 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
   const AddBuyPrice = (event, index1, index2) => {
     const newClassSale = classSale.map((item) => {
       if (item.class1.id === index1 && item.class2.id === index2) {
-        return { ...item, buy: event.target.value };
+        return { ...item, buyPrice: event.target.value };
       }
       return item;
     });
@@ -80,7 +80,7 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
   const AddSellPrice = (event, index1, index2) => {
     const newClassSale = classSale.map((item) => {
       if (item.class1.id === index1 && item.class2.id === index2) {
-        return { ...item, sell: event.target.value };
+        return { ...item, sellPrice: event.target.value };
       }
       return item;
     });
@@ -106,6 +106,7 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
   // doi qua su dung cai add number
   const AddNumClass1 = () => {
     setNumClass1(numClass1 + 1);
+    console.log(numClass1);
     let arrayClass = classSale;
     let row = numClass1 > 0 ? numClass1 + 1 : 1;
     let col = numClass2 > 0 ? numClass2 : 1;
@@ -114,11 +115,13 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
         for (let j = 0; j < col; j++) {
           const element = {
             class1: { id: i, name: "" },
-            class2: { id: j, name: "" },
-            buy: "",
-            sell: "",
+            class2: { id: j, name: class2s[j] },
+            buyPrice: "",
+            sellPrice: "",
             quantity: "",
           };
+
+          console.log(checkInSale(arrayClass, i, j));
           if (!checkInSale(arrayClass, i, j)) {
             arrayClass.push(element);
           }
@@ -136,10 +139,10 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
       for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
           const element = {
-            class1: { id: i, name: "" },
+            class1: { id: i, name: class1s[i] },
             class2: { id: j, name: "" },
-            buy: "",
-            sell: "",
+            buyPrice: "",
+            sellPrice: "",
             quantity: "",
           };
           if (!checkInSale(arrayClass, i, j)) {
@@ -150,49 +153,98 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
     }
     setClassSale(arrayClass);
   };
+  const DeleteClass1 = (index) => {
+    if (numClass1 === 1 && index === 0) {
+      const newSaleInfo = classSale.map((sale) => {
+        if (sale.class1.id === index)
+          return {
+            ...sale,
+            class1: { ...sale.class1, name: "" },
+            buyPrice: "",
+            sellPrice: "",
+            quantity: "",
+          };
+        return sale;
+      });
+      setNumClass1(0);
+      setClassSale(newSaleInfo);
+      setClass1([]);
+    } else {
+      const newArray = classSale.filter((sale) => sale.class1.id != index);
+      const newSaleInfo = newArray.map((sale) => {
+        if (sale.class1.id > index)
+          return {
+            ...sale,
+            class1: { ...sale.class1, id: sale.class1.id - 1 },
+          };
+        return sale;
+      });
+
+      setClassSale(newSaleInfo);
+      const newClass1s = newSaleInfo.map((item) => {
+        return item.class1.name;
+      });
+      setClass1([...new Set(newClass1s)]);
+      setNumClass1(numClass1 - 1);
+    }
+  };
+
+  const DeleteClass2 = (index) => {
+    if (numClass2 === 1 && index === 0) {
+      const newSaleInfo = classSale.map((sale) => {
+        if (sale.class2.id === index)
+          return {
+            ...sale,
+            class2: { ...sale.class2, name: "" },
+            buyPrice: "",
+            sellPrice: "",
+            quantity: "",
+          };
+        return sale;
+      });
+      setNumClass2(0);
+      setClassSale(newSaleInfo);
+      setClass2([]);
+    } else {
+      const newArray = classSale.filter((sale) => sale.class2.id != index);
+      const newSaleInfo = newArray.map((sale) => {
+        if (sale.class2.id > index)
+          return {
+            ...sale,
+            class2: { ...sale.class2, id: sale.class2.id - 1 },
+          };
+        return sale;
+      });
+
+      setClassSale(newSaleInfo);
+      const newClass2s = newSaleInfo.map((item) => {
+        return item.class2.name;
+      });
+      setClass2([...new Set(newClass2s)]);
+      setNumClass2(numClass2 - 1);
+    }
+  };
+
   const getSaleInfo = async () => {
     const product = await axios.get(`${api}product/${id}`);
     const Infor = product.data.saleInfo;
-    const newNumclass1 = Infor[Infor.length-1].class1.id;
+    const newNumclass1 = Infor[Infor.length - 1].class1.id + 1;
     setNumClass1(newNumclass1);
-    const newNumclass2 = Infor[Infor.length-1].class2.id;
+    const newNumclass2 = Infor[Infor.length - 1].class2.id + 1;
     setNumClass2(newNumclass2);
-    const newClass1s=Infor.map((item)=>{
-      return item.class1.name
-    })
-    setClass1([...new Set(newClass1s)])
-    const newClass2s=Infor.map((item)=>{
-      return item.class2.name
-    })
-    setClass2([...new Set(newClass2s)])
+    const newClass1s = Infor.map((item) => {
+      return item.class1.name;
+    });
+    setClass1([...new Set(newClass1s)]);
+    const newClass2s = Infor.map((item) => {
+      return item.class2.name;
+    });
+    setClass2([...new Set(newClass2s)]);
     setClassSale(product.data.saleInfo);
   };
   useEffect(() => {
     getSaleInfo();
   }, []);
-
-  // useEffect(() => {
-  //   let arrayClass = classSale;
-  //   let row = numClass1 > 0 ? numClass1 : 1;
-  //   let col = numClass2 > 0 ? numClass2 : 1;
-  //   if (numClass1 > 0 || numClass2 > 0) {
-  //     for (let i = 0; i < row; i++) {
-  //       for (let j = 0; j < col; j++) {
-  //         const element = {
-  //           class1: { id: i, name: "" },
-  //           class2: { id: j, name: "" },
-  //           buy: "",
-  //           sell: "",
-  //           quantity: "",
-  //         };
-  //         if (!checkInSale(arrayClass, i, j)) {
-  //           arrayClass.push(element);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   setClassSale(arrayClass);
-  // }, [numClass2]);
 
   useEffect(() => {
     if (numClass1 > 0 || numClass2 > 0) {
@@ -258,7 +310,10 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
                             }
                             onChange={(event) => AddClass1(event, index)}
                           />
-                          <button className="btn">
+                          <button
+                            className="btn"
+                            onClick={() => DeleteClass1(index)}
+                          >
                             <FontAwesomeIcon icon={faTrashCan} />
                           </button>
                         </div>
@@ -321,7 +376,12 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
                             }
                             onChange={(event) => AddClass2(event, index)}
                           />
-                          <button className="btn">
+                          <button
+                            className="btn"
+                            onClick={() => {
+                              DeleteClass2(index);
+                            }}
+                          >
                             <FontAwesomeIcon icon={faTrashCan} />
                           </button>
                         </div>
@@ -400,7 +460,9 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
             ) : (
               <>
                 <div className="list-class">
-                  <div className="title-small">List of product categories</div>
+                  <div className="title-small">
+                    List of product categories {"(Currency unit is VND)"}{" "}
+                  </div>
                   <div className="lable">
                     {numClass1 !== 0 ? (
                       <>
@@ -665,14 +727,14 @@ function EditSaleInfor({ setTypeSale, setSaleInfor }) {
           </div>
         </div>
       </Paper>
-      <button
+      {/* <button
         onClick={() => {
           console.log(classSale);
           //AddSaleInfo();
         }}
       >
         +
-      </button>
+      </button> */}
     </div>
   );
 }

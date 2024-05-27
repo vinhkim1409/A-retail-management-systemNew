@@ -16,7 +16,10 @@ import {
   OutlinedInput,
   InputLabel,
   Stack,
+  Select,
+  MenuItem,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,10 +39,11 @@ const style = {
 export default function EditStaff({
   openEdit,
   setOpenEdit,
-  idEdit,
-  setIdEdit,
+  emailEdit,
+  setEmailEdit,
   stafflist,
-  setStaffList
+  setStaffList,
+  email
 }) {
   // const handleOpen = () => {
   //   // let newError = {
@@ -60,7 +64,7 @@ export default function EditStaff({
   //   setOpenEdit(true);
   // };
   const handleClose = () => {
-    setIdEdit("");
+    setEmailEdit("");
     setOpenEdit(false);
   };
   const [basicInfo, setBasicInfo] = useState({
@@ -70,8 +74,15 @@ export default function EditStaff({
     phoneNumber: "",
     position: "",
   });
+  const userBusiness=useSelector((state)=>state.authBusiness.login?.currentUser)
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
   const getStaff = async () => {
-    const staff = await axios.get(`${api}staff/${idEdit}`);
+    const staff = await axios.get(`${api}staff/${emailEdit}`,config);
+    console.log(staff);
     setBasicInfo(staff.data);
     setAvatarEncode(staff.data.avatar);
   };
@@ -91,7 +102,7 @@ export default function EditStaff({
     if (item === "firstname") newBasicInfo.firstname = value;
     if (item === "lastname") newBasicInfo.lastname = value;
     if (item === "email") newBasicInfo.email = value;
-    if (item === "phone") newBasicInfo.phoneNumber= value;
+    if (item === "phone") newBasicInfo.phoneNumber = value;
     if (item === "position") newBasicInfo.position = value;
 
     setBasicInfo(newBasicInfo);
@@ -160,37 +171,41 @@ export default function EditStaff({
     });
     data.readAsDataURL(e.target.files[0]);
   };
-  const editStaff=async () => {
-    const newStaff=basicInfo
-    newStaff.avatar=avatarEncode
-    const responseEdit= await axios.put(`${api}staff/update/${idEdit}`,newStaff);
+  const editStaff = async () => {
+    const newStaff = basicInfo;
+    newStaff.avatar = avatarEncode;
+    const responseEdit = await axios.put(
+      `${api}staff/update/${basicInfo._id}`,
+      newStaff,config
+    );
+    console.log(responseEdit)
     //co 1 edit tai trang FE
-    if(responseEdit.data.success){
-      console.log("success")
-      const newStafflist=stafflist.map((staff)=>{
-        if(staff._id===idEdit)
-        {
-          return {...staff,
-          firstname:newStaff.firstname,
-          lastname:newStaff.lastname,
-          phoneNumber:newStaff.phoneNumber,
-          email:newStaff.email,
-          position:newStaff.position,
-          avatar:newStaff.avatar
-          }
+    if (responseEdit.data.success) {
+      console.log("success");
+      const newStafflist = stafflist.map((staff) => {
+        if (staff.email === emailEdit) {
+          return {
+            ...staff,
+            firstname: newStaff.firstname,
+            lastname: newStaff.lastname,
+            phoneNumber: newStaff.phoneNumber,
+            email: newStaff.email,
+            position: newStaff.position,
+            avatar: newStaff.avatar,
+          };
         }
-        return staff
-      })
-      setStaffList(newStafflist)
+        return staff;
+      });
+      setStaffList(newStafflist);
+    } else {
+      console.log("error");
     }
-    else{console.log("error")}
-    setOpenEdit(false)
-  }
+    setOpenEdit(false);
+  };
   return (
     <div className="Editnewstaff-container">
       <Modal
         open={openEdit}
-        
         disableEscapeKeyDown
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -274,6 +289,7 @@ export default function EditStaff({
                   </FormHelperText>
                 </Stack>
               </Grid>
+              
               <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel
@@ -323,7 +339,7 @@ export default function EditStaff({
                     </div>
                   </InputLabel>
                   <div className="avatar">
-                    {avatarEncode.length > 1 ? (
+                    {avatarEncode && avatarEncode.length > 1 ? (
                       <>
                         <img src={avatarEncode} alt="" className="img" />
                       </>
@@ -360,17 +376,25 @@ export default function EditStaff({
                   >
                     Position
                   </InputLabel>
-                  <OutlinedInput
+                  <Select
                     size="small"
-                    sx={{
-                      boxShadow: 3,
-                    }}
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
                     value={basicInfo.position}
-                    onChange={(event) => {
-                      handleChangeInfo(event, "position");
-                    }}
-                    error={errorForm.position}
-                  />
+                    label="Position"
+                    onChange={(event) => handleChangeInfo(event, "position")}
+                  >
+                    <MenuItem value={"Admin"}>Admin</MenuItem>
+                    <MenuItem value={"Sales Associate"}>
+                      Sales Associate
+                    </MenuItem>
+                    <MenuItem value={"Sales"}>Sales</MenuItem>
+                    <MenuItem value={"Cashier"}>Cashier</MenuItem>
+                    <MenuItem value={"Manager"}>Manager</MenuItem>
+                    <MenuItem value={"Warehouse Staff"}>
+                      Warehouse Staff
+                    </MenuItem>
+                  </Select>
                   <FormHelperText error={errorForm.position}>
                     {errorForm.position ? "Please enter a Position" : ""}
                   </FormHelperText>
@@ -380,9 +404,11 @@ export default function EditStaff({
           </Grid>
           <div className="button">
             <div className="btn-box">
-              <button className="btn" onClick={editStaff}>Yes</button>
+              <button className="btn" onClick={editStaff}>
+                Yes
+              </button>
               <button className="btn" onClick={handleClose}>
-                Cancle
+                Cancel
               </button>
             </div>
           </div>
