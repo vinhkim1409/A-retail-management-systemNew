@@ -119,7 +119,6 @@ function ImportGoods() {
             <input type="number" onChange={handleQuantityChange} />
           </div>
           <button onClick={updateProductQuantity}>Import</button>
-          {id} - {quantity} - {variant_sku}
         </div>
       </div>
     </>

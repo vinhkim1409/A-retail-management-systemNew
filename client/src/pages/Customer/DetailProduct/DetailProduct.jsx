@@ -345,9 +345,9 @@ function DetailProduct() {
                 </div>
               )}
 
-              <div className="variant-sku">
+              {/* <div className="variant-sku">
                 <strong>Variant SKU: </strong> {getVariantSku()}
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="detail-product">
