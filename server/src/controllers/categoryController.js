@@ -22,7 +22,7 @@ const CategoryController = {
   },
   addNewCategory: async (req, res, next) => {
     try {
-      const newCategorys = new Category({ ...req.body, isDeleted: false });
+      const newCategorys = new Category({ ...req.body, isDeleted: false,tenantID: req.tenantID});
       await newCategorys.save();
       res.json(newCategorys);
     } catch (error) {

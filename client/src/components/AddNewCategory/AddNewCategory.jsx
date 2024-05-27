@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import axios from "axios"
 import {api} from "../../constant/constant"
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 
 const style = {
@@ -30,6 +32,15 @@ const AddNewCategory = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [name, setName] = useState("");
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+  const { tenantURL } = useParams();
   const handleChangeName = (event) => {
     setName(event.target.value);
   };
@@ -38,7 +49,7 @@ const AddNewCategory = () => {
   };
   const handleAddNewCategory = async ()=>{
     const newCategory={name:name}
-    const addNewCategory= await axios.post(`${api}category`,newCategory)
+    const addNewCategory= await axios.post(`${api}category`,newCategory,config)
     console.log(addNewCategory)
     handleClose()
   }

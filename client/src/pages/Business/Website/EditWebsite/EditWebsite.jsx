@@ -13,9 +13,11 @@ import {
 } from "firebase/storage";
 import { v4 } from "uuid";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 function EditWebsite() {
   const [businessImgFile, setBusinessImgFile] = useState([]);
+  const {tenantURL}=useParams()
   const userBusiness=useSelector((state)=>state.authBusiness.login?.currentUser)
   const config = {
     headers: {
@@ -56,39 +58,7 @@ function EditWebsite() {
     setBusinessImgFile([]);
   };
 
-  // const [featImgFile, setFeatImgFile] = useState([]);
 
-  // const uploadFeatImgFiles = (event) => {
-  //   const files = event.target.files;
-  //   const newImages = [];
-  //   for (let i = 0; i < files.length; i++) {
-  //     if (i >= 4) {
-  //       break;
-  //     }
-  //     const reader = new FileReader();
-
-  //     reader.onload = () => {
-  //       const base64String = reader.result;
-  //       newImages.push(base64String);
-  //       setFeatImgFile(newImages);
-  //     };
-
-  //     reader.readAsDataURL(files[i]);
-  //   }
-  // };
-  // const removeFeatImage = (index) => {
-  //   console.log("reomve");
-  //   setFeatImgFile([
-  //     ...featImgFile.slice(0, index),
-  //     ...featImgFile.slice(index + 1, featImgFile.length),
-  //   ]);
-  // };
-  // const removeFeatImageAll = () => {
-  //   console.log("reomve");
-  //   setFeatImgFile([]);
-  // };
-
-  // console.log(businessImgFile);
   const [featProduct, setFeatProduct] = useState([]);
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -119,7 +89,7 @@ function EditWebsite() {
     console.log(editRes);
   };
   const getWebsite = async () => {
-    const website = await axios.get(`${api}website`);
+    const website = await axios.get(`${api}website/${tenantURL}`);
     console.log(website.data)
     setBusinessImgFile(website.data[0]?.businessImg);
     setFeatProduct(website.data[0]?.featureProduct);

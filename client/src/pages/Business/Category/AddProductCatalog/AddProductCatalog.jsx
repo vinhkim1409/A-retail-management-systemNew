@@ -3,6 +3,8 @@ import "./AddProductCatalog.scss";
 import { Box, Checkbox, Modal } from "@mui/material";
 import axios from "axios";
 import { api } from "../../../../constant/constant";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -18,12 +20,21 @@ const style = {
 
 const AddProductCatalog = ({ open, handleClose, id, categorys, setCategorys }) => {
   const [product, setProduct] = useState([]);
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+  const { tenantURL } = useParams();
   useEffect(() => {
     const newArray = [];
     setIds(newArray);
   }, [open]);
   const getProduct = async () => {
-    const productList = await axios.get(`${api}product`);
+    const productList = await axios.get(`${api}product/by-tenantURL/${tenantURL}`);
     setProduct(productList.data);
   };
   useEffect(() => {
