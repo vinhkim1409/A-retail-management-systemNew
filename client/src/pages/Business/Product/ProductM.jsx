@@ -27,6 +27,7 @@ import shirt from "../../../assets/shirt.jpg";
 import axios from "axios";
 import { api } from "../../../constant/constant";
 import { useParams } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -58,6 +59,17 @@ function ProductM() {
   const [products, setProducts] = useState([]);
   const totalProducts = products.length;
   const totalPages = Math.ceil(totalProducts / 5);
+
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+
+
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -107,7 +119,7 @@ function ProductM() {
   //delete product
   const handleDeleteProduct = async () => {
     console.log(idDelete);
-    const deleteProduct = await axios.delete(`${api}product/${idDelete}`);
+    const deleteProduct = await axios.delete(`${api}product/${idDelete}`,config);
     if (deleteProduct.data.success) {
       console.log("Delete Product Success");
     }
@@ -117,7 +129,7 @@ function ProductM() {
   };
   const getAllProducts = async () => {
     try {
-      const Products = await axios.get(`${api}product`);
+      const Products = await axios.get(`${api}product/by-tenantURL/${tenantURL}`);
       let filteredProducts = Products.data;
       setProducts(filteredProducts);
       setLoading(false);
@@ -257,32 +269,40 @@ function ProductM() {
                               </div>
                             ))
                           ) : (
-                            <p>No variants available</p>
+                            <div></div>
                           )}
                         </TableCell>
                         <TableCell align="left" className="table-label" sx={{ maxWidth: 10 }}>
                           <div className="flex-row">
-                            {row.variants && row.variants.length > 0 ? (
-                              row.variants.map((variant, index) => (
-                                <div key={index}>
-                                  {variant.variant_special_price}
-                                </div>
-                              ))
+                            {row.is_config_variant === false ? (
+                              <div>{row.special_price}</div>
                             ) : (
-                              <p>No variants available</p>
+                              row.variants && row.variants.length > 0 ? (
+                                row.variants.map((variant, index) => (
+                                  <div key={index}>
+                                    {variant.variant_special_price}
+                                  </div>
+                                ))
+                              ) : (
+                                <div></div>
+                              )
                             )}
                           </div>
                         </TableCell>
                         <TableCell align="left" className="table-label" sx={{ maxWidth: 10 }}>
                           <div className="flex-row">
-                            {row.variants && row.variants.length > 0 ? (
-                              row.variants.map((variant, index) => (
-                                <div key={index} className="flex-center">
-                                  {variant.variant_quantity}
-                                </div>
-                              ))
+                            {row.is_config_variant === false ? (
+                              <div>{row.stock_quantity}</div>
                             ) : (
-                              <p>No variants available</p>
+                              row.variants && row.variants.length > 0 ? (
+                                row.variants.map((variant, index) => (
+                                  <div key={index}>
+                                    {variant.variant_quantity}
+                                  </div>
+                                ))
+                              ) : (
+                                <div></div>
+                              )
                             )}
                           </div>
                         </TableCell>

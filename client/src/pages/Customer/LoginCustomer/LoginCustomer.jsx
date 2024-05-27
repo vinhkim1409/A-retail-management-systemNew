@@ -41,7 +41,6 @@ function LoginCustomer() {
       <div className="loginCustomer-form">
         <div className="title">
           <h1>Welcome to CoolMate!</h1>
-
           <img src={background} alt="" className="img" />
         </div>
         <div className="form_container  rounded ">

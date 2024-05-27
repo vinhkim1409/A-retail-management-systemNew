@@ -12,7 +12,7 @@ import { faList, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import ProductItem from "../../../components/ProductItem/ProductItem";
 import axios from "axios";
 import { api } from "../../../constant/constant";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 const typecheckbox = ["Jacket", "Jean", "Cotons", "Excool"];
 
 function Shop() {
@@ -52,9 +52,9 @@ function Shop() {
       setTyp([...typ, item]);
     }
   };
-
+const {tenantURL}=useParams()
   const getProduct = async () => {
-    const products = await axios.get(`${api}product`);
+    const products = await axios.get(`${api}product/by-tenantURL/${tenantURL}`);
     console.log(products.data);
     setProductTable(products.data);
     setAllProducts(products.data);
@@ -78,7 +78,7 @@ function Shop() {
     setCategory(category.data);
   };
   const getTopSale = async () => {
-    const topsale = await axios.get(`${api}product/get/top-sale`);
+    const topsale = await axios.get(`${api}product/get/top-sale/${tenantURL}`);
     setTopSale(topsale.data);
   };
   const handleChangeCategory = (id) => {
