@@ -159,7 +159,10 @@ const orderController = {
   getOrderCustomerById: async (req, res) => {
     try {
       const customer = req.user[0];
-      const order = await Order.find({ customerID: customer._id,_id:req.params.orderID })
+      const order = await Order.find({
+        customerID: customer._id,
+        _id: req.params.orderID,
+      })
         .populate("customerID")
         .populate("products.product");
       res.json({ success: true, data: order });
@@ -224,7 +227,9 @@ const orderController = {
           },
           { new: true }
         ).populate("products.product");
-
+        if (secondStepOrder) {
+          console.log("success");
+        }
         console.log("success");
       } else {
         console.log(`Thanh toán thất bại, resultCode: ${resultCode}`);

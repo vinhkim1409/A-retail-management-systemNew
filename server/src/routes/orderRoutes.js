@@ -29,7 +29,6 @@ router.get(
 
 router.post(
   "/notify-payment",
-  authMiddlewares.verifyTokenCustomer,
   orderController.notifyOrderCustomer
 );
 module.exports = router;
