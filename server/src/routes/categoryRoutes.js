@@ -7,9 +7,10 @@ const authMiddlewares =require("../middlewares/authMiddlewares")
 const CategoryController=require("../controllers/categoryController")
 
 
-router.get("/",CategoryController.getAllCategory );
-router.get("/:id",CategoryController.getCategoryById);
+router.get("/by-tenantURL/:tenantURL",CategoryController.getAllCategory );
+router.get("/:id/:tenantURL",CategoryController.getCategoryById);
 router.post("/",authMiddlewares.verifyToken,CategoryController.addNewCategory);
+router.put("/delete",authMiddlewares.verifyToken,CategoryController.deleteCategory);
 router.put("/add-product/:id",CategoryController.addProductToCategory);
 
 module.exports = router;

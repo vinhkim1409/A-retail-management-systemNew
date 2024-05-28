@@ -2,9 +2,10 @@ const Order = require("../models/orderModel");
 const Cart = require("../models/cartModel");
 const Business = require("../models/businessModel");
 const { default: mongoose } = require("mongoose");
+const Product = require("../models/productModel");
 async function deleteProductFromCart(conditionCart, idProductInCart) {
   try {
-    const updateCart = await Cart.findByIdAndUpdate(
+    const updateCart = await Cart.findOneAndUpdate(
       conditionCart,
       { $pull: { products: { _id: idProductInCart } } },
       { new: true }
@@ -16,6 +17,18 @@ async function deleteProductFromCart(conditionCart, idProductInCart) {
     }
   } catch (error) {
     console.error("Lỗi khi cố gắng xóa sản phẩm khỏi giỏ hàng:", error);
+  }
+}
+async function reduceQuantity(productIncart) {
+  const product = await Product.findOne({ _id: productIncart.product });
+  if (productIncart.variant == 0) {
+    product.stock_quantity = product.stock_quantity - productIncart.quantity;
+    await product.save();
+  } else {
+    product.variants[productIncart.variant - 1].variant_quantity =
+      product.variants[productIncart.variant - 1].variant_quantity -
+      productIncart.quantity;
+    await product.save();
   }
 }
 const createShippingOrder = async (order, COD) => {
@@ -139,7 +152,10 @@ const orderController = {
         return product._id;
       });
       deleteProductFromCart(conditionCart, productIds);
-
+      newOrder.products.map((product) => {
+        reduceQuantity(product);
+      });
+      res.json({ success: true, data: newOrder });
       // trừ đi số lượng trong kho
     } catch (error) {
       res.status(500).json({ message: error.message });

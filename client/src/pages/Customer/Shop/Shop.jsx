@@ -74,7 +74,7 @@ const {tenantURL}=useParams()
   const [topSale, setTopSale] = useState([]);
 
   const getCategory = async () => {
-    const category = await axios.get(`${api}category`);
+    const category = await axios.get(`${api}category/by-tenantURL/${tenantURL}`);
     setCategory(category.data);
   };
   const getTopSale = async () => {

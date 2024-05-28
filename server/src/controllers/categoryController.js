@@ -1,9 +1,17 @@
 const Category = require("../models/categoryModel");
+const Business = require("../models/businessModel");
+
 const { default: mongoose } = require("mongoose");
 const CategoryController = {
   getAllCategory: async (req, res, next) => {
     try {
-      const categorys = await Category.find({ isDeleted: false });
+      const business = await Business.findOne({
+        tenantURL: req.params.tenantURL,
+      });
+      const categorys = await Category.find({
+        tenantID: business._id,
+        isDeleted: false,
+      });
       res.json(categorys);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -22,7 +30,11 @@ const CategoryController = {
   },
   addNewCategory: async (req, res, next) => {
     try {
-      const newCategorys = new Category({ ...req.body, isDeleted: false,tenantID: req.tenantID});
+      const newCategorys = new Category({
+        ...req.body,
+        isDeleted: false,
+        tenantID: req.tenantID,
+      });
       await newCategorys.save();
       res.json(newCategorys);
     } catch (error) {
@@ -46,6 +58,16 @@ const CategoryController = {
       res.status(500).json({ message: error.message });
     }
   },
+  deleteCategory: async (req, res) => {
+    try {
+      const deleteCategory=await Category.deleteMany({ _id: { $in: req.body } })
+      if(deleteCategory)
+        {res.json({success: true, message: "Delete Successfully"})}
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+
+  },
 };
 
-module.exports = CategoryController
+module.exports = CategoryController;

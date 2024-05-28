@@ -154,7 +154,7 @@ const Checkout = () => {
     } else {
       const createOrder = await axios.post(
         `${api}order/createOrder`,
-        orderInfo
+        orderInfo,config
       );
       console.log(createOrder.data);
     }
