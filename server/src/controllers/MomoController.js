@@ -2,9 +2,11 @@ const { createHmac } = require("crypto");
 const fetch = require("node-fetch");
 const Order = require("../models/orderModel");
 const Business = require("../models/businessModel");
+const Cart = require("../models/cartModel");
+const Product = require("../models/productModel");
 async function deleteProductFromCart(conditionCart, idProductInCart) {
   try {
-    const updateCart = await Cart.findByIdAndUpdate(
+    const updateCart = await Cart.findOneAndUpdate(
       conditionCart,
       { $pull: { products: { _id: idProductInCart } } },
       { new: true }
@@ -66,7 +68,7 @@ const MonoController = {
     };
     const deliveryFee = 0;
     const extraData = Buffer.from(JSON.stringify(data)).toString("base64");
-    const requestId = "657342ee8e03b1440287e216" + new Date().getTime();
+    const requestId = user._id.toString() + new Date().getTime();
     const rawSignature =
       "accessKey=" +
       accessKey +
