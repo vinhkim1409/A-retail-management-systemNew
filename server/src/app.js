@@ -8,11 +8,11 @@ const fs = require("fs"); // Thêm dòng này để import fs
 const path = require('path');
 
 dotenv.config();
-const corsOptions = {
-  origin: true,
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-};
+// const corsOptions = {
+//   origin: true,
+//   credentials: true, //access-control-allow-credentials:true
+//   optionSuccessStatus: 200,
+// };
 // Hàm đăng nhập và lưu token
 async function loginAndSaveToken() {
   const apiUrl = 'https://open.sendo.vn/login';
@@ -57,7 +57,7 @@ function startServer() {
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
   const PORT = process.env.PORT || 5000;
-  app.use(cors(corsOptions));
+  app.use(cors());
   // app.use(cors());
   const MONGODB_URI =
     "mongodb+srv://adminsystem:admin123456@database.a0scdtm.mongodb.net/";
