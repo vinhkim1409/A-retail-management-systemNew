@@ -193,6 +193,20 @@ const orderController = {
       res.status(500).json({ message: error.message });
     }
   },
+  handlPayOrder: async (req, res) => {
+    try {
+      const order = await Order.findOneAndUpdate(
+        { _id: req.body.orderID },
+        { statusPayment: "Paid" },
+        { new: true }
+      );
+      if (order) {
+        res.json({ success: true, data: order });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
   notifyOrderCustomer: async (req, res) => {
     try {
       const accessKey = process.env.ACCESS_KEY;
