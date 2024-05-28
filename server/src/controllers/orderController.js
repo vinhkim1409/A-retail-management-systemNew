@@ -225,6 +225,7 @@ const orderController = {
   },
   notifyOrderCustomer: async (req, res) => {
     try {
+      console.log("Notify Order Customer")
       const accessKey = process.env.ACCESS_KEY;
       const secretkey = process.env.SECRET_KEY;
 
@@ -248,12 +249,12 @@ const orderController = {
         const firtStepOrder = await Order.findOne({
           _id: data.orderId,
         }).populate("products.product");
-        const delivery = await createShippingOrder(firtStepOrder, false);
+        //const delivery = await createShippingOrder(firtStepOrder, false);
         const secondStepOrder = await Order.findOneAndUpdate(
           { _id: data.orderId },
           {
             statusPayment: "Paid",
-            shippingCode: delivery.order_code,
+            //shippingCode: delivery.order_code,
           },
           { new: true }
         ).populate("products.product");
