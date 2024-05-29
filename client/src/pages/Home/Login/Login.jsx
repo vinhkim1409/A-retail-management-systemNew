@@ -4,7 +4,9 @@ import google from "../../../assets/google.png";
 import background from "../../../assets/login-background.png";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginBusiness } from "../../../redux/apiRequest"; 
+import { loginBusiness } from "../../../redux/apiRequest";
+import logo from "../../../assets/logo.png";
+
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +35,9 @@ function LoginPage() {
         <div className="form_container  rounded ">
           <form className="form_container1">
             <div className="form-box">
-              <div className="form-title">Logo BKM</div>
+              <div className="logo">
+                <img src={logo} alt="logo" className="img-logo" />
+              </div>
               <div className="mini-title">Please enter your infomation</div>
             </div>
 
@@ -82,7 +86,9 @@ function LoginPage() {
                 }}
               />
             </div>
-            <button className="btn mb-2" onClick={handleLogin}>Login</button>
+            <button className="btn mb-2" onClick={handleLogin}>
+              Login
+            </button>
             <div className="mb-2 text-center">
               <input
                 type="checkbox"

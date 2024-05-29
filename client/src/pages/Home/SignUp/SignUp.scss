@@ -59,7 +59,17 @@
   .form-box {
     width: 100%;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .form-box .mini-title {
+    font-size: 14;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 500;
+    margin-bottom: 1%;
+    align-self: flex-start;
+    margin-left: 10%;
   }
   .btn-google {
     background-color: rgba(215, 215, 215, 0.5);
@@ -88,5 +98,14 @@
     width: 70%;
     
     margin-left: 10%;
+  }
+  .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .img-logo {
+    width: 70px;
+    height: 70px;
   }
 }

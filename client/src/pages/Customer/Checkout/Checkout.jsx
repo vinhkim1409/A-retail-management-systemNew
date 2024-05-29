@@ -156,6 +156,7 @@ const Checkout = () => {
         `${api}order/createOrder`,
         orderInfo,config
       );
+
       console.log(createOrder.data);
     }
   };

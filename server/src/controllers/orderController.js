@@ -3,6 +3,7 @@ const Cart = require("../models/cartModel");
 const Business = require("../models/businessModel");
 const { default: mongoose } = require("mongoose");
 const Product = require("../models/productModel");
+const fetch = require("node-fetch");
 async function deleteProductFromCart(conditionCart, idProductInCart) {
   try {
     const updateCart = await Cart.findOneAndUpdate(
@@ -31,6 +32,7 @@ async function reduceQuantity(productIncart) {
     await product.save();
   }
 }
+
 const createShippingOrder = async (order, COD) => {
   try {
     let maxHeight = 0;
@@ -63,6 +65,7 @@ const createShippingOrder = async (order, COD) => {
     const weight = order.products.reduce((total, product) => {
       return total + product.product.weight * product.quantity;
     }, 0);
+    console.log(order.buyer_ward.split("//")[0]);
     const response = await fetch(
       "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
       {
@@ -73,7 +76,7 @@ const createShippingOrder = async (order, COD) => {
         },
         body: JSON.stringify({
           payment_type_id: 2,
-          note: "Tintest 123",
+          note: "Đơn hàng của BKM",
           required_note: "KHONGCHOXEMHANG",
           return_phone: "0332190158",
           return_address: "39 NTT",
@@ -89,11 +92,15 @@ const createShippingOrder = async (order, COD) => {
           from_province_name: "HCM",
           to_name: `${order.buyer_firstName}${order.buyer_lastName}`,
           to_phone: order?.buyer_phoneNumber,
-          to_address: `${order?.buyer_address_detail}, ${order.buyer_ward}, ${order.buyer_district}, ${order.buyer_province}, Vietnam`,
-          to_ward_name: ` ${order.buyer_ward}`,
-          to_district_name: `${order.buyer_district}`,
-          to_province_name: `${order.buyer_province}`,
-          cod_amount: 200000,
+          to_address: `${order?.buyer_address_detail}, ${
+            order.buyer_ward.split("//")[0]
+          }, ${order.buyer_district.split("//")[0]}, ${
+            order.buyer_province.split("//")[0]
+          }, Vietnam`,
+          to_ward_name: `${order.buyer_ward.split("//")[0]}`,
+          to_district_name: `${order.buyer_district.split("//")[0]}`,
+          to_province_name: `${order.buyer_province.split("//")[0]}`,
+          cod_amount: COD ? order.totalPrice : 0,
           content: "Theo New York Times",
           weight: weight,
           length: maxLength,
@@ -139,14 +146,16 @@ const orderController = {
       //create order
       const user = req.user[0];
       const { products } = req.body;
+      //delete product from cart
+      const delivery = await createShippingOrder(req.body, true);
       const newOrder = new Order({
         customerID: user._id,
         tenantID: req.tenantID,
         typeOrder: "Website",
+        shippingCode:delivery?delivery.order_code:"null",
         ...req.body,
       });
       await newOrder.save();
-      //delete product from cart
       const conditionCart = { customerID: user._id };
       const productIds = products.map((product) => {
         return product._id;
@@ -156,7 +165,6 @@ const orderController = {
         reduceQuantity(product);
       });
       res.json({ success: true, data: newOrder });
-      // trừ đi số lượng trong kho
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -215,7 +223,9 @@ const orderController = {
         { _id: req.body.orderID },
         { statusPayment: "Paid" },
         { new: true }
-      );
+      )
+        .populate("customerID")
+        .populate("products.product");
       if (order) {
         res.json({ success: true, data: order });
       }
@@ -225,7 +235,7 @@ const orderController = {
   },
   notifyOrderCustomer: async (req, res) => {
     try {
-      console.log("Notify Order Customer")
+      console.log("Notify Order Customer");
       const accessKey = process.env.ACCESS_KEY;
       const secretkey = process.env.SECRET_KEY;
 
@@ -249,12 +259,12 @@ const orderController = {
         const firtStepOrder = await Order.findOne({
           _id: data.orderId,
         }).populate("products.product");
-        //const delivery = await createShippingOrder(firtStepOrder, false);
+        const delivery = await createShippingOrder(firtStepOrder, false);
         const secondStepOrder = await Order.findOneAndUpdate(
           { _id: data.orderId },
           {
             statusPayment: "Paid",
-            //shippingCode: delivery.order_code,
+            shippingCode: delivery?delivery.order_code:"null",
           },
           { new: true }
         ).populate("products.product");

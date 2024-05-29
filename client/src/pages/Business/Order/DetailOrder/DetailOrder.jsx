@@ -59,6 +59,20 @@ const DetailOrderBusiness = () => {
         );
       }, deliveryFee)
     );
+
+  const handlePayment = async () => {
+    const payment = await axios.put(
+      `${api}order/update-statuspayment`,
+      { orderID: id },
+      config
+    );
+    if(payment.data.success){
+      setOrder(payment.data.data);
+    }
+    else{
+      console.log("Error when handle")
+    }
+  };
   useEffect(() => {
     getOrder();
   }, []);
@@ -86,7 +100,7 @@ const DetailOrderBusiness = () => {
               {order?.statusPayment == "Paid" ? (
                 <></>
               ) : (
-                <button className="action">Payment Confirm</button>
+                <button className="action" onClick={handlePayment}>Payment Confirm</button>
               )}
             </div>
             <div className="list-product">
