@@ -224,7 +224,7 @@ const productController = {
   },
   createSendoProduct: async (req, res) => {
     try {
-      const products = await Product.find({ tenantID: req.tenantID, id: 0 }).select('-_id');
+      const products = await Product.find({ tenantID: req.tenantID, id: 0 });
 
       const results = await Promise.all(products.map(async (product) => {
         // Convert product to plain object and remove _id from nested objects
@@ -240,7 +240,8 @@ const productController = {
           }
         };
 
-        removeNestedIds(productObj);
+        const productObjWithoutId = JSON.parse(JSON.stringify(productObj));
+        removeNestedIds(productObjWithoutId);
 
         const response = await fetch('https://open.sendo.vn/api/partner/product', {
           method: 'POST',
@@ -259,6 +260,7 @@ const productController = {
           return response.json();
         } else {
           const errorData = await response.json();
+          console.error('Failed to create product on Sendo:', errorData);
           return { error: 'Failed to create product on Sendo', details: errorData };
         }
       }));
