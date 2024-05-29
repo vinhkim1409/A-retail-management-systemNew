@@ -119,7 +119,7 @@ function ProductM() {
   //delete product
   const handleDeleteProduct = async () => {
     console.log(idDelete);
-    const deleteProduct = await axios.delete(`${api}product/${idDelete}`,config);
+    const deleteProduct = await axios.delete(`${api}product/${idDelete}`, config);
     if (deleteProduct.data.success) {
       console.log("Delete Product Success");
     }
@@ -139,8 +139,18 @@ function ProductM() {
     }
   };
 
+  const sendoProduct = async () => {
+    try {
+      const sendo = await axios.get(`${api}product/sendo`, config);
+      console.log("sendo", sendo);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
+    sendoProduct();
     getAllProducts();
     console.log("re-render");
   }, []);
@@ -148,8 +158,6 @@ function ProductM() {
   useEffect(() => {
     getAllProducts();
   }, [filter]);
-
-
 
 
   return (
@@ -320,7 +328,7 @@ function ProductM() {
             )}
           </Box>
           <div className="pages">
-            <div className="pages-number">{1 * (page * 5 + 1)}-{5 * (page + 1)} of {totalProducts + 1}</div>
+            <div className="pages-number">{1 * (page * 5 + 1)}-{5 * (page + 1)} of {totalProducts}</div>
             <button
               className="button-back"
               onClick={() => handleChangePage(page - 1)}
