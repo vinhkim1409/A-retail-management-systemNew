@@ -5,6 +5,14 @@ const { default: mongoose } = require("mongoose");
 const fs = require('fs');
 const path = require('path');
 
+const getLocalDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const productController = {
   accessToken: "",
   loadAccessToken: function () {
@@ -20,7 +28,7 @@ const productController = {
   },
   fetchSendoProducts: async (req, res) => {
     try {
-      const date_to = new Date().toISOString().split('T')[0];
+      const date_to = getLocalDateString();
 
       const response = await fetch('https://open.sendo.vn/api/partner/product/search', {
         method: 'POST',
@@ -53,6 +61,7 @@ const productController = {
           if (detailResponse.ok) {
             const productDetailmain = await detailResponse.json();
             const productDetail = productDetailmain.result;
+            // console.log("productDetail", productDetail);
 
             // Kiểm tra xem sản phẩm đã tồn tại trong cơ sở dữ liệu hay chưa
             const existingProduct = await Product.findOne({ id: productDetail.id });
@@ -211,6 +220,52 @@ const productController = {
       });
     } catch (error) {
       res.status(500).json({ message: "Error updating product", error });
+    }
+  },
+  createSendoProduct: async (req, res) => {
+    try {
+      const products = await Product.find({ tenantID: req.tenantID, id: 0 }).select('-_id');
+
+      const results = await Promise.all(products.map(async (product) => {
+        // Convert product to plain object and remove _id from nested objects
+        const productObj = product.toObject();
+
+        // Helper function to remove _id from nested objects
+        const removeNestedIds = (obj) => {
+          if (Array.isArray(obj)) {
+            obj.forEach(removeNestedIds);
+          } else if (typeof obj === 'object' && obj !== null) {
+            delete obj._id;
+            Object.values(obj).forEach(removeNestedIds);
+          }
+        };
+
+        removeNestedIds(productObj);
+
+        const response = await fetch('https://open.sendo.vn/api/partner/product', {
+          method: 'POST',
+          headers: {
+            'Authorization': `bearer ${productController.accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(productObj)
+        });
+
+        console.log("response", response);
+
+        if (response.ok) {
+          // Xóa sản phẩm khỏi MongoDB sau khi tạo thành công trên Sendo
+          await Product.findByIdAndDelete(product._id);
+          return response.json();
+        } else {
+          const errorData = await response.json();
+          return { error: 'Failed to create product on Sendo', details: errorData };
+        }
+      }));
+
+      res.status(201).json(results);
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while creating products on Sendo', details: error.message });
     }
   },
   init: function () {

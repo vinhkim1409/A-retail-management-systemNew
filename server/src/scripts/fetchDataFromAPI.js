@@ -148,100 +148,170 @@ module.exports = fetchDataFromAPI;
 
 
 
-// curl -X POST \
-//   https://open.sendo.vn/api/partner/product \
-//   -H 'Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTdG9yZUlkIjoiOTg2MDcwIiwiVXNlck5hbWUiOiIiLCJTdG9yZVN0YXR1cyI6IjIiLCJTaG9wVHlwZSI6IjEiLCJTdG9yZUxldmVsIjoiMCIsImV4cCI6MTcxNDgyMDQ2MywiaXNzIjoiOTg2MDcwIiwiYXVkIjoiOTg2MDcwIn0.Xnv4K_l8k9oxVx8TD0U9lEe6eG1DEdtUHnPyps7U4n4' \ 
-//   -H 'Content-Type: application/json' \
-//   -d '{
-//   "id": 0,
-//   "name": "Gel Derma Forte dưỡng da, giảm mụn, thâm 15gr",
-//   "sku": "DermaForte2",
-//   "price": 149000,
-//   "weight": 200,
-//   "stock_availability": true,
-//   "description": "Đặc biệt, Gel Derma Forte còn có tác dụng giúp làm thâm và phục hồi da sau khi nặn mụn. Sản phẩm có dạng gel nhẹ nhàng và được đóng gói trong dung tích 15gr tiện lợi để mang theo bên bạn khi đi du lịch hoặc đi làm.",
-//   "cat_4_id": 2980,
-//   "product_image": "string",
-//   "height": 12,
-//   "length": 5,
-//   "width": 5,
-//   "unit_id": 1,
-//   "stock_quantity": 50,
-//   "avatar": {
-//     "picture_url": "https://thuocgiaphuc.vn/Uploads/ImgSP/Full6-DermaForte.jpg"
-//   },
-//   "pictures": [
+// curl - X POST \
+// https://open.sendo.vn/api/partner/product \
+// -H 'Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTdG9yZUlkIjoiOTg2MDcwIiwiVXNlck5hbWUiOiIiLCJTdG9yZVN0YXR1cyI6IjIiLCJTaG9wVHlwZSI6IjEiLCJTdG9yZUxldmVsIjoiMCIsImV4cCI6MTcxNzAzMjQxMCwiaXNzIjoiOTg2MDcwIiwiYXVkIjoiOTg2MDcwIn0.uW_vJtg_Yj59gZtLQOftd6wk_Zq1Bc26g_jmOMguYS0' \
+// -H 'Content-Type: application/json' \
+// -d '{
+// "id": 0,
+//   "name": "Áo thun cổ trơn Nam thoáng mát 3",
+//     "sku": "at3",
+//       "price": 300000,
+//         "weight": 200,
+//           "stock_availability": true,
+//             "description": "<p style=\"color: rgba(0, 0, 0, 0.8); font-size: 14px;\">THÔNG TIN SẢN PHẨM ÁO POLO NAM CỔ BẺ VẢI MẮT CHIM APM5431</p>\n<p style=\"color: rgba(0, 0, 0, 0.8); font-size: 14px;\">- Chất liệu: Pique mắt chim với thành phần 60% Cotton USA + 35% Polyester + 5% Spandex</p>\n<p style=\"color: rgba(0, 0, 0, 0.8); font-size: 14px;\">- Size áo: M, L, XL, 2XL, 3XL, 4XL</p>\n<p style=\"color: rgba(0, 0, 0, 0.8); font-size: 14px;\">- Xuất xứ: Việt Nam</p>",
+//               "cat_4_id": 310,
+//                 "product_image": "https://media3.scdn.vn/img4/2024/03_31/YkigWrZQBtRLP0I3FnW2.jpg",
+//                   "height": 12,
+//                     "length": 5,
+//                       "width": 5,
+//                         "unit_id": 1,
+//                           "stock_quantity": 50,
+//                             "avatar": {
+//   "picture_url": "https://media3.scdn.vn/img4/2024/03_31/YkigWrZQBtRLP0I3FnW2.jpg"
+// },
+// "pictures": [
+//   {
+//     "picture_url": "https://media3.scdn.vn/img4/2024/03_31/YkigWrZQBtRLP0I3FnW2.jpg"
+//   }
+// ],
+//   "attributes": [
 //     {
-//       "picture_url": "https://thuocgiaphuc.vn/Uploads/ImgSP/Full6-DermaForte.jpg"
+//       "attribute_id": 1328,
+//       "attribute_is_custom": false,
+//       "attribute_is_checkout": true,
+//       "attribute_values": [
+//         {
+//           "id": 20714,
+//           "value": "Da khô",
+//           "attribute_img": "string",
+//           "is_selected": false,
+//           "is_custom": false
+//         }
+//       ]
 //     }
 //   ],
-  // "attributes": [
-  //   {
-  //     "attribute_id": 1328,
-  //     "attribute_is_custom": false,
-  //     "attribute_is_checkout": true,
-  //     "attribute_values": [
-  //       {
-  //         "id": 20714,
-  //         "value": "Da khô",
-  //         "attribute_img": "string",
-  //         "is_selected": false,
-  //         "is_custom": false
-  //       }
-  //     ]
-  //   }
-  // ],
-//   "promotion_from_date": "2024-05-05T02:51:38.858Z",
-//   "promotion_to_date": "2025-06-18T02:51:38.858Z",
-//   "is_promotion": true,
-//   "extended_shipping_package": {
-//     "is_using_instant": false,
-    // "is_using_in_day": false,
-    // "is_self_shipping": false,
-    // "is_using_standard": true
-//   },
-//   "is_config_variant": true,
-  // "variants": [
-  //   {
-  //     "variant_attributes": [
-  //       {
-  //         "attribute_id": 328,
-  //         "option_id": 1359
-  //       }
-  //     ],
-  //     "variant_sku": "Whoo",
-  //     "variant_price": 50000,
-  //     "variant_promotion_start_date": "2024-05-05T02:51:38.858Z",
-  //     "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
-  //     "variant_special_price": 49000,
-  //     "variant_quantity": 10
-  //   },
-    // {
-      // "variant_attributes": [
-      //   {
-      //     "attribute_id": 328,
-      //     "option_id": 23557
-      //   },
-      //   {
-      //     "attribute_id": 328,
-      //     "option_id": 456
-      //   }
-      // ],
-    //   "variant_sku": "Mac",
-    //   "variant_price": 60000,
-    //   "variant_promotion_start_date": "2024-05-05T02:51:38.858Z",
-    //   "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
-    //   "variant_special_price": 55000,
-    //   "variant_quantity": 10
-    // }
-  // ],
-//   "special_price": 49000,
-  // "voucher": {
-  //   "product_type": 1,
-  //   "start_date": "2024-05-04T02:51:38.858Z",
-  //   "end_date": "2025-06-18T02:51:38.858Z",
-  //   "is_check_date": true
-  // }
+//     "promotion_from_date": "2024-05-30T02:51:38.858Z",
+//       "promotion_to_date": "2025-06-18T02:51:38.858Z",
+//         "is_promotion": true,
+//           "extended_shipping_package": {
+//   "is_using_instant": false,
+//     "is_using_in_day": false,
+//       "is_self_shipping": false,
+//         "is_using_standard": true
+// },
+// "is_config_variant": true,
+//   "variants": [
+//     {
+//       "variant_attributes": [
+//         {
+//           "attribute_id": 298,
+//           "attribute_code": "kich_thuoc_1",
+//           "attribute_img": "string",
+//           "is_custom": false,
+//           "is_selected": true,
+//           "option_id": 18975
+//         },
+//         {
+//           "attribute_id": 284,
+//           "attribute_code": "mau_sac",
+//           "attribute_img": "string",
+//           "is_custom": false,
+//           "is_selected": true,
+//           "option_id": 605
+//         }
+//       ],
+//       "variant_sku": "2XL",
+//       "variant_price": 300000,
+//       "variant_promotion_start_date": "2024-05-30T02:51:38.858Z",
+//       "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
+//       "variant_special_price": 199000,
+//       "variant_quantity": 10
+//     },
+//     {
+//       "variant_attributes": [
+//         {
+//           "attribute_id": 298,
+//           "attribute_code": "kich_thuoc_1",
+//           "attribute_img": "string",
+//           "is_custom": false,
+//           "is_selected": true,
+//           "option_id": 817
+//         },
+//         {
+//           "attribute_id": 284,
+//           "attribute_code": "mau_sac",
+//           "attribute_img": "string",
+//           "is_custom": false,
+//           "is_selected": true,
+//           "option_id": 605
+//         }
+//       ],
+//       "variant_sku": "L",
+//       "variant_price": 300000,
+//       "variant_promotion_start_date": "2024-05-30T02:51:38.858Z",
+//       "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
+//       "variant_special_price": 198000,
+//       "variant_quantity": 10
+//     },
+//     {
+//       "variant_attributes": [
+//         {
+//           "attribute_id": 298,
+//           "attribute_code": "kich_thuoc_1",
+//           "attribute_img": "string",
+//           "is_custom": false,
+//           "is_selected": true,
+//           "option_id": 816
+//         },
+//         {
+//           "attribute_id": 284,
+//           "attribute_code": "mau_sac",
+//           "attribute_img": "string",
+//           "is_custom": false,
+//           "is_selected": true,
+//           "option_id": 605
+//         }
+//       ],
+//       "variant_sku": "M",
+//       "variant_price": 300000,
+//       "variant_promotion_start_date": "2024-05-30T02:51:38.858Z",
+//       "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
+//       "variant_special_price": 197000,
+//       "variant_quantity": 7
+//     },
+//     {
+//       "variant_attributes": [
+//         {
+//           "attribute_id": 298,
+//           "attribute_code": "kich_thuoc_1",
+//           "attribute_img": "string",
+//           "is_custom": false,
+//           "is_selected": true,
+//           "option_id": 818
+//         },
+//         {
+//           "attribute_id": 284,
+//           "attribute_code": "mau_sac",
+//           "attribute_img": "string",
+//           "is_custom": false,
+//           "is_selected": true,
+//           "option_id": 605
+//         }
+//       ],
+//       "variant_sku": "XL",
+//       "variant_price": 300000,
+//       "variant_promotion_start_date": "2024-05-30T02:51:38.858Z",
+//       "variant_promotion_end_date": "2026-05-04T02:51:38.858Z",
+//       "variant_special_price": 200000,
+//       "variant_quantity": 5
+//     },
+//   ],
+//     "special_price": 197000,
+//       "voucher": {
+//         "product_type": 1,
+//         "is_check_date": false
+// }
 // }'
 
 

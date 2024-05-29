@@ -127,6 +127,26 @@ function ProductM() {
     setProducts(updateArrayProduct);
     setShowModal(false);
   };
+  const sendoProduct = async () => {
+    try {
+      const sendo = await axios.get(`${api}product/sendo`, config);
+      console.log("sendo", sendo);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setLoading(false);
+    }
+  };
+
+  const createSendoProduct = async () => {
+    try {
+      const sendo = await axios.get(`${api}product/create-sendo`, config);
+      console.log("sendo", sendo);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setLoading(false);
+    }
+  };
+
   const getAllProducts = async () => {
     try {
       const Products = await axios.get(`${api}product/by-tenantURL/${tenantURL}`);
@@ -139,18 +159,9 @@ function ProductM() {
     }
   };
 
-  const sendoProduct = async () => {
-    try {
-      const sendo = await axios.get(`${api}product/sendo`, config);
-      console.log("sendo", sendo);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     sendoProduct();
+    createSendoProduct();
     getAllProducts();
     console.log("re-render");
   }, []);
