@@ -156,6 +156,9 @@ const Checkout = () => {
         `${api}order/createOrder`,
         orderInfo,config
       );
+      if(createOrder.data.success){
+        navigate(`/${tenantURL}/customers/order`)
+      }
 
       console.log(createOrder.data);
     }
