@@ -152,7 +152,7 @@ const orderController = {
         customerID: user._id,
         tenantID: req.tenantID,
         typeOrder: "Website",
-        shippingCode:delivery?delivery.order_code:"null",
+        shippingCode: delivery ? delivery.order_code : "null",
         ...req.body,
       });
       await newOrder.save();
@@ -264,7 +264,7 @@ const orderController = {
           { _id: data.orderId },
           {
             statusPayment: "Paid",
-            shippingCode: delivery?delivery.order_code:"null",
+            shippingCode: delivery ? delivery.order_code : "null",
           },
           { new: true }
         ).populate("products.product");

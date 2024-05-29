@@ -48,8 +48,9 @@ const OrderCustomer = () => {
   const getOrders = async () => {
     const orders = await axios.get(`${api}order/customer`, config);
     console.log(orders.data.data);
-    setInitialOrders(orders.data.data.reverse());
-    setOrders(orders.data.data.reverse());
+    orders.data.data.reverse();
+    setInitialOrders(orders.data.data);
+    setOrders(orders.data.data);
   };
   useEffect(() => {
     getOrders();
