@@ -252,8 +252,6 @@ const productController = {
           body: JSON.stringify(productObj)
         });
 
-        console.log("response", response);
-
         if (response.ok) {
           // Xóa sản phẩm khỏi MongoDB sau khi tạo thành công trên Sendo
           await Product.findByIdAndDelete(product._id);
