@@ -120,7 +120,7 @@ const TopSellingTable = ({ productsList }) => {
                   className="name"
                 >
                   <Box display="flex" alignItems="center" className="name">
-                    <Avatar src={product.product.avatar.picture_url} className="avatar" />
+                    <Avatar src={product.product?.avatar.picture_url} className="avatar" />
                     <Paragraph
                       sx={{ m: 0, ml: 4,maxWidth: 280 }}
                       className="name"

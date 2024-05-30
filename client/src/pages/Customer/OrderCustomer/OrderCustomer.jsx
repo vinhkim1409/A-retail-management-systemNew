@@ -53,7 +53,11 @@ const OrderCustomer = () => {
     setOrders(orders.data.data);
   };
   useEffect(() => {
-    getOrders();
+    if (!customer) {
+      navigate(`/${tenantURL}/customer/login`);
+    } else {
+      getOrders();
+    }
   }, []);
 
   return (
@@ -131,7 +135,7 @@ const OrderCustomer = () => {
                           />
                           <div className="name-frame">
                             <div className="name-product">
-                              {item.product.name}
+                              {item.product?.name}
                             </div>
                           </div>
                         </div>

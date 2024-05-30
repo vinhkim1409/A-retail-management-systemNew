@@ -38,7 +38,11 @@ const Cart = () => {
     setProducts(cart.data[0].products);
   };
   useEffect(() => {
-    getCart();
+    if (!customer) {
+      navigate(`/${tenantURL}/customer/login`);
+    } else {
+      getCart();
+    }
   }, []);
 
   const countproducts = products.length;
