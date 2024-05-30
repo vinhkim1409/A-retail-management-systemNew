@@ -92,14 +92,10 @@ const createShippingOrder = async (order, COD) => {
           from_province_name: "HCM",
           to_name: `${order.buyer_firstName}${order.buyer_lastName}`,
           to_phone: order?.buyer_phoneNumber,
-          to_address: `${order?.buyer_address_detail}, ${
-            order.buyer_ward.split("//")[0]
-          }, ${order.buyer_district.split("//")[0]}, ${
-            order.buyer_province.split("//")[0]
-          }, Vietnam`,
-          to_ward_name: `${order.buyer_ward.split("//")[0]}`,
-          to_district_name: `${order.buyer_district.split("//")[0]}`,
-          to_province_name: `${order.buyer_province.split("//")[0]}`,
+          to_address: `KTX Khu A DHQG, P. Linh Trung, TP Thủ Đức, Hồ Chí Minh, Vietnam`,
+          to_ward_name: `P. Linh Trung`,
+          to_district_name: `TP Thủ Đức`,
+          to_province_name: `HCM`,
           cod_amount: COD ? order.totalPrice : 0,
           content: "Theo New York Times",
           weight: weight,

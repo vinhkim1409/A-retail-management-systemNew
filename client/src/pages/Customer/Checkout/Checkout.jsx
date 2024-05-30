@@ -157,7 +157,7 @@ const Checkout = () => {
         orderInfo,config
       );
       if(createOrder.data.success){
-        navigate(`/${tenantURL}/customers/order`)
+        navigate(`/${tenantURL}/customer/order`)
       }
 
       console.log(createOrder.data);
