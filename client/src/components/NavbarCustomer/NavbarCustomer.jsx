@@ -2,7 +2,7 @@ import React from "react";
 import "./NavbarCustomer.scss";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faAddressCard, faList, faAddressBook } from "@fortawesome/free-solid-svg-icons";
 import { faCartShopping, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutCustomerSuccess } from "../../redux/authCustomerSilde";
@@ -12,11 +12,11 @@ const Navbar = () => {
   const { tenantURL } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
- 
+
   const customer = useSelector(
     (state) => state.authCustomer.login?.currentUser?.resCustomer
   );
-  
+
   const handleLogOut = () => {
     dispatch(logoutCustomerSuccess());
     navigate(`/${tenantURL}/customer/login`);
@@ -41,6 +41,16 @@ const Navbar = () => {
       <div className="cart">
         <Link to={`/${tenantURL}/customer/cart`} className="link">
           <FontAwesomeIcon icon={faCartShopping} />
+        </Link>
+      </div>
+      <div className="address">
+        <Link to={`/${tenantURL}/customer/address`} className="link">
+          <FontAwesomeIcon icon={faAddressBook} />
+        </Link>
+      </div>
+      <div className="order">
+        <Link to={`/${tenantURL}/customer/order`} className="link">
+          <FontAwesomeIcon icon={faList} />
         </Link>
       </div>
       {customer ? (

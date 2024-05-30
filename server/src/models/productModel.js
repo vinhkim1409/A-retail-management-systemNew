@@ -35,6 +35,7 @@ const attributeSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
+  id: Number,
   name: { type: String, required: true },
   sku: String,
   price: Number,
