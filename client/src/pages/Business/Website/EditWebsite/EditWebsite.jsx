@@ -130,7 +130,7 @@ function EditWebsite() {
             </div>
           </div>
           <div className="img">
-            {businessImgFile.length > 0 ? (
+            {businessImgFile? (
               businessImgFile.map((url, index) => (
                 <div className="img-box" key={index}>
                   <img className="img-main" src={url} alt="..." />
