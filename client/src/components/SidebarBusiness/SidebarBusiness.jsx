@@ -86,7 +86,7 @@ const SidebarAdmin = () => {
         },
         {
             name: 'Upgrade',
-            path: `/${tenantURL}/payment`,
+            path: `/${tenantURL}/business/payment`,
             icon: faCircleUp,
             subTabs: []
         },

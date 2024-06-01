@@ -1,3 +1,4 @@
+const Product=require("./productModel")
 const mongoose = require("mongoose");
 
 const porductCart = new mongoose.Schema({
@@ -15,7 +16,8 @@ const porductCart = new mongoose.Schema({
     type:Number,
     required: true,
     default:1
-  }
+  },
+
 });
 
 const cartSchema = new mongoose.Schema(

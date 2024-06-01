@@ -30,10 +30,15 @@ router.put(
   "/update-statuspayment",
   authMiddlewares.verifyToken,
   orderController.handlPayOrder
-); 
-
-router.post(
-  "/notify-payment",
-  orderController.notifyOrderCustomer
 );
+router.get(
+  "/check-shipping-status",
+  authMiddlewares.verifyTokenCustomer,
+  orderController.checkShippingStatus
+);
+router.post("/notify-payment", orderController.notifyOrderCustomer);
+router.post("/create-request/:orderID",authMiddlewares.verifyTokenCustomer, orderController.createRedeliveryRequest);
+router.post("/reject-request",authMiddlewares.verifyToken, orderController.rejectRequest);
+router.post("/accept-request",authMiddlewares.verifyToken, orderController.acceptRequest);
+
 module.exports = router;

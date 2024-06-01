@@ -27,7 +27,7 @@ function DetailProduct() {
   };
   const navigate = useNavigate();
   const { tenantURL, id } = useParams();
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [rating_product, setRating] = useState(0);
   const [isReadMore, SetIsReadMore] = useState(true);
   const [attributeData, setAttributeData] = useState([]);
@@ -71,7 +71,6 @@ function DetailProduct() {
   const handleImageClick = (index) => {
     setSelectedImage(index);
   };
-
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [showAddToCartSuccess, setShowAddToCartSuccess] = useState(false);
 
@@ -87,6 +86,7 @@ function DetailProduct() {
           option_id: optionId,
         },
       }));
+      setQuantity(1);
     }
   };
 
@@ -111,7 +111,14 @@ function DetailProduct() {
     }
     return null;
   };
-
+  const getQuantity = () => {
+    const variantSku = getVariantSku();
+    let variantNumber = product.variants.findIndex(
+      (variant) => variant.variant_sku == variantSku
+    );
+    const remain_quantity = product.variants[variantNumber].variant_quantity;
+    return remain_quantity;
+  };
   ///get product
   const [product, setProduct] = useState();
   const [review, setReview] = useState([]);
@@ -225,6 +232,7 @@ function DetailProduct() {
         );
         if (addtoCart.data.success) {
           // Hiển thị thông báo
+          console.log(addtoCart.data);
           setShowAddToCartSuccess(true);
           setTimeout(() => {
             setShowAddToCartSuccess(false);
@@ -234,7 +242,28 @@ function DetailProduct() {
     }
     return;
   };
-
+  const buyNow = () => {
+    if (quantity > 0) {
+      if (!customer) {
+        navigate(`/${tenantURL}/customer/login`);
+      } else {
+        const variantSku = getVariantSku();
+        let variantNumber = product.variants.findIndex(
+          (variant) => variant.variant_sku == variantSku
+        );
+        const products = {
+          product: product,
+          variant: variantNumber + 1,
+          quantity: quantity,
+          _id:"buy now"
+        };
+        navigate(`/${tenantURL}/customer/checkout`, {
+          state: [products],
+        });
+      }
+    }
+    return;
+  };
   useEffect(() => {
     getProduct();
     getReview();
@@ -311,6 +340,7 @@ function DetailProduct() {
                       type="button"
                       onClick={handleDecrement}
                       className="minus_plus_button"
+                      disabled={quantity <= 1}
                     >
                       <FontAwesomeIcon icon={faMinus} />
                     </button>
@@ -319,6 +349,7 @@ function DetailProduct() {
                       type="button"
                       onClick={handleIncrement}
                       className="minus_plus_button"
+                      disabled={quantity >= getQuantity()}
                     >
                       <FontAwesomeIcon icon={faPlus} />
                     </button>
@@ -335,7 +366,9 @@ function DetailProduct() {
                   </button>
                 </div>
                 <div className="cart_section">
-                  <button className="buy_now_button">Buy Now</button>
+                  <button className="buy_now_button" onClick={buyNow}>
+                    Buy Now
+                  </button>
                 </div>
               </div>
 

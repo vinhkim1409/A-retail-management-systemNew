@@ -76,7 +76,7 @@ function EditWebsite() {
   };
   const editWebsite = async () => {
     const imgArray = [];
-    for (let i = 0; i < businessImgFile.length; i++) {
+    for (let i = 0; i < businessImgFile?.length; i++) {
       const imgRef = ref(imageDB, `files/${v4()}`);
       const snapshot = await uploadString(imgRef, businessImgFile[i], "data_url");
       const url = await getDownloadURL(snapshot.ref);
@@ -91,8 +91,8 @@ function EditWebsite() {
   const getWebsite = async () => {
     const website = await axios.get(`${api}website/${tenantURL}`);
     console.log(website.data)
-    setBusinessImgFile(website.data[0]?.businessImg);
-    setFeatProduct(website.data[0]?.featureProduct);
+    setBusinessImgFile(website.data?.businessImg);
+    setFeatProduct(website.data?.featureProduct);
   };
   useEffect(() => {
     getWebsite();
@@ -130,8 +130,8 @@ function EditWebsite() {
             </div>
           </div>
           <div className="img">
-            {businessImgFile.length > 0 ? (
-              businessImgFile.map((url, index) => (
+            {businessImgFile?.length > 0 ? (
+              businessImgFile?.map((url, index) => (
                 <div className="img-box" key={index}>
                   <img className="img-main" src={url} alt="..." />
                   <button

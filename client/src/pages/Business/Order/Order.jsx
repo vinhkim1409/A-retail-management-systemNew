@@ -37,6 +37,14 @@ const StyledTable = styled(Table)(() => ({
 const paidTag = <div className="paidTag">Paid</div>;
 const wayPaidTag = <div className="wayPaidTag">Wait Pay</div>;
 
+const configStatus = (status) => {
+  if (status) {
+    let result = status.replace(/_/g, " ");
+    result = result.charAt(0).toUpperCase() + result.slice(1);
+    return result;
+  }
+};
+
 const Order = () => {
   const [activeTab, setActiveTab] = useState("All");
   const [page, setPage] = React.useState(0);
@@ -44,8 +52,8 @@ const Order = () => {
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
-  const navigate=useNavigate()
-  const {tenantURL}=useParams()
+  const navigate = useNavigate();
+  const { tenantURL } = useParams();
   const userBusiness = useSelector(
     (state) => state.authBusiness.login?.currentUser
   );
@@ -123,7 +131,7 @@ const Order = () => {
                   backgroundColor: "#F5F5F5",
                 }}
               >
-                <TableCell align="left" className="order-id lable-order" >
+                <TableCell align="left" className="order-id lable-order">
                   Order ID
                 </TableCell>
                 <TableCell align="left" className="customer lable-order">
@@ -158,7 +166,7 @@ const Order = () => {
                       <TableCell
                         align="left"
                         className="order-id blue"
-                        sx={{ maxWidth: 173,minWidth: 140 }}
+                        sx={{ maxWidth: 173, minWidth: 140 }}
                       >
                         {item._id}
                       </TableCell>
@@ -174,14 +182,20 @@ const Order = () => {
                         {moment(item.createdAt).format("D MMM, YYYY h:mm A")}
                       </TableCell>
                       <TableCell align="left" className="payment">
-                        {item.statusPayment === "Paid" ? paidTag:wayPaidTag}
+                        {item.statusPayment === "Paid" ? paidTag : wayPaidTag}
                       </TableCell>
                       <TableCell align="left" className="total content-order">
                         {item.totalPrice}
                         {""} đ
                       </TableCell>
                       <TableCell align="left" className="order-status">
-                        In Shipped
+                        {item?.is_refund
+                          ? <div style={{color:"red"}}>
+                            {"Refund"}
+                          </div>
+                          : item?.shipping_status
+                          ? configStatus(item.shipping_status)
+                          : "In shipped"}
                       </TableCell>
                     </TableRow>
                   ))}

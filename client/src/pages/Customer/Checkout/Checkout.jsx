@@ -157,7 +157,7 @@ const Checkout = () => {
         orderInfo,config
       );
       if(createOrder.data.success){
-        navigate(`/${tenantURL}/customers/order`)
+        navigate(`/${tenantURL}/customer/order`)
       }
 
       console.log(createOrder.data);
@@ -316,7 +316,7 @@ const Checkout = () => {
                   <td className="image-check">
                     <img
                       className="image-detail-check"
-                      src={item.product.avatar.picture_url}
+                      src={item.product?.avatar?.picture_url}
                       alt="Bookimage"
                     />
                     <div className="text-image-check">{item.product.name}</div>

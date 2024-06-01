@@ -1,4 +1,5 @@
 const Cart = require("../models/cartModel");
+const Product = require("../models/productModel");
 const { default: mongoose } = require("mongoose");
 
 async function deleteProductFromCart(conditionCart, idProductInCart) {
@@ -54,13 +55,26 @@ const cartController = {
         variant: variant,
         quantity: quantity,
       };
-      const addProductCartCondition = { customerID: req.user[0]._id };
-      const addProductCart = await Cart.findOneAndUpdate(
-        addProductCartCondition,
-        { $push: { products: products } },
-        { new: true }
+
+      const addProductCartCondition = await Cart.findOne({
+        customerID: req.user[0]._id,
+      });
+      const productNeed = addProductCartCondition.products.findIndex(
+        (product) => product.product == productId && product.variant == variant
       );
-      res.json({ success: true, data: addProductCart });
+      if (productNeed >= 0) {
+        addProductCartCondition.products[productNeed].quantity =
+          addProductCartCondition.products[productNeed].quantity + quantity;
+        await addProductCartCondition.save();
+        return res.json({ success: true, data: addProductCartCondition });
+      } else {
+        const addProductCart = await Cart.findOneAndUpdate(
+          addProductCartCondition,
+          { $push: { products: products } },
+          { new: true }
+        );
+        res.json({ success: true, data: addProductCart });
+      }
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

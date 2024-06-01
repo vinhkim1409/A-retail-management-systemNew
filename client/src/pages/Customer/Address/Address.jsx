@@ -30,17 +30,17 @@ const Address = () => {
   return (
     <div className="Address-container">
       <div className="header">
-        <h1>ĐỊA CHỈ</h1>
+        <h1>ADDRESS</h1>
       </div>
 
       <div className="content">
         <div className="button">
-          <Link>
+          <Link to={`/${tenantURL}/customer/address-addnew`}>
             <div className="button-add">
               <div className="img-add">
                 <FontAwesomeIcon icon={faPlus} className="icon-add" />
               </div>
-              <div className="text-add">Thêm địa chỉ mới</div>
+              <div className="text-add">Add new address</div>
             </div>
           </Link>
         </div>
@@ -60,10 +60,10 @@ const Address = () => {
                 addressdefault?.province.split("//")[0]
               }`}{" "}
             </p>
-            <button className="default">Mặc định</button>
+            <button className="default">Default</button>
           </div>
           <div className="button-modify-default">
-            <button className="button-update">Cập nhật</button>
+            {/* <button className="button-update">Cập nhật</button> */}
           </div>
         </div>
 

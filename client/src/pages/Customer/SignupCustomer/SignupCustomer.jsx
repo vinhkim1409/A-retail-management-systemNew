@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SignupCustomer.scss";
 import background from "../../../assets/login-background.png";
 import {
@@ -8,101 +8,127 @@ import {
   CircularProgress,
   createTheme,
   ThemeProvider,
+  Snackbar, Alert
 } from "@mui/material";
-import { useParams } from "react-router-dom";
-import axios from "axios"
-import {api} from "../../../constant/constant"
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { api } from "../../../constant/constant";
 
 function SignupCustomer() {
   const { tenantURL } = useParams();
   const [customerInfo, setCustomerInfo] = useState({
-    email:"",
-    password:"",
-    firstName:"",
-    lastName:"",
-    phoneNumber:"",
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
   });
-  const [confirmPassword,setConfirmPassword]=useState("")
+  const [businessName, setBusinessName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [openWrongCofirm, setOpenWrongConfirm] = useState(false);
-  const handleChangeInfo=(event,attribute)=>{
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const navigate=useNavigate()
+  const handleChangeInfo = (event, attribute) => {
     setCustomerInfo({ ...customerInfo, [`${attribute}`]: event.target.value });
-  }
-  const handleChangeConfirmPassword=(event)=>{
-setConfirmPassword(event.target.value)
-  }
-  const handleSignupCustomer= async (e)=>{
+  };
+  const handleChangeConfirmPassword = (event) => {
+    setConfirmPassword(event.target.value);
+  };
+  const handleSignupCustomer = async (e) => {
     e.preventDefault();
     if (customerInfo.password != confirmPassword) {
+      setErrorMessage("Password and confirm password are not the same")
       setOpenWrongConfirm(true);
       return;
     }
-    const newCustomer={
-      email:customerInfo.email,
-      password:customerInfo.password,
-      firstName:customerInfo.firstName,
-      lastName:customerInfo.lastName,
-      phoneNumber:customerInfo.phoneNumber,
-      tenantURL:tenantURL
+    const newCustomer = {
+      email: customerInfo.email,
+      password: customerInfo.password,
+      firstName: customerInfo.firstName,
+      lastName: customerInfo.lastName,
+      phoneNumber: customerInfo.phoneNumber,
+      tenantURL: tenantURL,
+    };
+    const resRegister = await axios.post(`${api}customer/signup`, newCustomer);
+    if (resRegister.data.success) {
+      setOpenSuccess(true);
+      setTimeout(() => {
+        navigate(`${tenantURL}/customer/login`);
+      }, 2000);
+    } else {
+      setErrorMessage(resRegister.data.message)
+      setOpenWrongConfirm(true);
     }
-    const resRegister= await axios.post(`${api}customer/signup`,newCustomer)
-    if(resRegister.data.success) {
-      console.log(resRegister.data.data);
-    }
-    else{
-      console.log(resRegister.data.message);
-    }
+  };
+  const getBusinessInfo = async () => {
+    const businessInfo = await axios.get(`${api}business/info/${tenantURL}`);
+    console.log(businessInfo.data);
+    setBusinessName(businessInfo.data?.data);
+  };
 
-  }
-
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenWrongConfirm(false);
+    setOpenSuccess(false)
+  };
+  useEffect(() => {
+    getBusinessInfo();
+  }, []);
   return (
     <div className="signupCustomer-form">
       <div className={"inner"}>
         <div className="title">
           <p style={{ fontSize: 16, color: "black", marginBottom: 15 }}>
-            Chào mừng bạn đến với
+            Welcome to
             <span style={{ fontSize: 16, color: "#1488DB", fontWeight: 500 }}>
               {" "}
-              BK
+              {businessName}
             </span>
-            <span style={{ fontSize: 16, color: "#00A699" }}>Book</span>.
+            {/* <span style={{ fontSize: 16, color: "#00A699" }}>Book</span>. */}
           </p>
 
           <p style={{ fontSize: 20, fontWeight: 500, marginBottom: 15 }}>
-            Đăng ký tài khoản mới
+            Register a new account
           </p>
         </div>
 
         <Divider variant="middle" theme={theme} />
         <ThemeProvider theme={theme}>
-          <p className="lable">Thông tin tài khoản</p>
+          <p className="lable">Account information</p>
           <TextField
             name="email"
-            label="Nhập Email"
+            label="Enter Email"
             size="small"
             fullWidth
             color="bkbook"
-            onChange={(event)=>{
-              handleChangeInfo(event,"email")
+            required
+            onChange={(event) => {
+              handleChangeInfo(event, "email");
             }}
           />
 
           <div className="">
             <TextField
+            required
               name="password"
-              label="Nhập mật khẩu"
+              label="Enter Password"
               type="password"
               variant="outlined"
               color="bkbook"
               className="flex-1 mr-2"
               size="small"
-              onChange={(event)=>{
-                handleChangeInfo(event,"password")
+              onChange={(event) => {
+                handleChangeInfo(event, "password");
               }}
             />
 
             <TextField
+            required
               name="confirmPassword"
-              label="Xác nhận mật khẩu"
+              label="Confirm Password"
               type="password"
               variant="outlined"
               color="bkbook"
@@ -113,39 +139,42 @@ setConfirmPassword(event.target.value)
           </div>
 
           <Divider variant="middle" className="!py-1 !my-2" />
-          <p className="lable">Thông tin cá nhân</p>
+          <p className="lable">Personal information</p>
           <TextField
+          required
             name="name"
-            label="Họ"
+            label="First Name"
             variant="outlined"
             color="bkbook"
             fullWidth
             size="small"
-            onChange={(event)=>{
-              handleChangeInfo(event,"firstName")
+            onChange={(event) => {
+              handleChangeInfo(event, "firstName");
             }}
           />
           <TextField
+          required
             name="name"
-            label="Tên"
+            label="Last Name"
             variant="outlined"
             color="bkbook"
             fullWidth
             size="small"
-            onChange={(event)=>{
-              handleChangeInfo(event,"lastName")
+            onChange={(event) => {
+              handleChangeInfo(event, "lastName");
             }}
           />
 
           <TextField
+          required
             name="phoneNumber"
-            label="Số điện thoại"
+            label="Phone Number"
             variant="outlined"
             color="bkbook"
             size="small"
             fullWidth
-            onChange={(event)=>{
-              handleChangeInfo(event,"phoneNumber")
+            onChange={(event) => {
+              handleChangeInfo(event, "phoneNumber");
             }}
           />
           <Button
@@ -153,14 +182,54 @@ setConfirmPassword(event.target.value)
             variant="contained"
             size="large"
             color="bkbook"
-            onClick={(event)=>{
-              handleSignupCustomer(event)
+            onClick={(event) => {
+              handleSignupCustomer(event);
             }}
+            disabled={
+              !customerInfo.password ||
+              !customerInfo.email ||
+              !customerInfo.phoneNumber ||
+              !customerInfo.lastName ||
+              !customerInfo.firstName ||
+              !confirmPassword
+            }
           >
-            ĐĂNG KÝ
+            Sign Up
           </Button>
         </ThemeProvider>
       </div>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openWrongCofirm}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        message={errorMessage}
+      >
+        <Alert
+          onClose={handleClose}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openSuccess}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        message={"Sign Up Successfully"}
+      >
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+         {"Sign Up Successfully"}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

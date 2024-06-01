@@ -33,7 +33,7 @@ async function reduceQuantity(productIncart) {
   }
 }
 
-const createShippingOrder = async (order, COD) => {
+const createShippingOrder = async (order, COD, refund = false) => {
   try {
     let maxHeight = 0;
     let maxWidth = 0;
@@ -61,11 +61,22 @@ const createShippingOrder = async (order, COD) => {
         maxWidth = product.product.length;
       }
     });
+    let weight = 0;
+    let totalPrice = 0;
 
-    const weight = order.products.reduce((total, product) => {
-      return total + product.product.weight * product.quantity;
-    }, 0);
-    console.log(order.buyer_ward.split("//")[0]);
+    if (refund) {
+      weight = order.products.reduce((total, product) => {
+        return total + product.weight * product.quantity;
+      }, 0);
+      totalPrice = parseFloat(order.totalPrice);
+    } else {
+      weight = order.products.reduce((total, product) => {
+        return total + product.product.weight * product.quantity;
+      }, 0);
+      totalPrice = order.totalPrice;
+    }
+
+    // console.log(order.buyer_ward.split("//")[0], typeof totalPrice);
     const response = await fetch(
       "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
       {
@@ -90,7 +101,7 @@ const createShippingOrder = async (order, COD) => {
           from_ward_name: "P. Linh Trung",
           from_district_name: "TP Thủ Đức",
           from_province_name: "HCM",
-          to_name: `${order.buyer_firstName}${order.buyer_lastName}`,
+          to_name: `${order.buyer_firstName} ${order.buyer_lastName}`,
           to_phone: order?.buyer_phoneNumber,
           to_address: `${order?.buyer_address_detail}, ${
             order.buyer_ward.split("//")[0]
@@ -100,12 +111,12 @@ const createShippingOrder = async (order, COD) => {
           to_ward_name: `${order.buyer_ward.split("//")[0]}`,
           to_district_name: `${order.buyer_district.split("//")[0]}`,
           to_province_name: `${order.buyer_province.split("//")[0]}`,
-          cod_amount: COD ? order.totalPrice : 0,
+          cod_amount: COD ? totalPrice : 0,
           content: "Theo New York Times",
           weight: weight,
-          length: maxLength,
-          width: maxWidth,
-          height: maxHeight,
+          length: 10,
+          width: 10,
+          height: 10,
           cod_failed_amount: 2000,
           pick_station_id: 1444,
           deliver_station_id: null,
@@ -140,30 +151,88 @@ const createShippingOrder = async (order, COD) => {
     next(error);
   }
 };
+const getShippingStatus = async (order_code) => {
+  try {
+    const responseOrder = await fetch(
+      "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/detail",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Token: "fee29a3e-08ed-11ef-a6e6-e60958111f48",
+        },
+        body: JSON.stringify({ order_code: order_code }),
+      }
+    );
+    const data = await responseOrder.json();
+    if (data) {
+      return data.data;
+    } else {
+      return "Null";
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 const orderController = {
   createOrder: async (req, res) => {
     try {
       //create order
       const user = req.user[0];
       const { products } = req.body;
-      //delete product from cart
+
       const delivery = await createShippingOrder(req.body, true);
+      const status = await getShippingStatus(delivery.order_code);
+      const productArray = products.map((product) => {
+        const productImg = product.product.pictures.map((productImage) => {
+          return productImage.picture_url;
+        });
+
+        const productInOrder = {
+          product: product.product._id,
+          product_idThir: product.product.id,
+          product_name: product.product.name,
+          product_sku: product.product.sku,
+          variant: product.variant,
+          quantity: product.quantity,
+          unit_price:
+            product.variant == 0
+              ? product.product.special_price
+              : product.product.variants[product.variant - 1]
+                  .variant_special_price,
+          weight: product.product.weight,
+          product_img: productImg,
+          description: product.product.description,
+          unit_id: product.product.unit_id,
+        };
+        return productInOrder;
+      });
       const newOrder = new Order({
         customerID: user._id,
         tenantID: req.tenantID,
         typeOrder: "Website",
         shippingCode: delivery ? delivery.order_code : "null",
+        orderStatus: "Delivery",
+        shipping_status: status.status ? "ready_to_pick" : status.status,
         ...req.body,
+        products: productArray,
       });
       await newOrder.save();
-      const conditionCart = { customerID: user._id };
-      const productIds = products.map((product) => {
-        return product._id;
-      });
-      deleteProductFromCart(conditionCart, productIds);
+      if (products[0]._id != "buy now") {
+        //delete product from cart
+        // const conditionCart = { customerID: user._id };
+        // deleteProductFromCart(conditionCart, productIds);
+      }
+
+      // const productIds = products.map((product) => {
+      //   return product._id;
+      // });
+
       newOrder.products.map((product) => {
         reduceQuantity(product);
       });
+
       res.json({ success: true, data: newOrder });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -172,9 +241,9 @@ const orderController = {
   getOrderCustomer: async (req, res) => {
     try {
       const customer = req.user[0];
-      const order = await Order.find({ customerID: customer._id })
-        .populate("customerID")
-        .populate("products.product");
+      const order = await Order.find({ customerID: customer._id }).populate(
+        "customerID"
+      );
       res.json({ success: true, data: order });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -186,9 +255,7 @@ const orderController = {
       const order = await Order.find({
         customerID: customer._id,
         _id: req.params.orderID,
-      })
-        .populate("customerID")
-        .populate("products.product");
+      }).populate("customerID");
       res.json({ success: true, data: order });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -199,7 +266,15 @@ const orderController = {
       const order = await Order.find({ tenantID: req.tenantID })
         .populate("customerID")
         .populate("products.product");
-      res.json({ success: true, data: order });
+      const orderRequest = await Order.find({
+        tenantID: req.tenantID,
+        is_refund: true,
+      })
+        .populate("customerID")
+        .populate("products.product");
+      const arrayOrder = orderRequest.concat(order);
+      const resOrder = [...new Set(arrayOrder)];
+      res.json({ success: true, data: resOrder });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -276,7 +351,101 @@ const orderController = {
         console.log(`Thanh toán thất bại, resultCode: ${resultCode}`);
       }
       return res.status(200).json("OK");
-    } catch (error) {}
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  checkShippingStatus: async (req, res) => {
+    try {
+      const orders = await Order.find({ customerID: req.user[0]._id });
+      let array = [];
+      orders.map(async (order, index) => {
+        if (!order.is_cancel && order.shippingCode) {
+          const status = await getShippingStatus(order.shippingCode);
+          if (status != null) {
+            const orderUpdate = await Order.findOneAndUpdate(
+              { _id: order._id },
+              {
+                shipping_status: status.status,
+                date_update_shipping_statu: new Date(),
+              },
+              { new: true }
+            );
+          }
+        }
+      });
+
+      res.json(array);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  createRedeliveryRequest: async (req, res) => {
+    try {
+      const orderRedelivery = await Order.findOneAndUpdate(
+        { _id: req.params.orderID },
+        {
+          is_refund: true,
+          refund_picture: req.body.refund_picture,
+          type_reason: req.body.reason,
+          refund_status: "Pending",
+          orderStatus: "Redelivery",
+        },
+        { new: true }
+      );
+      if (orderRedelivery) {
+        return res.json({ success: true, data: orderRedelivery });
+      }
+      res.json({ success: false, data: "Create Request Failed" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  rejectRequest: async (req, res) => {
+    try {
+      const orderRedelivery = await Order.findOneAndUpdate(
+        { _id: req.body.orderID, tenantID: req.tenantID },
+        {
+          refund_status: "Reject",
+        },
+        { new: true }
+      );
+      if (orderRedelivery) {
+        return res.json({ success: true, data: orderRedelivery });
+      }
+      res.json({ success: false, data: "Reject Request Failed" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  acceptRequest: async (req, res) => {
+    try {
+      const orderRedelivery = await Order.findOneAndUpdate(
+        { _id: req.body.orderID, tenantID: req.tenantID },
+        {
+          refund_status: "Accept",
+        },
+        { new: true }
+      );
+      //tạo một đơn hàng mới
+      let newOrderData = orderRedelivery.toObject();
+      delete newOrderData._id;
+      const delivery = await createShippingOrder(orderRedelivery, true, true);
+      const status = await getShippingStatus(delivery?.order_code);
+      const newOrder = new Order({
+        ...newOrderData,
+        type_reason: "",
+        refund_status: "",
+        is_refund: false,
+        shippingCode: delivery ? delivery.order_code : "null",
+        shipping_status: status.status ? "ready_to_pick" : status.status,
+        refund_picture: [],
+        orderStatus: "Delivery",
+      });
+      res.json({success:true, newOrder, orderRedelivery });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   },
 };
 module.exports = orderController;

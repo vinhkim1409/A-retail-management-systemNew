@@ -15,13 +15,19 @@ const AddNewAddress = () => {
       Authorization: `Bearer ${customer?.accessToken}`,
     },
   };
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const { tenantURL } = useParams();
-  const dispatch =useDispatch()
+  const dispatch = useDispatch();
 
-  const [lastNameInput, setLastNameInput] = useState(customer.resCustomer.lastName);
-  const [firstNameInput, setFirstNameInput] = useState(customer.resCustomer.firstName);
-  const [phoneNumberInput, setPhoneNumberInput] = useState(customer.resCustomer.phoneNumber);
+  const [lastNameInput, setLastNameInput] = useState(
+    customer.resCustomer.lastName
+  );
+  const [firstNameInput, setFirstNameInput] = useState(
+    customer.resCustomer.firstName
+  );
+  const [phoneNumberInput, setPhoneNumberInput] = useState(
+    customer.resCustomer.phoneNumber
+  );
   const [provinceInput, setProvinceInput] = useState("");
   const [districtInput, setDistrictInput] = useState("");
   const [wardInput, setWardInput] = useState("");
@@ -57,11 +63,11 @@ const AddNewAddress = () => {
   const handleAddrChange = (event) => {
     setAddrInput(event.target.value);
   };
-  useEffect(()=>{
-    if(!customer){
-        navigate(`/${tenantURL}/customer/login`)
+  useEffect(() => {
+    if (!customer) {
+      navigate(`/${tenantURL}/customer/login`);
     }
-  },[])
+  }, []);
   useEffect(() => {
     const getProvinces = async () => {
       const res = await shippingAPI.getProvinces();
@@ -84,22 +90,30 @@ const AddNewAddress = () => {
 
   const handleAddNewAddress = async (e) => {
     e.preventDefault();
-    const newAddress={
-      firstName:firstNameInput,
-      lastName:lastNameInput,
-      phoneNumber:phoneNumberInput,
-      province:provinceInput,
-      district:districtInput,
-      ward:wardInput,
-      detail:addrInput,
+    const newAddress = {
+      firstName: firstNameInput,
+      lastName: lastNameInput,
+      phoneNumber: phoneNumberInput,
+      province: provinceInput,
+      district: districtInput,
+      ward: wardInput,
+      detail: addrInput,
+    };
+    const res = await axios.put(
+      `${api}customer/add-address`,
+      newAddress,
+      config
+    );
+    if (res.data.success) {
+      console.log("add successful");
+      dispatch(
+        updateCurrentAddressCustomer({ address: res.data.data.address })
+      );
+      setTimeout(() => {
+        window.history.back();
+      }, 2000);
     }
-    const res=await axios.put(`${api}customer/add-address`,newAddress,config)
-    if(true)
-    {
-      console.log("add successful")
-      dispatch(updateCurrentAddressCustomer({address:res.data.data.address}))
-    }
-  }
+  };
 
   return (
     <div className="AddressEdit-container">
@@ -215,7 +229,9 @@ const AddNewAddress = () => {
       <div className="button">
         <div className="button-detail">
           <button className="button-cancel">Hủy</button>
-          <button className="button-save" onClick={handleAddNewAddress}>Lưu</button>
+          <button className="button-save" onClick={handleAddNewAddress}>
+            Lưu
+          </button>
         </div>
       </div>
     </div>

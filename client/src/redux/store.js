@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authBusinessReducer from "./authBusinessSlice";
 import authCustomerReducer from "./authCustomerSilde";
+import authAdminReducer from "./authAdminSlice";
 import {
   persistStore,
   persistReducer,
@@ -20,6 +21,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   authBusiness: authBusinessReducer,
   authCustomer: authCustomerReducer,
+  authAdmin:authAdminReducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer); 
 export const store = configureStore({

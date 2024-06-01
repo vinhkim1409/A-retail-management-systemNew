@@ -1,6 +1,8 @@
 const PackageOrder = require("../models/packageOrderModel");
 const Business = require("../models/businessModel");
-
+const Admin = require("../models/adminModel");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 function getPercent(thisMonth, lastMonth) {
   if (thisMonth == 0) {
     return { type: 3, value: 0 };
@@ -198,9 +200,65 @@ const adminController = {
       data: { month: { dayOfMonth, RevenueMonth } },
     });
   },
-  getBuisness:async(req, res)=>{
-    const business=await Business.find()
-    res.json({success:true,data:business})
-  }
+  getBuisness: async (req, res) => {
+    const business = await Business.find();
+    res.json({ success: true, data: business });
+  },
+  signupAdmin: async (req, res) => {
+    try {
+      const { email, password, name, phoneNumber } = req.body;
+      const adminExitEmail = await Admin.findOne({ email });
+      if (adminExitEmail) {
+        return res.json({ success: false, message: "Email has been used" });
+      }
+      const salt = await bcrypt.genSalt(10);
+      const hashed = await bcrypt.hash(password, salt);
+      const newAdmin = new Admin({
+        email: email,
+        password: hashed,
+        name: name,
+        phoneNumber: phoneNumber,
+      });
+      await newAdmin.save();
+      res.json({ success: true, data: newAdmin });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  loginAdmin: async (req, res) => {
+    try {
+      const resUser = await Admin.findOne({ email: req.body.email });
+      if (!user) {
+        return res.json({
+          success: false,
+          message: "Wrong email or password!",
+        });
+      }
+      const validPassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+      if (!validPassword) {
+        return res.json({
+          success: false,
+          message: "Wrong email or password!",
+        });
+      }
+      if (user) {
+        const accessToken = jwt.sign(
+          {
+            id: user._id,
+            name: user.name,
+          },
+          process.env.JWT_SECRET_KEY,
+          { expiresIn: "30d" }
+        );
+        const { password, ...resAdmin } = user._doc;
+        res.json({ resAdmin, accessToken });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
 };
 module.exports = adminController;

@@ -40,21 +40,22 @@
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1% 0% 0% 1%;
+    padding: 1% 0% 0% 0%;
     background-color: white;
+    min-height: 400px;
   }
   .lable {
     font-size: 18px;
     font-weight: bold;
     display: flex;
-   padding-left: 0.1%;
+    padding-left: 0.1%;
+    border-bottom: 1px solid #ddd;
   }
   .name {
     width: 50%;
     padding-left: 0.1%;
-   
   }
-  .lable-name{
+  .lable-name {
     margin-left: 0.15%;
   }
   .mt1 {
@@ -62,7 +63,7 @@
   }
   .num-product {
     width: 30%;
-   
+
     text-align: center;
     display: flex;
     align-items: center;
@@ -72,7 +73,6 @@
     padding: 0% 0% 1% 0.1%;
   }
   .action {
-  
     width: 20%;
     text-align: center;
   }
@@ -83,13 +83,10 @@
     width: 100%;
     .name {
       width: 50%;
-     
     }
     .num-product {
       width: 30%;
       text-align: center;
-     
-      
     }
     .btn {
       background-color: #0d6efd;
@@ -104,11 +101,10 @@
       font-weight: 600;
       margin-bottom: 1%;
     }
-    .action{
-      
+    .action {
     }
   }
-  .delete-btn{
+  .delete-btn {
     background-color: #e03444;
     border: none;
     color: white;
@@ -121,7 +117,7 @@
     margin-right: 1%;
     font-weight: 500;
   }
-  .disabled{
+  .disabled {
     background-color: #dddddd;
     border: none;
     color: black;

@@ -17,7 +17,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { api } from "../../../constant/constant";
 import { imageDB } from "../../../firebase/firebaseConfig";
-import { getDownloadURL, ref, uploadBytes, uploadString } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadString,
+} from "firebase/storage";
 import { v4 } from "uuid";
 import { useSelector } from "react-redux";
 
@@ -35,7 +40,9 @@ const style = {
 
 export default function AddNewStaff({ stafflist, setStaffList }) {
   const [open, setOpen] = React.useState(false);
-  const userBusiness=useSelector((state)=>state.authBusiness.login?.currentUser)
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
   const config = {
     headers: {
       Authorization: `Bearer ${userBusiness?.accessToken}`,
@@ -159,26 +166,28 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
   };
 
   const addStaff = async () => {
-    const haveerror = Object.values(errorForm).includes(true);
-    const imgRef = ref(imageDB, `files/${v4()}`);
-    const snapshot = await uploadString(imgRef, avatarEncode, "data_url");
-    const url = await getDownloadURL(snapshot.ref);
+    let avatarUrl = "";
+    if (avatarEncode.length > 90) {
+      const haveerror = Object.values(errorForm).includes(true);
+      const imgRef = ref(imageDB, `files/${v4()}`);
+      const snapshot = await uploadString(imgRef, avatarEncode, "data_url");
+      avatarUrl = await getDownloadURL(snapshot.ref);
+    }
     const newStaff = {
       lastname: basicInfo.lastname,
       firstname: basicInfo.firstname,
       email: basicInfo.email,
       phoneNumber: basicInfo.phone,
-      avatar: url,
+      avatar: avatarUrl,
       position: basicInfo.position,
       password: basicInfo.password,
     };
     //check newstaff nhanh hon
     try {
-      const responce = await axios.post(`${api}staff/add`, newStaff,config);
+      const responce = await axios.post(`${api}staff/add`, newStaff, config);
       setStaffList([...stafflist, newStaff]);
-      console.log(responce.data)
+      console.log(responce.data);
       handleClose();
-
     } catch (err) {
       console.log("false");
     }
@@ -379,9 +388,7 @@ export default function AddNewStaff({ stafflist, setStaffList }) {
                     label="Position"
                     onChange={(event) => handleChangeInfo(event, "position")}
                   >
-                     <MenuItem value={"Admin"}>
-                      Admin
-                    </MenuItem>
+                    <MenuItem value={"Admin"}>Admin</MenuItem>
                     <MenuItem value={"Sales Associate"}>
                       Sales Associate
                     </MenuItem>

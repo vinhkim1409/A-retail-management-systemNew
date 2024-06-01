@@ -1,5 +1,6 @@
 const Business = require("../models/businessModel");
 const Staff = require("../models/staffModel");
+const Website = require("../models/websiteModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const businessController = {
@@ -46,13 +47,18 @@ const businessController = {
         position: "Admin",
         canModify: false,
         password: hashed,
-        avatar:""
+        avatar: "",
       });
       await firstStaff.save();
-
+      const newWebsite = new Website({
+        tenantID: newBusiness._id,
+        businessImg:[],
+        logo:""
+      })
+      newWebsite.save();
       res.json({ success: true, data: { newBusiness, firstStaff } });
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({ message: error.message });
     }
   },
   loginBusiness: async (req, res, next) => {
@@ -60,19 +66,34 @@ const businessController = {
       const business = await Business.findOne({
         tenantURL: req.body.tenantURL,
       });
+      if (!business) {
+        return res.json({
+          success: false,
+          message: "Wrong email,password or tenantURL!",
+        });
+      }
       const user = await Staff.findOne({
         email: req.body.email,
         tenantID: business._id,
       });
 
-      if (!user) {
-        return res.status(404).json({sucess:false,message:"Wrong email or password!"});
+      if (!user || !business) {
+        return res.json({
+          success: false,
+          message: "Wrong email,password or tenantURL!",
+        });
       }
-      const validPassword = await bcrypt.compare(req.body.password, user.password);
+      const validPassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
       if (!validPassword) {
-        return res.status(404).json({sucess:false,message:"Wrong email or password!"});
+        return res.json({
+          success: false,
+          message: "Wrong email or password!",
+        });
       }
-      if (user ) {
+      if (user) {
         const accessToken = jwt.sign(
           {
             id: user._id,
@@ -83,12 +104,35 @@ const businessController = {
           { expiresIn: "30d" }
         );
         const { password, ...resUser } = user._doc;
-        res.json({ resUser, accessToken,tenantURL:business.tenantURL });
+        res.json({ resUser, accessToken, tenantURL: business.tenantURL });
       }
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({ message: error.message });
     }
   },
+  checkEmail: async (req, res) => {
+    try {
+      const business = await Business.findOne({ email: req.body.email });
+      if (business) {
+        res.json({ success: false, message: "email already use" });
+      } else {
+        res.json({ success: true, message: "email not use" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  getBusinessInfo:async (req,res)=>{
+    try {
+      const business = await Business.findOne({ tenantURL: req.params.tenantURL})
+      if(!business) {
+        return res.json({ success: false, message: "business not exist" });
+      }
+      return res.json({ success: true, data: business.name });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 };
 
 module.exports = businessController;

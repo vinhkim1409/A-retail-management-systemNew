@@ -28,6 +28,14 @@ const StyledTable = styled(Table)(() => ({
   },
 }));
 
+const configStatus = (status) => {
+  if (status) {
+    let result = status.replace(/_/g, " ");
+    result = result.charAt(0).toUpperCase() + result.slice(1);
+    return result;
+  }
+};
+
 const OrderCustomer = () => {
   const [activeTab, setActiveTab] = useState("All");
   const handleTabClick = (event, cityName) => {
@@ -52,10 +60,15 @@ const OrderCustomer = () => {
     setInitialOrders(orders.data.data);
     setOrders(orders.data.data);
   };
+  const checkShipingStatus= async () => {
+    const orders=await axios.get(`${api}order/check-shipping-status`,config)
+    console.log(orders.data);
+  }
   useEffect(() => {
     if (!customer) {
       navigate(`/${tenantURL}/customer/login`);
     } else {
+      checkShipingStatus()
       getOrders();
     }
   }, []);
@@ -101,7 +114,9 @@ const OrderCustomer = () => {
                 Order Date:
                 {moment(order.createdAt).format("D MMM, YYYY h:mm A")}
               </div>
-              <div className="status"></div>
+              <div className="status">
+                Shipping Status:{configStatus(order?.shipping_status)}
+              </div>
             </div>
 
             <Box width="100%" overflow="auto" backgroundColor="white">
@@ -129,7 +144,7 @@ const OrderCustomer = () => {
                       <TableCell align="left" className="product">
                         <div className="product-container">
                           <img
-                            src={item?.product?.avatar?.picture_url}
+                            src={item?.product_img[0]}
                             alt=""
                             className="img"
                           />
@@ -148,11 +163,7 @@ const OrderCustomer = () => {
                         {item?.quantity}
                       </TableCell>
                       <TableCell align="left" className="amount content-order">
-                        {(item?.variant > 0
-                          ? item.product?.variants[item.variant - 1]
-                              .variant_special_price
-                          : item.product.price) * item?.quantity}
-                        đ
+                        {item?.unit_price}đ
                       </TableCell>
                     </TableRow>
                   ))}
@@ -171,14 +182,7 @@ const OrderCustomer = () => {
                     </TableCell>
                     <TableCell align="left" className="amount content-order">
                       {order.products.reduce((total, product) => {
-                        return (
-                          total +
-                          (product?.variant > 0
-                            ? product.product?.variants[product.variant - 1]
-                                .variant_special_price
-                            : product.product.price) *
-                            product?.quantity
-                        );
+                        return total + product?.unit_price * product?.quantity;
                       }, 0)}
                       đ
                     </TableCell>

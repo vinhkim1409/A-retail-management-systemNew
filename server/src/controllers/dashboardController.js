@@ -51,15 +51,21 @@ function getPercent(thisMonth, lastMonth) {
     return { type: 4, value: 0 };
   }
   if (thisMonth > lastMonth) {
-    return { type: 1, value: parseFloat(((lastMonth / thisMonth) * 100).toFixed(2)) };
+    return {
+      type: 1,
+      value: parseFloat(((lastMonth / thisMonth) * 100).toFixed(2)),
+    };
   }
-  return { type: 2, value: parseFloat(((thisMonth / lastMonth) * 100).toFixed(2)) };
+  return {
+    type: 2,
+    value: parseFloat(((thisMonth / lastMonth) * 100).toFixed(2)),
+  };
 }
 
 const dashboardController = {
   getDataOrderWeek: async (req, res) => {
     const InitialorderInWeek = get7Days();
-    const totalOrder = await Order.find({tenantID:req.tenantID});
+    const totalOrder = await Order.find({ tenantID: req.tenantID });
     const orderInWeek = InitialorderInWeek.map((day) => {
       let numOrderWebsite = totalOrder.reduce(function (total, order) {
         if (
@@ -87,7 +93,11 @@ const dashboardController = {
   },
   getDataRevenue: async (req, res) => {
     const InitialorderInWeek = get7Days();
-    const totalOrder = await Order.find({tenantID:req.tenantID});
+    const totalOrder = await Order.find({
+      tenantID: req.tenantID,
+      // ,is_refund:false
+      // ,shipping_status:"delivered"
+    });
     const RevenueInWeek = InitialorderInWeek.map((day) => {
       let numOrderWebsite = totalOrder.reduce(function (total, order) {
         if (
@@ -203,7 +213,11 @@ const dashboardController = {
     });
   },
   getTopSelling: async (req, res) => {
-    const totalOrder = await Order.find({tenantID:req.tenantID});
+    const totalOrder = await Order.find({
+      tenantID: req.tenantID,
+      // ,is_refund:false
+      // ,shipping_status:"delivered"
+    });
     const listProducts = [];
     for (let order in totalOrder) {
       for (let product in totalOrder[order].products) {
@@ -246,7 +260,10 @@ const dashboardController = {
     const today = new Date();
     const thisMonth = today.getMonth() + 1;
     const lastMonth = today.getMonth();
-    const totalOrder = await Order.find({tenantID:req.tenantID});
+    const totalOrder = await Order.find({
+      tenantID: req.tenantID,
+      // is_refund: false,
+    });
     const orderThisMonth = totalOrder.filter(
       (order) => order.createdAt.getMonth() + 1 == thisMonth
     );
@@ -274,7 +291,7 @@ const dashboardController = {
       }, 0);
       return total + countProduct;
     }, 0);
-    const totalCustomer = await Customer.find({tenantID:req.tenantID});
+    const totalCustomer = await Customer.find({ tenantID: req.tenantID });
     const countTotalCustomer = totalCustomer.length;
     const countThisMonthCustomer = totalCustomer.filter(
       (product) => product.createdAt.getMonth() + 1 == thisMonth
@@ -303,6 +320,5 @@ const dashboardController = {
       },
     });
   },
-  
 };
 module.exports = dashboardController;

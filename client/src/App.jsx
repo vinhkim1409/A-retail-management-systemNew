@@ -24,6 +24,7 @@ import DashboardAdmin from "./pages/Admin/Dashboard/Dashboard";
 import Product from "./pages/Admin/Product/Product";
 import Customer from "./pages/Admin/Customer/Customer";
 import Business from "./pages/Admin/Business/Business";
+import LoginAdminPage from "./pages/Admin/LoginAdmin/LoginAdmin";
 
 //business page
 import CustomerList from "./pages/Business/CustomerList/CustomerList"
@@ -79,14 +80,15 @@ function App() {
           <Route path="forgot" element={<ForgotPassword />} />
           <Route path="verifycode" element={<VerifyCode />} />
           <Route path="resetpass" element={<ResetPassword />} />
-          <Route path="/:tenantID/payment" element={<Payment />} />
           <Route path="infodetail" element={<InfoDetail />} />
+          <Route path="admin/login" element={<LoginAdminPage />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardAdmin />} />
           <Route path="product" element={<Product />} />
           <Route path="customer" element={<Customer />} />
           <Route path="business" element={<Business />} />
+         
         </Route>
 
         <Route path="/:tenantURL/business" element={<BusinessLayout />}>
@@ -106,6 +108,7 @@ function App() {
           <Route path="category" element={<CategoryM />} />
           <Route path="import-goods" element={<ImportGoods />} />
           <Route path="info-shop" element={<InfoShop />} />
+          <Route path="payment" element={<Payment />} />
         </Route>
 
         <Route path="/:tenantURL/customer" element={<CustomerLayout />}>

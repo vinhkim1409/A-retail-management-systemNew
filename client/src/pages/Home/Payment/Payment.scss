@@ -3,32 +3,36 @@
   align-items: center;
   justify-items: center;
   flex-direction: column;
-  background: linear-gradient(to bottom, #FFFFFF, #c9f0ff);
+  background: linear-gradient(to bottom, #ffffff, #c9f0ff);
+  margin-top: 1%;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   .textpayment {
+    margin-top: 1%;
     text-align: center;
   }
+
   .box {
     width: 1000px;
     display: flex;
     flex-direction: row;
-    justify-content:space-between ;
-    
+    justify-content: space-between;
+
     border-radius: 25px;
-   
   }
   .leftbox {
     width: 45%;
     margin-top: 2px;
   }
-  .minileftbox{
+  .minileftbox {
     margin-top: 10px;
     margin-bottom: 20px;
-    background-color: #FFFFFF;
-    border: 1px solid #FFFFFF  ;
+    background-color: #ffffff;
+    border: 1px solid #ffffff;
     border-radius: 25px;
-    box-shadow: 10px 10px 5px  lightblue;
+    box-shadow: 10px 10px 5px lightblue;
   }
-  .inminileftbox{
+  .inminileftbox {
     margin: 30px 30px 30px 30px;
     display: flex;
     flex-direction: column;
@@ -36,50 +40,47 @@
   .paymentInfo {
     width: 45%;
     margin-top: 5px;
-    
-    
   }
-  .inpaymentInfo{
-    padding:  30px 30px 30px 30px;
+  .inpaymentInfo {
+    padding: 30px 30px 30px 30px;
     border-radius: 25px;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     display: flex;
     flex-direction: column;
-    box-shadow: 10px 10px 5px  lightblue;
+    box-shadow: 10px 10px 5px lightblue;
   }
-  .imglogo{
+  .imglogo {
     width: 25px;
     height: 25px;
-    margin-left:5%;
+    margin-left: 5%;
     margin-right: 4%;
-    
   }
-  .imglogozalo{
+  .imglogozalo {
     width: 35px;
     height: 15px;
-    margin-left:4%;
+    margin-left: 4%;
     margin-right: 8px;
   }
-  .payInfo{
+  .payInfo {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     font-weight: 500;
   }
-  .icon{
+  .icon {
     margin-left: 10px;
     margin-right: 10px;
   }
-  .form-checkmomo{
+  .form-checkmomo {
     margin-top: 3px;
   }
-  .form-checkzalo{
+  .form-checkzalo {
     margin-top: 3px;
   }
-  .form-check-label{
+  .form-check-label {
     margin-left: 10px;
   }
-  .btn{
+  .btn {
     background-color: #0d6efd;
     border: none;
     color: white;
@@ -89,6 +90,5 @@
     display: inline-block;
     border-radius: 5px;
     margin-top: 5px;
-
   }
 }

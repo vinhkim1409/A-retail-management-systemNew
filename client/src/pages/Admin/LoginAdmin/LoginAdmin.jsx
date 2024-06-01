@@ -1,55 +1,59 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import "./LoginCustomer.scss";
+import "./LoginAdmin.scss";
 import google from "../../../assets/google.png";
+import background from "../../../assets/backgound-admin.png";
 import { Snackbar, Alert } from "@mui/material";
-import background from "../../../assets/login-background.png";
-import { loginCustomer } from "../../../redux/apiRequest";
-function LoginCustomer() {
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginBusiness } from "../../../redux/apiRequest";
+import logo from "../../../assets/logo.png";
+
+function LoginAdminPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [open, setOpen] = useState(false);
-  const { tenantURL } = useParams();
+  const [openWrongCofirm, setOpenWrongConfirm] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const newUser = {
+      email: email,
+      password: password,
+    };
+    const loginstatus = await loginBusiness(newUser, dispatch, navigate);
+    if (loginstatus == true) {
+      navigate(`/${newUser.tenantURL}/business`, {
+        state: { loginState: true },
+      });
+    } else {
+      setErrorMessage("Wrong email,password or tenantURL!");
+      setOpenWrongConfirm(true);
+    }
+  };
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-    setOpen(false);
-  };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const customer = {
-      email: email,
-      password: password,
-      tenantURL: tenantURL,
-    };
-
-    const login = await loginCustomer(customer, dispatch, navigate);
-    if (login) {
-      navigate(`/${tenantURL}/customer`,{state:{
-        loginState:login
-      }});
-    }
-    else{
-      setOpen(true);
-    }
+    setOpenWrongConfirm(false);
   };
   return (
     <>
-      <div className="loginCustomer-form">
+      <div className="loginBusiness-form">
         <div className="title">
-          <h1>Welcome to CoolMate!</h1>
+          <h1>Admin Login Page!</h1>
+          {/* <h3>
+            Create an account to run wild through our curated experiences.
+          </h3> */}
           <img src={background} alt="" className="img" />
         </div>
         <div className="form_container  rounded ">
           <form className="form_container1">
             <div className="form-box">
-              <div className="form-title">Logo Business</div>
+              <div className="logo">
+                <img src={logo} alt="logo" className="img-logo" />
+              </div>
               <div className="mini-title">Please enter your infomation</div>
             </div>
             <div className="form-box">
@@ -82,7 +86,11 @@ function LoginCustomer() {
                 }}
               />
             </div>
-            <button className="btn mb-2" onClick={handleLogin}>
+            <button
+              className="btn mb-2"
+              onClick={handleLogin}
+              disabled={ !password || !email}
+            >
               Login
             </button>
             <div className="mb-2 text-center">
@@ -95,30 +103,27 @@ function LoginCustomer() {
                 Remember me for 30 days
               </label>
             </div>
-            <p className="">
-              You do not have account yet?{" "}
-              <a href={`/${tenantURL}/customer/signup`}>Sign up</a>
-            </p>
           </form>
         </div>
-      </div>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={open}
-        autoHideDuration={2000}
-        onClose={handleClose}
-      >
-        <Alert
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={openWrongCofirm}
+          autoHideDuration={2000}
           onClose={handleClose}
-          severity="error"
-          variant="filled"
-          sx={{ width: "100%" }}
+          message={errorMessage}
         >
-          {"Wrong email or password!"}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleClose}
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      </div>
     </>
   );
 }
 
-export default LoginCustomer;
+export default LoginAdminPage;

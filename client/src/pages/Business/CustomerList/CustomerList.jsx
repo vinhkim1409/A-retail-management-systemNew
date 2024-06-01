@@ -76,14 +76,14 @@ function CustomerList() {
   }
 
   useEffect(() => {
-    setDefaultActiveTab();
+    // setDefaultActiveTab();
     getWebsiteCustomer()
   }, []);
 
-  const setDefaultActiveTab = () => {
-    const TabButton = document.querySelector(".button-website");
-    TabButton.click();
-  };
+  // const setDefaultActiveTab = () => {
+  //   const TabButton = document.querySelector(".button-website");
+  //   TabButton.click();
+  // };
 
   const [currentTableData, setCurrentTableData] = useState(customerdatawebsite);
   const totalPages = Math.ceil(currentTableData.length / 5);
@@ -103,7 +103,7 @@ function CustomerList() {
 
         <div className="list-container">
           <div className="tab">
-            <button
+            {/* <button
               className={`tablinks button-website ${
                 stateTag == "website" ? "active-tagwebsite" : ""
               }`}
@@ -124,7 +124,7 @@ function CustomerList() {
               }}
             >
               Sendo
-            </button>
+            </button> */}
           </div>
           <Box
             width="100%"

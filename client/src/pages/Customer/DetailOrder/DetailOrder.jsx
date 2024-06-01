@@ -8,13 +8,43 @@ import {
   TableHead,
   TableRow,
   styled,
+  Button,
+  Typography,
+  Modal,
+  FormHelperText,
+  OutlinedInput,
+  InputLabel,
+  Grid,
+  Stack,
 } from "@mui/material";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { api } from "../../../constant/constant";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { getPriceExpr } from "../../../utils/getPriceRepr";
+import { imageDB } from "../../../firebase/firebaseConfig";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadString,
+} from "firebase/storage";
+import { v4 } from "uuid";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 700,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: 4,
+};
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -27,6 +57,13 @@ const StyledTable = styled(Table)(() => ({
 }));
 const paidTag = <div className="paidTag">Paid</div>;
 const wayPaidTag = <div className="wayPaidTag">Wait Pay</div>;
+const configStatus = (status) => {
+  if (status) {
+    let result = status.replace(/_/g, " ");
+    result = result.charAt(0).toUpperCase() + result.slice(1);
+    return result;
+  }
+};
 
 const DetailOrderBusiness = () => {
   const [order, setOrder] = useState();
@@ -39,6 +76,7 @@ const DetailOrderBusiness = () => {
       Authorization: `Bearer ${customer?.accessToken}`,
     },
   };
+  const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -46,27 +84,85 @@ const DetailOrderBusiness = () => {
     const order = await axios.get(`${api}order/customer/${id}`, config);
     console.log(order.data.data);
     setOrder(order.data.data[0]);
+    if (order.data.data[0]?.is_refund == true) {
+      setRequestImgEncode(order.data.data[0]?.refund_picture[0]);
+      setReason(order.data.data[0]?.type_reason);
+    }
   };
   const getTotalPrice = (deliveryFee = 0) =>
     getPriceExpr(
       order?.products.reduce((prev, curr) => {
-        return (
-          prev +
-          (curr.variant > 0
-            ? curr.product.variants[curr.variant - 1].variant_special_price
-            : curr.product.price) *
-            curr.quantity
-        );
+        return prev + curr.unit_price * curr.quantity;
       }, deliveryFee)
     );
   useEffect(() => {
     getOrder();
   }, []);
+
+  //get refund request
+  const [showModal, setShowModal] = useState(false);
+  const [requestImgEncode, setRequestImgEncode] = useState("");
+  const [reason, setReason] = useState("");
+  const uploadAvatar = async (e) => {
+    const data = new FileReader();
+    data.addEventListener("load", () => {
+      setRequestImgEncode(data.result);
+    });
+    data.readAsDataURL(e.target.files[0]);
+  };
+  const handleClose = () => {
+    if (order?.is_refund != true) {
+      setRequestImgEncode("");
+      setReason("");
+    }
+
+    setShowModal(false);
+  };
+  const sendRequest = async () => {
+    let avatarUrl = "";
+    if (requestImgEncode.length > 90) {
+      const imgRef = ref(imageDB, `files/${v4()}`);
+      const snapshot = await uploadString(imgRef, requestImgEncode, "data_url");
+      avatarUrl = await getDownloadURL(snapshot.ref);
+    }
+    const request = {
+      refund_picture: [avatarUrl],
+      reason: reason,
+    };
+    const send = await axios.post(
+      `${api}order/create-request/${id}`,
+      request,
+      config
+    );
+    if (send.data.success == true) {
+      console.log(send);
+      setOrder(send.data.data);
+      handleClose();
+    } else {
+      console.log(send);
+    }
+  };
+
   return (
     <>
       <div className="detailordercustomer-container">
         <div className="header">
           <div className="title">Order Detail</div>
+          {/* order.shipping_status == "delivered" && */}
+          {order?.typeOrder == "Website" ? (
+            <div
+              className="request"
+              onClick={() => {
+                setShowModal(true);
+              }}
+            >
+              {order?.is_refund == true
+                ? "View Redelivery Request"
+                : "Create Redelivery Request"}
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
         <div className="detail-info">
           <div className="order-info">
@@ -83,6 +179,22 @@ const DetailOrderBusiness = () => {
                   </div>
                 </div>
               </div>
+              {order?.typeOrder == "Website" && !order?.is_refund ? (
+                <button className="confirm">Confirm receipt</button>
+              ) : (
+                <></>
+              )}
+              <button
+                className="action"
+                onClick={() => {
+                  window.open(
+                    `https://tracking.ghn.dev/?order_code=${order?.shippingCode}`,
+                    "_blank	"
+                  );
+                }}
+              >
+                Order Tracking
+              </button>
             </div>
             <div className="list-product">
               <Box
@@ -110,6 +222,9 @@ const DetailOrderBusiness = () => {
                       <TableCell align="left" className="amount lable-product">
                         Amounts
                       </TableCell>
+                      <TableCell align="left" className="amount lable-product">
+                        Action
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -123,15 +238,17 @@ const DetailOrderBusiness = () => {
                           <TableCell align="left" className="product">
                             <div className="product-container">
                               <img
-                                src={item?.product?.avatar?.picture_url}
+                                src={item?.product_img[0]}
                                 alt=""
                                 className="img"
                               />
                               <div className="name-frame">
                                 <div className="name-product">
-                                  {item.product.name}
+                                  {item.product_name}
                                 </div>
-                                <div className="sku">SKU:1</div>
+                                <div className="sku">
+                                  SKU:{item.product_sku}
+                                </div>
                               </div>
                             </div>
                           </TableCell>
@@ -146,11 +263,23 @@ const DetailOrderBusiness = () => {
                             align="left"
                             className="amount content-order"
                           >
-                            {(item?.variant > 0
-                              ? item.product.variants[item.variant - 1]
-                                  .variant_special_price
-                              : item.product.price) * item?.quantity}
-                            đ
+                            {item.unit_price * item?.quantity}đ
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="review content-order"
+                          >
+                            <div
+                              className="review-btn"
+                              onClick={() => {
+                                navigate(
+                                  `/${tenantURL}/customer/review/${item.product}`
+                                );
+                              }}
+                            >
+                              {" "}
+                              Review
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -166,7 +295,7 @@ const DetailOrderBusiness = () => {
                 width="100%"
                 overflow="auto"
                 backgroundColor="white"
-                sx={{marginBottom:1}}
+                sx={{ marginBottom: 1 }}
               >
                 <StyledTable>
                   <TableHead>
@@ -175,7 +304,10 @@ const DetailOrderBusiness = () => {
                         backgroundColor: "#F5F5F5",
                       }}
                     >
-                      <TableCell align="left" className="description lable-product">
+                      <TableCell
+                        align="left"
+                        className="description lable-product"
+                      >
                         Descriptions
                       </TableCell>
                       <TableCell align="left" className="amount lable-product">
@@ -194,7 +326,7 @@ const DetailOrderBusiness = () => {
                     </TableRow>
                     <TableRow className="order-body">
                       <TableCell align="left" className="description">
-                      Discount :
+                        Discount :
                       </TableCell>
                       <TableCell align="left" className="amount content-order">
                         {0}đ
@@ -202,15 +334,18 @@ const DetailOrderBusiness = () => {
                     </TableRow>
                     <TableRow className="order-body">
                       <TableCell align="left" className="description">
-                      Shipping Charge :
+                        Shipping Charge :
                       </TableCell>
                       <TableCell align="left" className="amount content-order">
                         {getPriceExpr(Number(order?.shipPrice))}đ
                       </TableCell>
                     </TableRow>
-                    <TableRow className="order-body" sx={{borderBottom:2,borderColor:"white"}}>
+                    <TableRow
+                      className="order-body"
+                      sx={{ borderBottom: 2, borderColor: "white" }}
+                    >
                       <TableCell align="left" className="description">
-                      Total Amount :
+                        Total Amount :
                       </TableCell>
                       <TableCell align="left" className="amount content-order">
                         {getTotalPrice(Number(order?.shipPrice))}đ
@@ -242,12 +377,150 @@ const DetailOrderBusiness = () => {
               </div>
               <div className="ship-status">
                 <div className="label"> Shipping Status:</div>
-                {"Transaction"}
+                {configStatus(order?.shipping_status)}
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Modal
+        open={showModal}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="modal-modal-title"
+            sx={{ fontWeight: 600, fontSize: 30 }}
+          >
+            Request Re-delivery
+          </Typography>
+          {order?.is_refund == true ? (
+            <div style={{ fontWeight: "550", display: "flex" }}>
+              Request Status:
+              <div
+                style={{
+                  color: `${
+                    order?.refund_status == "Pending"
+                      ? "#F7BF4D"
+                      : order?.refund_status == "Reject"
+                      ? "#C62828"
+                      : "#67E87C"
+                  }`,
+                  marginLeft: "2%",
+                }}
+              >
+                {order?.refund_status}
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
+          <Grid item xs={12}>
+            <Stack spacing={1}>
+              <InputLabel
+                htmlFor="title"
+                style={{ fontWeight: 600, color: "gray" }}
+                className="label"
+              >
+                Image Product Condition
+              </InputLabel>
+              <div
+                className="avatar"
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                {requestImgEncode.length > 1 ? (
+                  <>
+                    <img
+                      src={requestImgEncode}
+                      alt=""
+                      style={{
+                        width: "300px",
+                        height: "200px",
+                        border: "1px solid #ddd",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div className="input-avatar">
+                      <label htmlFor="avatar">
+                        <div
+                          style={{
+                            width: "300px",
+                            height: "200px",
+                            border: "1px dashed blue",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faUpload}
+                            style={{
+                              width: "200px",
+                              height: "100px",
+                            }}
+                          />
+                        </div>
+                      </label>
+                      <input
+                        type="file"
+                        name="image-business"
+                        accept="image/*"
+                        id="avatar"
+                        hidden
+                        onChange={uploadAvatar}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Stack spacing={1}>
+              <InputLabel
+                htmlFor="title"
+                style={{ fontWeight: 600, color: "gray" }}
+              >
+                Reason for request
+              </InputLabel>
+              <OutlinedInput
+                placeholder="Please describe in detail the reason or problem with the products"
+                multiline
+                rows={5}
+                sx={{ boxShadow: 3 }}
+                value={reason}
+                onChange={(event) => {
+                  setReason(event.target.value);
+                }}
+              />
+            </Stack>
+          </Grid>
+
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}
+          >
+            <Button variant="contained" color="error" onClick={handleClose}>
+              Cancel
+            </Button>
+            {order?.is_refund == true ? (
+              <></>
+            ) : (
+              <Button
+                variant="contained"
+                disabled={!reason || !requestImgEncode}
+                onClick={sendRequest}
+              >
+                Send Request
+              </Button>
+            )}
+          </Box>
+        </Box>
+      </Modal>
     </>
   );
 };

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Staff=require("../models/staffModel")
 const Customer=require("../models/customerModel")
-
+const Admin=require("../models/adminModel")
 const authMiddlewares={
     //verifyToken
     verifyToken: async (req,res,next)=>{
@@ -54,6 +54,29 @@ const authMiddlewares={
                 
                 req.user=await Customer.find({_id:user.customerID,tenantID:user.tenantID}).select('-password')
                 req.tenantID=user.tenantID
+                next()
+            })
+        }
+        if(!token){
+           return res.json("You are not authenticated")
+        }
+        
+    },
+    verifyTokenAdmin:async (req,res,next)=>{
+        let token
+        if(req.header('Authorization') && req.header('Authorization').startsWith('Bearer')){
+            token = req.header('Authorization').split(' ')[1]
+            if(!token){
+                return res.json("You are not authenticated")
+            }
+            
+            jwt.verify(token,process.env.JWT_SECRET_KEY, async(err,user)=>{
+                if(err)
+                {
+                    return res.json("You are not authenticated")
+                }
+                
+                req.user=await Admin.find({_id:user.id}).select('-password')
                 next()
             })
         }

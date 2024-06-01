@@ -9,6 +9,21 @@
   .header {
     padding: 10px 0;
     margin-bottom: 1%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .request{
+    display: flex;
+    align-items: center;
+    padding: 1% 1% 1% 2%;
+    font-weight: 600;
+    border-radius: 10px;
+    background-color: #F7BF4D;
+    color: black;
+    height: 80%;
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
   }
   .detail-info {
     display: flex;
@@ -132,6 +147,53 @@
     border: 1px solid #0d6efd;
     text-shadow: 0 0 5px white;
   }
+  .confirm {
+    width: 22%;
+    display: flex;
+    align-items: center;
+    padding: 1% 1% 1% 2%;
+    font-weight: 600;
+    border-radius: 10px;
+    background-color: #65E87A;
+    color: white;
+    height: 80%;
+    font-size: 14px;
+    border: 1px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .confirm:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #65E87A;
+    border: 1px solid #65E87A;
+  }
+  .confirm:hover {
+    box-shadow: 0 0 5px #65E87A;
+    border: 1px solid #65E87A;
+    text-shadow: 0 0 5px white;
+  }
+  .review-btn {
+    text-align: center;
+    padding: 1% 4% 1% 2%;
+    font-weight: 600;
+    border-radius: 10px;
+    background-color: #0d6efd;
+    color: white;
+    height: 80%;
+    font-size: 14px;
+    border: 1px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  .review-btn:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0d6efd;
+    border: 1px solid #0d6efd;
+  }
+  .review-btn:hover {
+    box-shadow: 0 0 5px #0d6efd;
+    border: 1px solid #0d6efd;
+    text-shadow: 0 0 1px white;
+  }
   .mini-label {
     display: flex;
     width: 100%;
@@ -179,7 +241,7 @@
     font-weight: 550;
   }
   .product {
-    width: 50%;
+    width: 40%;
     padding-left: 4%;
     // border: 1px solid gray;
     .img {
@@ -196,7 +258,7 @@
       margin-left: 1%;
     }
     .name-product {
-      max-width: 80%;
+      max-width: 65%;
       font-family: "Inter", sans-serif;
       color: #334155;
       font-weight: 550;
@@ -223,5 +285,27 @@
   .amount {
     width: 15%;
     // border: 1px solid gray
+  }
+  .review{
+    width: 10%;
+  }
+  .img{
+    width: 300px;
+    height: 200px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .label-box{
+    width: 300px;
+    height: 200px;
+    border: 1px dashed blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+  .icon{
+    width: 200px;
+    height: 100px;
   }
 }

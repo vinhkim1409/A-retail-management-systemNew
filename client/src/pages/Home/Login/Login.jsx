@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Login.scss";
 import google from "../../../assets/google.png";
 import background from "../../../assets/login-background.png";
+import { Snackbar, Alert } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginBusiness } from "../../../redux/apiRequest";
@@ -11,16 +12,33 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [tenantURL, setTenantURL] = useState("");
+  const [openWrongCofirm, setOpenWrongConfirm] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const newUser = {
       tenantURL: tenantURL,
       email: email,
       password: password,
     };
-    loginBusiness(newUser, dispatch, navigate);
+    const loginstatus = await loginBusiness(newUser, dispatch, navigate);
+    if (loginstatus == true) {
+      navigate(`/${newUser.tenantURL}/business`, {
+        state: { loginState: true },
+      });
+    } else {
+      setErrorMessage("Wrong email,password or tenantURL!");
+      setOpenWrongConfirm(true);
+    }
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenWrongConfirm(false);
   };
   return (
     <>
@@ -86,7 +104,11 @@ function LoginPage() {
                 }}
               />
             </div>
-            <button className="btn mb-2" onClick={handleLogin}>
+            <button
+              className="btn mb-2"
+              onClick={handleLogin}
+              disabled={!tenantURL || !password || !email}
+            >
               Login
             </button>
             <div className="mb-2 text-center">
@@ -99,15 +121,27 @@ function LoginPage() {
                 Remember me for 30 days
               </label>
             </div>
-
-            <p className="">
-              Forgot <a href="/forgotpassword">Password ?</a>
-            </p>
             <p className="">
               You do not have account yet? <a href="/signup">Sign up</a>
             </p>
           </form>
         </div>
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={openWrongCofirm}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          message={errorMessage}
+        >
+          <Alert
+            onClose={handleClose}
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {errorMessage}
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );

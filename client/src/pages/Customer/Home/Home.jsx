@@ -25,7 +25,7 @@ function HomePage() {
   const navigate = useNavigate();
   const getWebsite = async () => {
     const website = await axios.get(`${api}website/${tenantURL}`);
-    setBusinessImgFile(website.data[0]?.businessImg);
+    setBusinessImgFile(website.data?.businessImg);
     // setFeatProduct(website.data[0].featureProduct)
     // console.log(website.data[0].featureProduct)
   };
@@ -51,20 +51,39 @@ function HomePage() {
               alt="..."
             />
           </div>
-          <div className="carousel-item">
-            <img
-              src={businessImgFile[1] ? businessImgFile[1] : ""}
-              className="d-block w-100"
-              alt="..."
-            />
-          </div>
-          <div className="carousel-item">
-            <img
-              src={businessImgFile[2] ? businessImgFile[2] : ""}
-              className="d-block w-100"
-              alt="..."
-            />
-          </div>
+          {businessImgFile[1] ? (
+            <div className="carousel-item">
+              <img
+                src={businessImgFile[1] ? businessImgFile[1] : ""}
+                className="d-block w-100"
+                alt="..."
+              />
+            </div>
+          ) : (
+            <></>
+          )}
+          {businessImgFile[2] ? (
+            <div className="carousel-item">
+              <img
+                src={businessImgFile[2] ? businessImgFile[2] : ""}
+                className="d-block w-100"
+                alt="..."
+              />
+            </div>
+          ) : (
+            <></>
+          )}
+          {businessImgFile[3] ? (
+            <div className="carousel-item">
+              <img
+                src={businessImgFile[3] ? businessImgFile[3] : ""}
+                className="d-block w-100"
+                alt="..."
+              />
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
         <button
           className="carousel-control-prev"

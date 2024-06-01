@@ -15,16 +15,21 @@ import {
   logoutCustomerStart,
   logoutCustomerFalied,
 } from "./authCustomerSilde";
+import { loginAdminFailed, loginAdminStart, loginAdminSuccess } from "./authAdminSlice";
 export const loginBusiness = async (user, dispatch, navigate) => {
   dispatch(loginStart());
   try {
     const res = await axios.post(`${api}business/login`, user);
-    console.log(res);
-    dispatch(loginSuccess({ user: res.data, tenantURL: user.tenantURL }));
-
-    navigate(`/${user.tenantURL}/business`, { state: { loginState: true } });
+    if (res.data.success == false) {
+      return false;
+    } else {
+      console.log(res);
+      dispatch(loginSuccess({ user: res.data, tenantURL: user.tenantURL }));
+      return true;
+    }
   } catch (error) {
     dispatch(loginFailed());
+    return false;
   }
 };
 export const registerBusiness = async (user, dispatch, navigate) => {
@@ -44,12 +49,35 @@ export const loginCustomer = async (user, dispatch, navigate) => {
   try {
     const res = await axios.post(`${api}customer/login`, user);
     console.log(res);
-    dispatch(
-      loginCustomerSuccess({ user: res.data.data, tenantURL: user.tenantURL })
-    );
-    return true;
+    if (res.data.success) {
+      dispatch(
+        loginCustomerSuccess({ user: res.data.data, tenantURL: user.tenantURL })
+      );
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
     dispatch(loginCustomerFailed());
+    return false;
+  }
+};
+export const loginAdmin= async (user, dispatch, navigate) => {
+  dispatch(loginAdminStart());
+  try {
+    const res = await axios.post(`${api}admin/login`, user);
+    console.log(res);
+    if (res.data.success) {
+      dispatch(
+        loginAdminSuccess({ user: res.data.data, tenantURL: user.tenantURL })
+      );
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    dispatch(loginAdminFailed());
+    return false;
   }
 };
 class ShippingAPI {

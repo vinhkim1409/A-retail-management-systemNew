@@ -7,9 +7,18 @@ const mongoose = require("mongoose");
 const authMiddlewares = require("../middlewares/authMiddlewares");
 router.get("/:tenantURL", async (req, res) => {
   try {
-    const business = await Business.find({ tenantURL: req.params.tenantURL });
-    const website = await Website.find({tenantID:business[0]._id});
-    res.json(website);
+    const business = await Business.findOne({ tenantURL: req.params.tenantURL });
+    const website = await Website.findOne({tenantID:business._id});
+    if(business && !website) {
+      const newWebsite = new Website({
+        tenantID: business._id,
+        businessImg:[],
+        logo:""
+      })
+      newWebsite.save();
+      return res.json(newWebsite);
+    }
+    return res.json(website);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

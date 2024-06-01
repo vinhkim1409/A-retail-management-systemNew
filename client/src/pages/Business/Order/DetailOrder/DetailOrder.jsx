@@ -10,7 +10,12 @@ import {
   styled,
   Button,
   Modal,
-  Typography
+  Typography,
+  FormHelperText,
+  OutlinedInput,
+  InputLabel,
+  Grid,
+  Stack,
 } from "@mui/material";
 import axios from "axios";
 import { api } from "../../../../constant/constant";
@@ -18,6 +23,9 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { getPriceExpr } from "../../../../utils/getPriceRepr";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -29,7 +37,17 @@ const style = {
   borderRadius: 2,
   p: 4,
 };
-
+const styleRequest = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 700,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: 4,
+};
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -43,10 +61,19 @@ const StyledTable = styled(Table)(() => ({
 const paidTag = <div className="paidTag">Paid</div>;
 const wayPaidTag = <div className="wayPaidTag">Wait Pay</div>;
 
+const configStatus = (status) => {
+  if (status) {
+    let result = status.replace(/_/g, " ");
+    result = result.charAt(0).toUpperCase() + result.slice(1);
+    return result;
+  }
+};
+
 const DetailOrderBusiness = () => {
   const [order, setOrder] = useState();
   const { tenantURL, id } = useParams();
   const [showModal, setShowModal] = useState(false);
+  const [showModalRequest, setShowModalRequest] = useState(false);
   const userBusiness = useSelector(
     (state) => state.authBusiness.login?.currentUser
   );
@@ -61,6 +88,9 @@ const DetailOrderBusiness = () => {
   const handleClose = () => {
     setShowModal(false);
   };
+  const handleCloseRequest = () => {
+    setShowModalRequest(false);
+  };
 
   const getOrder = async () => {
     const order = await axios.get(`${api}order/business/${id}`, config);
@@ -70,13 +100,7 @@ const DetailOrderBusiness = () => {
   const getTotalPrice = (deliveryFee = 0) =>
     getPriceExpr(
       order?.products.reduce((prev, curr) => {
-        return (
-          prev +
-          (curr.variant > 0
-            ? curr.product.variants[curr.variant - 1].variant_special_price
-            : curr.product.price) *
-            curr.quantity
-        );
+        return prev + curr?.unit_price * curr?.quantity;
       }, deliveryFee)
     );
 
@@ -88,7 +112,7 @@ const DetailOrderBusiness = () => {
     );
     if (payment.data.success) {
       setOrder(payment.data.data);
-      setShowModal(false)
+      setShowModal(false);
     } else {
       console.log("Error when handle");
     }
@@ -96,11 +120,47 @@ const DetailOrderBusiness = () => {
   useEffect(() => {
     getOrder();
   }, []);
+
+  //Handle redelivery request
+  const acceptRequest = async () => {
+    const accept = await axios.post(
+      `${api}order/accept-request`,
+      { orderID: id },
+      config
+    );
+    if (accept) {
+      setOrder(accept.data.orderRedelivery);
+      handleClose();
+    }
+  };
+  const rejectRequest = async () => {
+    const reject = await axios.post(
+      `${api}order/reject-request`,
+      { orderID: id },
+      config
+    );
+    if (reject.data.success) {
+      setOrder(reject.data.data);
+      handleClose(false);
+    }
+  };
   return (
     <>
       <div className="detailorder-container">
         <div className="header">
           <div className="title">Order Detail</div>
+          {order?.typeOrder == "Website" ? (
+            <div
+              className="request"
+              onClick={() => {
+                setShowModalRequest(true);
+              }}
+            >
+              Redelivery Request
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
         <div className="detail-info">
           <div className="order-info">
@@ -120,7 +180,7 @@ const DetailOrderBusiness = () => {
               {order?.statusPayment == "Paid" ? (
                 <></>
               ) : (
-                <button className="action" onClick={()=>setShowModal(true)}>
+                <button className="action" onClick={() => setShowModal(true)}>
                   Payment Confirm
                 </button>
               )}
@@ -164,7 +224,7 @@ const DetailOrderBusiness = () => {
                           <TableCell align="left" className="product">
                             <div className="product-container">
                               <img
-                                src={item?.product?.avatar?.picture_url}
+                                src={item?.product_img[0]}
                                 alt=""
                                 className="img"
                               />
@@ -187,11 +247,7 @@ const DetailOrderBusiness = () => {
                             align="left"
                             className="amount content-order"
                           >
-                            {(item?.variant > 0
-                              ? item.product.variants[item.variant - 1]
-                                  .variant_special_price
-                              : item.product.price) * item?.quantity}
-                            đ
+                            {item?.unit_price * item?.quantity}đ
                           </TableCell>
                         </TableRow>
                       ))}
@@ -289,7 +345,7 @@ const DetailOrderBusiness = () => {
               </div>
               <div className="ship-status">
                 <div className="label"> Shipping Status:</div>
-                {"Transaction"}
+                {configStatus(order?.shipping_status)}
               </div>
             </div>
           </div>
@@ -326,6 +382,159 @@ const DetailOrderBusiness = () => {
             >
               Yes
             </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={showModalRequest}
+        onClose={handleCloseRequest}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={styleRequest}>
+          <Typography
+            id="modal-modal-title"
+            sx={{ fontWeight: 600, fontSize: 30 }}
+          >
+            Request Re-delivery
+          </Typography>
+          {order?.is_refund == true ? (
+            <div style={{ fontWeight: "550", display: "flex" }}>
+              Request Status:
+              <div
+                style={{
+                  color: `${
+                    order?.refund_status == "Pending"
+                      ? "#F7BF4D"
+                      : order?.refund_status == "Reject"
+                      ? "#C62828"
+                      : "#67E87C"
+                  }`,
+                  marginLeft: "2%",
+                }}
+              >
+                {order?.refund_status}
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
+          <Grid item xs={12}>
+            <Stack spacing={1}>
+              <InputLabel
+                htmlFor="title"
+                style={{ fontWeight: 600, color: "gray" }}
+                className="label"
+              >
+                Image Product Condition
+              </InputLabel>
+              <div
+                className="avatar"
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                {order?.refund_picture ? (
+                  <>
+                    <img
+                      src={order?.refund_picture[0]}
+                      alt=""
+                      style={{
+                        width: "300px",
+                        height: "200px",
+                        border: "1px solid #ddd",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div className="input-avatar">
+                      <label htmlFor="avatar">
+                        <div
+                          style={{
+                            width: "300px",
+                            height: "200px",
+                            border: "1px dashed blue",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faUpload}
+                            style={{
+                              width: "200px",
+                              height: "100px",
+                            }}
+                          />
+                        </div>
+                      </label>
+                    </div>
+                  </>
+                )}
+              </div>
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Stack spacing={1}>
+              <InputLabel
+                htmlFor="title"
+                style={{ fontWeight: 600, color: "gray" }}
+              >
+                Reason for request
+              </InputLabel>
+              <OutlinedInput
+                multiline
+                rows={5}
+                sx={{ boxShadow: 3 }}
+                defaultValue={
+                  order?.type_reason
+                    ? order?.type_reason
+                    : "There is no description of the reason"
+                }
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Stack>
+          </Grid>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}
+          >
+            <Button variant="contained" onClick={handleCloseRequest}>
+              Cancel
+            </Button>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              {order?.refund_status == "Accept" ||
+              order?.refund_status == "Reject" ? (
+                <></>
+              ) : (
+                <>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    sx={{
+                      mr: 1,
+                    }}
+                    onClick={acceptRequest}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={rejectRequest}
+                  >
+                    Reject
+                  </Button>
+                </>
+              )}
+            </Box>
           </Box>
         </Box>
       </Modal>

@@ -17,19 +17,26 @@ function FillSignUpPage() {
     name: "",
   });
   const [openWrongCofirm, setOpenWrongConfirm] = useState(false);
-  const [error,setError] = useState("")
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [error, setError] = useState("");
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
 
     setOpenWrongConfirm(false);
+    setOpenSuccess(false);
   };
   const navigate = useNavigate();
   const handleFillInfo = (event, attribute) => {
     setBusinessInfo({ ...businessInfo, [`${attribute}`]: event.target.value });
   };
   const handleRegister = async () => {
+    if (businessInfo.tenantURL == "admin") {
+      setError(`tenantURL cannot be "admin"`);
+      setOpenWrongConfirm(true);
+      return;
+    }
     if (
       !businessInfo.location ||
       !businessInfo.tenantURL ||
@@ -37,17 +44,21 @@ function FillSignUpPage() {
       !businessInfo.phoneNumber ||
       !businessInfo.taxcode
     ) {
-      setError("You must fill in all necessary information!")
-      setOpenWrongConfirm(true)
+      setError("You must fill in all necessary information!");
+      setOpenWrongConfirm(true);
       return;
     }
-    const resRegister=await axios.post(`${api}business/signup`,businessInfo)
-    if(!resRegister.data.success)
-    {
-      setError(resRegister.data.message)
-      setOpenWrongConfirm(true)
+    const resRegister = await axios.post(`${api}business/signup`, businessInfo);
+    if (!resRegister.data.success) {
+      setError(resRegister.data.message);
+      setOpenWrongConfirm(true);
+    } else {
+      setOpenSuccess(true);
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     }
-    console.log(resRegister.data.data)
+    console.log(resRegister.data.data);
   };
   useEffect(() => {
     if (!businessAccount) {
@@ -141,7 +152,7 @@ function FillSignUpPage() {
                 type="button"
                 class="btn"
                 onClick={() => {
-                  handleRegister()
+                  handleRegister();
                 }}
               >
                 Submit
@@ -164,6 +175,21 @@ function FillSignUpPage() {
           sx={{ width: "100%" }}
         >
           {error}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openSuccess}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {"Sign up successfully"}
         </Alert>
       </Snackbar>
     </>

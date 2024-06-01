@@ -11,20 +11,24 @@ const MonthRevenue = ({ data }) => {
         series={[
           {
             data: [
-              { id: 0, value: data?.RevenueMonth[0], label: "Week 1" },
+              {
+                id: 0,
+                value: data?.RevenueMonth[0] == 0 ? 1 : data?.RevenueMonth[0],
+                label: "Week 1",
+              },
               {
                 id: 1,
-                value: data?.RevenueMonth[1] == 0 ? 10000 : 100000,
+                value: data?.RevenueMonth[1] == 0 ? 1 : data?.RevenueMonth[1],
                 label: "Week 2",
               },
               {
                 id: 2,
-                value: data?.RevenueMonth[1] == 0 ? 10000 : 100000,
+                value: data?.RevenueMonth[2] == 0 ? 1 : data?.RevenueMonth[2],
                 label: "Week 3",
               },
               {
                 id: 3,
-                value: data?.RevenueMonth[1] == 0 ? 10000 : 100000,
+                value: data?.RevenueMonth[3] == 0 ? 1 : data?.RevenueMonth[3],
                 label: "Week 4",
               },
             ],
@@ -40,12 +44,11 @@ const MonthRevenue = ({ data }) => {
           legend: {
             direction: "row",
             position: { vertical: "bottom", horizontal: "left" },
-            
           },
         }}
         width={350}
         height={400}
-        sx={{marginTop:"-140px",marginLeft:"45px" }}
+        sx={{ marginTop: "-140px", marginLeft: "45px" }}
       />
     </DashboardCard>
   );

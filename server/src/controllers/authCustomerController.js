@@ -50,18 +50,14 @@ const customerController = {
         tenantID: business._id,
       });
       if (!customer) {
-        return res
-          .status(404)
-          .json({ sucess: false, message: "Wrong email or password!" });
+        return res.json({ sucess: false, message: "Wrong email or password!" });
       }
       const validPassword = await bcrypt.compare(
         req.body.password,
         customer.password
       );
       if (!validPassword) {
-        return res
-          .status(404)
-          .json({ sucess: false, message: "Wrong email or password!" });
+        return res.json({ sucess: false, message: "Wrong email or password!" });
       }
       if (customer) {
         const accessToken = jwt.sign(
@@ -88,51 +84,60 @@ const customerController = {
   },
   customerAddAddress: async (req, res) => {
     try {
-      const newAddress={
-        firstName:req.body.firstName,
-        lastName:req.body.lastName,
-        phoneNumber:req.body.phoneNumber,
-        province:req.body.province,
-        district:req.body.district,
-        ward:req.body.ward,
-        detail:req.body.detail,
-      }
+      const newAddress = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        phoneNumber: req.body.phoneNumber,
+        province: req.body.province,
+        district: req.body.district,
+        ward: req.body.ward,
+        detail: req.body.detail,
+      };
       const addNewAddress = await Customer.findByIdAndUpdate(
         { _id: req.user[0]._id },
         { $push: { address: newAddress } },
         { new: true }
       );
       const { password, ...resCustomer } = addNewAddress._doc;
-      if(addNewAddress)
-      {return res.json({success:true,data:resCustomer});}
-      return res.json({success:false,data:"Add new address failed"});
-    } catch (error) {
-      res.status(500).json(error);
-    }
-  },
-  getSelfCustomer: async(req,res)=>{
-    try {
-      if(req.user)
-      {
-      return  res.json({success:true,data:req.user[0]})
+      if (addNewAddress) {
+        return res.json({ success: true, data: resCustomer });
       }
-      return res.json({success:false,data:"Get customer failed"});
+      return res.json({ success: false, data: "Add new address failed" });
     } catch (error) {
       res.status(500).json(error);
     }
   },
-  getWebsiteCustomerByBusiness: async(req,res)=>{
+  getSelfCustomer: async (req, res) => {
     try {
-      const customer= await Customer.find({tenantID:req.tenantID})
-        if(customer){
-        return  res.json({success:true,data:customer})
-        }
-        return res.json({success:false,data:"An Unknown error"})
-      
+      if (req.user) {
+        return res.json({ success: true, data: req.user[0] });
+      }
+      return res.json({ success: false, data: "Get customer failed" });
     } catch (error) {
-      
+      res.status(500).json(error);
     }
-  }
+  },
+  getWebsiteCustomerByBusiness: async (req, res) => {
+    try {
+      const customer = await Customer.find({ tenantID: req.tenantID });
+      if (customer) {
+        return res.json({ success: true, data: customer });
+      }
+      return res.json({ success: false, data: "An Unknown error" });
+    } catch (error) {}
+  },
+  checkerEmail: async (req, res) => {
+    try {
+      const customer = await Customer.findOne({ email: req.body.email });
+      if (customer) {
+        res.json({ success: false, message: "email already use" });
+      } else {
+        res.json({ success: true, message: "email not use" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
 };
 
 module.exports = customerController;

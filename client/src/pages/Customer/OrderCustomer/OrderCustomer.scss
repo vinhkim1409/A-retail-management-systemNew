@@ -218,4 +218,15 @@
         color: #334155;
         font-weight: 550;
       }
+      .status{
+        margin-top: 1%;
+        margin-right:3.8%;
+        font-family: "Inter", sans-serif;
+        color: #334155;
+        font-weight: 550;
+      }
+      .order-miniInfo{
+        display: flex;
+        justify-content: space-between;
+      }
 }

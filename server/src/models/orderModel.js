@@ -1,3 +1,4 @@
+const Product = require("./productModel");
 const mongoose = require("mongoose");
 
 const productOrder = new mongoose.Schema({
@@ -6,16 +7,24 @@ const productOrder = new mongoose.Schema({
     ref: "Product",
     required: true,
   },
-  variant:{
-    type:Number,
+  product_idThir: String,
+  product_name: String,
+  product_sku: String,
+  variant: {
+    type: Number,
     required: true,
-    default:0
+    default: 0,
   },
-  quantity:{
-    type:Number,
+  quantity: {
+    type: Number,
     required: true,
-    default:1
-  }
+    default: 1,
+  },
+  unit_price: String,
+  weight: String,
+  product_img: [String],
+  description: String,
+  unit_id: Number,
 });
 
 const orderSchema = new mongoose.Schema(
@@ -60,8 +69,6 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    //statusShipping
-    shippingCode:String,
     statusPayment: {
       type: String,
       required: true,
@@ -76,7 +83,18 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     shipPrice: { type: String, required: true },
-    typeOrder: { type: String, required: true},
+    typeOrder: { type: String, required: true,default:"Website" },
+    orderStatus: { type: String },
+    date_update_order_status: { type: Date, default: new Date() },
+    shippingCode: String,
+    shipping_status: { type: String },
+    date_update_shipping_status: { type: Date, default: new Date() },
+    is_refund:{type: Boolean, default:false},
+    refund_picture: { type: [String], default:[]},
+    type_reason:{ type: String, default:"" },
+    refund_status:{ type: String, default:"" },
+    is_cancel:{type: Boolean, default:false},
+    data_cancel:{ type: Date}
   },
   {
     timestamps: true,
