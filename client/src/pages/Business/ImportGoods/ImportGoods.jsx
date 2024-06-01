@@ -13,6 +13,8 @@ import { api } from "../../../constant/constant";
 import { useParams } from "react-router-dom";
 
 function ImportGoods() {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [variant_sku, setVariant_sku] = useState(null);
@@ -79,7 +81,7 @@ function ImportGoods() {
     console.log("productData", productData);
 
     axios
-      .put(`${api}product/update-quantity`, productData)
+      .put(`${api}product/update-quantity`, productData, config)
       .then((response) => {
         console.log("Product quantity updated successfully:", response.data);
       })
@@ -87,6 +89,24 @@ function ImportGoods() {
         console.error("Error updating product quantity:", error);
       });
   };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${api}/order/info`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result = await response.json();
+      setData(result);
+      console.log("result sendo", result);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>

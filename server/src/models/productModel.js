@@ -70,9 +70,9 @@ const productSchema = new mongoose.Schema({
     end_date: Date,
     is_check_date: Boolean
   },
-  ratingPoint: { type: String, default: "0" },
-  ratingCount: { type: Number, default: 0 },
-  isDelete: { type: Boolean, default: false },
+  ratingPoint: {type:String,default:"0"},
+  ratingCount: {type:Number,default:0},
+  isDelete:{type:Boolean,default:false},
   tenantID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "business",

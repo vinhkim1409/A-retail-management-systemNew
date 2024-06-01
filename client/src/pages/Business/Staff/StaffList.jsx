@@ -156,7 +156,18 @@ function StaffList() {
         <div className="list-container">
           <div className="tool">
             <div className="position-sort">
-              
+              {/* <div className="lable-position-sort">Status</div>
+              <select
+                name="selectStatusShipp"
+                id=""
+                // value={activeTab}
+                // onChange={handleTabClick}
+                className="select-status-box"
+              >
+                <option value="All">All</option>
+                <option value="Admin">Admin</option>
+                <option value="Saler">Saler</option>
+              </select> */}
             </div>
             <div className="add">
               <AddNewStaff stafflist={stafflist} setStaffList={setStaffList} />

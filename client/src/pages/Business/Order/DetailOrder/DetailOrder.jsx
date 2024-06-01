@@ -8,6 +8,9 @@ import {
   TableHead,
   TableRow,
   styled,
+  Button,
+  Modal,
+  Typography
 } from "@mui/material";
 import axios from "axios";
 import { api } from "../../../../constant/constant";
@@ -15,6 +18,18 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { getPriceExpr } from "../../../../utils/getPriceRepr";
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: 4,
+};
+
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -31,6 +46,7 @@ const wayPaidTag = <div className="wayPaidTag">Wait Pay</div>;
 const DetailOrderBusiness = () => {
   const [order, setOrder] = useState();
   const { tenantURL, id } = useParams();
+  const [showModal, setShowModal] = useState(false);
   const userBusiness = useSelector(
     (state) => state.authBusiness.login?.currentUser
   );
@@ -41,6 +57,10 @@ const DetailOrderBusiness = () => {
   };
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleClose = () => {
+    setShowModal(false);
+  };
 
   const getOrder = async () => {
     const order = await axios.get(`${api}order/business/${id}`, config);
@@ -59,6 +79,20 @@ const DetailOrderBusiness = () => {
         );
       }, deliveryFee)
     );
+
+  const handlePayment = async () => {
+    const payment = await axios.put(
+      `${api}order/update-statuspayment`,
+      { orderID: id },
+      config
+    );
+    if (payment.data.success) {
+      setOrder(payment.data.data);
+      setShowModal(false)
+    } else {
+      console.log("Error when handle");
+    }
+  };
   useEffect(() => {
     getOrder();
   }, []);
@@ -86,7 +120,9 @@ const DetailOrderBusiness = () => {
               {order?.statusPayment == "Paid" ? (
                 <></>
               ) : (
-                <button className="action">Payment Confirm</button>
+                <button className="action" onClick={()=>setShowModal(true)}>
+                  Payment Confirm
+                </button>
               )}
             </div>
             <div className="list-product">
@@ -259,6 +295,40 @@ const DetailOrderBusiness = () => {
           </div>
         </div>
       </div>
+      <Modal
+        open={showModal}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="modal-modal-title"
+            sx={{ fontWeight: 600, fontSize: 30 }}
+          >
+            Payment Confirmation
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Confirm payment for this order ?
+          </Typography>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}
+          >
+            <Button variant="contained" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                handlePayment();
+              }}
+            >
+              Yes
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </>
   );
 };

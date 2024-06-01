@@ -288,10 +288,11 @@ function DetailProduct() {
                     {attribute.values.map((value, valueIndex) => (
                       <div
                         key={valueIndex}
-                        className={`color-container ${selectedAttributes[attribute.name]?.value === value
+                        className={`color-container ${
+                          selectedAttributes[attribute.name]?.value === value
                             ? "active"
                             : ""
-                          }`}
+                        }`}
                         onClick={() =>
                           handleAttributeClick(attributeName, value)
                         }
@@ -344,6 +345,9 @@ function DetailProduct() {
                 </div>
               )}
 
+              {/* <div className="variant-sku">
+                <strong>Variant SKU: </strong> {getVariantSku()}
+              </div> */}
             </div>
           </div>
           <div className="detail-product">
@@ -399,12 +403,13 @@ function DetailProduct() {
                             role="progressbar"
                             aria-label="Basic example"
                             style={{
-                              width: `${(review.filter(
-                                (comment) => comment.ratingPoint == 1
-                              ).length /
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 1
+                                ).length /
                                   review.length) *
                                 100
-                                }%`,
+                              }%`,
                             }}
                             aria-valuenow="25"
                             aria-valuemin="0"
@@ -430,12 +435,13 @@ function DetailProduct() {
                             role="progressbar"
                             aria-label="Basic example"
                             style={{
-                              width: `${(review.filter(
-                                (comment) => comment.ratingPoint == 2
-                              ).length /
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 2
+                                ).length /
                                   review.length) *
                                 100
-                                }%`,
+                              }%`,
                             }}
                             aria-valuenow="25"
                             aria-valuemin="0"
@@ -461,12 +467,13 @@ function DetailProduct() {
                             role="progressbar"
                             aria-label="Basic example"
                             style={{
-                              width: `${(review.filter(
-                                (comment) => comment.ratingPoint == 3
-                              ).length /
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 3
+                                ).length /
                                   review.length) *
                                 100
-                                }%`,
+                              }%`,
                             }}
                             aria-valuenow="25"
                             aria-valuemin="0"
@@ -492,12 +499,13 @@ function DetailProduct() {
                             role="progressbar"
                             aria-label="Basic example"
                             style={{
-                              width: `${(review.filter(
-                                (comment) => comment.ratingPoint == 4
-                              ).length /
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 4
+                                ).length /
                                   review.length) *
                                 100
-                                }%`,
+                              }%`,
                             }}
                             aria-valuenow="25"
                             aria-valuemin="0"
@@ -523,12 +531,13 @@ function DetailProduct() {
                             role="progressbar"
                             aria-label="Basic example"
                             style={{
-                              width: `${(review.filter(
-                                (comment) => comment.ratingPoint == 5
-                              ).length /
+                              width: `${
+                                (review.filter(
+                                  (comment) => comment.ratingPoint == 5
+                                ).length /
                                   review.length) *
                                 100
-                                }%`,
+                              }%`,
                             }}
                             aria-valuenow="25"
                             aria-valuemin="0"

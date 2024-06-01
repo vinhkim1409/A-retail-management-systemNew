@@ -26,6 +26,67 @@ const productController = {
       console.log('Access Token loaded:', this.accessToken);
     });
   },
+  // fetchSendoProducts: async (req, res) => {
+  //   try {
+  //     const date_to = getLocalDateString();
+
+  //     const response = await fetch('https://open.sendo.vn/api/partner/product/search', {
+  //       method: 'POST',
+  //       headers: {
+  //         'authorization': `bearer ${productController.accessToken}`,
+  //         'Content-Type': 'application/json',
+  //         'cache-control': 'no-cache',
+  //       },
+  //       body: JSON.stringify({
+  //         "page_size": 20,
+  //         "product_name": "",
+  //         "date_from": "2024-03-20",
+  //         "date_to": date_to,
+  //         "status": null,
+  //         "token": ""
+  //       })
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       const productIds = data.result.data.map(product => product.id);
+
+  //       const productDetails = await Promise.all(productIds.map(async id => {
+  //         const detailResponse = await fetch(`https://open.sendo.vn/api/partner/product?id=${id}`, {
+  //           headers: {
+  //             'Authorization': `bearer ${productController.accessToken}`
+  //           }
+  //         });
+
+  //         if (detailResponse.ok) {
+  //           const productDetailmain = await detailResponse.json();
+  //           const productDetail = productDetailmain.result;
+  //           // console.log("productDetail", productDetail);
+
+  //           // Kiểm tra xem sản phẩm đã tồn tại trong cơ sở dữ liệu hay chưa
+  //           const existingProduct = await Product.findOne({ id: productDetail.id });
+
+  //           // Nếu sản phẩm chưa tồn tại trong cơ sở dữ liệu, thêm nó vào
+  //           if (!existingProduct) {
+  //             const newProduct = new Product({ tenantID: req.tenantID, ...productDetail });
+  //             await newProduct.save();
+  //           }
+
+  //           return productDetail;
+  //         } else {
+  //           console.error('Failed to fetch product details for id:', id);
+  //           return null;
+  //         }
+  //       }));
+
+  //       res.json(productDetails.filter(detail => detail !== null));
+  //     } else {
+  //       res.status(500).json({ error: 'Failed to fetch products from Sendo', details: error.message });
+  //     }
+  //   } catch (error) {
+  //     res.status(500).json({ error: 'An error occurred while fetching products from Sendo', details: error.message });
+  //   }
+  // },
   fetchSendoProducts: async (req, res) => {
     try {
       const date_to = getLocalDateString();
@@ -52,30 +113,30 @@ const productController = {
         const productIds = data.result.data.map(product => product.id);
 
         const productDetails = await Promise.all(productIds.map(async id => {
-          const detailResponse = await fetch(`https://open.sendo.vn/api/partner/product?id=${id}`, {
-            headers: {
-              'Authorization': `bearer ${productController.accessToken}`
-            }
-          });
+          // Kiểm tra xem sản phẩm đã tồn tại trong cơ sở dữ liệu hay chưa
+          const existingProduct = await Product.findOne({ id: id });
 
-          if (detailResponse.ok) {
-            const productDetailmain = await detailResponse.json();
-            const productDetail = productDetailmain.result;
-            // console.log("productDetail", productDetail);
+          if (existingProduct) {
+            return existingProduct;
+          } else {
+            const detailResponse = await fetch(`https://open.sendo.vn/api/partner/product?id=${id}`, {
+              headers: {
+                'Authorization': `bearer ${productController.accessToken}`
+              }
+            });
 
-            // Kiểm tra xem sản phẩm đã tồn tại trong cơ sở dữ liệu hay chưa
-            const existingProduct = await Product.findOne({ id: productDetail.id });
+            if (detailResponse.ok) {
+              const productDetailmain = await detailResponse.json();
+              const productDetail = productDetailmain.result;
 
-            // Nếu sản phẩm chưa tồn tại trong cơ sở dữ liệu, thêm nó vào
-            if (!existingProduct) {
               const newProduct = new Product({ tenantID: req.tenantID, ...productDetail });
               await newProduct.save();
-            }
 
-            return productDetail;
-          } else {
-            console.error('Failed to fetch product details for id:', id);
-            return null;
+              return productDetail;
+            } else {
+              console.error('Failed to fetch product details for id:', id);
+              return null;
+            }
           }
         }));
 
@@ -222,6 +283,28 @@ const productController = {
       res.status(500).json({ message: "Error updating product", error });
     }
   },
+  updateProductId: async (req, res) => {
+    try {
+      const newId = req.body.newId;
+
+      const product = await Product.findOne({ tenantID: req.tenantID, id: 0 });
+
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      product.id = newId;
+      console.log("product.id", product.id);
+      await product.save();
+
+      res.status(200).json({
+        message: "Product ID updated successfully",
+        product: product,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error updating product ID", error });
+    }
+  },
   createSendoProduct: async (req, res) => {
     try {
       const products = await Product.find({ tenantID: req.tenantID, id: 0 });
@@ -254,7 +337,7 @@ const productController = {
 
         if (response.ok) {
           // Xóa sản phẩm khỏi MongoDB sau khi tạo thành công trên Sendo
-          await Product.findByIdAndDelete(product._id);
+          // await Product.findByIdAndDelete(product._id);
           return response.json();
         } else {
           const errorData = await response.json();

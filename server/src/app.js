@@ -56,7 +56,7 @@ function startServer() {
   const app = express();
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-  const PORT = 3001;
+  const PORT = process.env.PORT || 5000;
   app.use(cors(corsOptions));
   // app.use(cors());
   const MONGODB_URI =

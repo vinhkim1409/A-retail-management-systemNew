@@ -2,9 +2,11 @@ const Order = require("../models/orderModel");
 const Cart = require("../models/cartModel");
 const Business = require("../models/businessModel");
 const { default: mongoose } = require("mongoose");
+const Product = require("../models/productModel");
+const fetch = require("node-fetch");
 async function deleteProductFromCart(conditionCart, idProductInCart) {
   try {
-    const updateCart = await Cart.findByIdAndUpdate(
+    const updateCart = await Cart.findOneAndUpdate(
       conditionCart,
       { $pull: { products: { _id: idProductInCart } } },
       { new: true }
@@ -18,6 +20,19 @@ async function deleteProductFromCart(conditionCart, idProductInCart) {
     console.error("Lỗi khi cố gắng xóa sản phẩm khỏi giỏ hàng:", error);
   }
 }
+async function reduceQuantity(productIncart) {
+  const product = await Product.findOne({ _id: productIncart.product });
+  if (productIncart.variant == 0) {
+    product.stock_quantity = product.stock_quantity - productIncart.quantity;
+    await product.save();
+  } else {
+    product.variants[productIncart.variant - 1].variant_quantity =
+      product.variants[productIncart.variant - 1].variant_quantity -
+      productIncart.quantity;
+    await product.save();
+  }
+}
+
 const createShippingOrder = async (order, COD) => {
   try {
     let maxHeight = 0;
@@ -50,6 +65,7 @@ const createShippingOrder = async (order, COD) => {
     const weight = order.products.reduce((total, product) => {
       return total + product.product.weight * product.quantity;
     }, 0);
+    console.log(order.buyer_ward.split("//")[0]);
     const response = await fetch(
       "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
       {
@@ -60,7 +76,7 @@ const createShippingOrder = async (order, COD) => {
         },
         body: JSON.stringify({
           payment_type_id: 2,
-          note: "Tintest 123",
+          note: "Đơn hàng của BKM",
           required_note: "KHONGCHOXEMHANG",
           return_phone: "0332190158",
           return_address: "39 NTT",
@@ -76,11 +92,13 @@ const createShippingOrder = async (order, COD) => {
           from_province_name: "HCM",
           to_name: `${order.buyer_firstName}${order.buyer_lastName}`,
           to_phone: order?.buyer_phoneNumber,
-          to_address: `${buyer_address_detail}, ${buyer_ward}, ${buyer_district}, ${buyer_province}, Vietnam`,
-          to_ward_name: ` ${buyer_ward}`,
-          to_district_name: `${buyer_district}`,
-          to_province_name: `${buyer_province}`,
-          cod_amount: 200000,
+          to_address: `${order?.buyer_address_detail}, ${order.buyer_ward.split("//")[0]
+            }, ${order.buyer_district.split("//")[0]}, ${order.buyer_province.split("//")[0]
+            }, Vietnam`,
+          to_ward_name: `${order.buyer_ward.split("//")[0]}`,
+          to_district_name: `${order.buyer_district.split("//")[0]}`,
+          to_province_name: `${order.buyer_province.split("//")[0]}`,
+          cod_amount: COD ? order.totalPrice : 0,
           content: "Theo New York Times",
           weight: weight,
           length: maxLength,
@@ -126,21 +144,25 @@ const orderController = {
       //create order
       const user = req.user[0];
       const { products } = req.body;
+      //delete product from cart
+      const delivery = await createShippingOrder(req.body, true);
       const newOrder = new Order({
         customerID: user._id,
         tenantID: req.tenantID,
         typeOrder: "Website",
+        shippingCode: delivery ? delivery.order_code : "null",
         ...req.body,
       });
       await newOrder.save();
-      //delete product from cart
       const conditionCart = { customerID: user._id };
       const productIds = products.map((product) => {
         return product._id;
       });
       deleteProductFromCart(conditionCart, productIds);
-
-      // trừ đi số lượng trong kho
+      newOrder.products.map((product) => {
+        reduceQuantity(product);
+      });
+      res.json({ success: true, data: newOrder });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -159,7 +181,10 @@ const orderController = {
   getOrderCustomerById: async (req, res) => {
     try {
       const customer = req.user[0];
-      const order = await Order.find({ customerID: customer._id,_id:req.params.orderID })
+      const order = await Order.find({
+        customerID: customer._id,
+        _id: req.params.orderID,
+      })
         .populate("customerID")
         .populate("products.product");
       res.json({ success: true, data: order });
@@ -190,8 +215,25 @@ const orderController = {
       res.status(500).json({ message: error.message });
     }
   },
+  handlPayOrder: async (req, res) => {
+    try {
+      const order = await Order.findOneAndUpdate(
+        { _id: req.body.orderID },
+        { statusPayment: "Paid" },
+        { new: true }
+      )
+        .populate("customerID")
+        .populate("products.product");
+      if (order) {
+        res.json({ success: true, data: order });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
   notifyOrderCustomer: async (req, res) => {
     try {
+      console.log("Notify Order Customer");
       const accessKey = process.env.ACCESS_KEY;
       const secretkey = process.env.SECRET_KEY;
 
@@ -220,17 +262,25 @@ const orderController = {
           { _id: data.orderId },
           {
             statusPayment: "Paid",
-            shippingCode: delivery.order_code,
+            shippingCode: delivery ? delivery.order_code : "null",
           },
           { new: true }
         ).populate("products.product");
-
+        if (secondStepOrder) {
+          console.log("success");
+        }
         console.log("success");
       } else {
         console.log(`Thanh toán thất bại, resultCode: ${resultCode}`);
       }
       return res.status(200).json("OK");
-    } catch (error) {}
+    } catch (error) { }
   },
+  getInfoOrder: async (req, res) => {
+    try {
+      const data = req.body;
+      console.log('Received data:', data);
+    } catch (error) { }
+  }
 };
 module.exports = orderController;

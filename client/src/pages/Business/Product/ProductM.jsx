@@ -69,7 +69,6 @@ function ProductM() {
     },
   };
 
-
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -77,22 +76,28 @@ function ProductM() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
   const [showModal, setShowModal] = useState(false);
   const [idDelete, setIdDelete] = useState("");
-  const handleOpenModal = (id) => {
+  const [nameDelete, setNameDelete] = useState(""); // Thêm state cho tên sản phẩm cần xóa
+
+  const handleOpenModal = (id, name) => {
     setIdDelete(id);
+    setNameDelete(name); // Cập nhật tên sản phẩm cần xóa
     setShowModal(true);
   };
+
   const handleClose = () => {
     setShowModal(false);
   };
+
   const updateQuantityButton = (row) => (
     <>
       <div className="button">
         <button
           className="trash"
           onClick={() => {
-            handleOpenModal(row._id);
+            handleOpenModal(row._id, row.name); // Truyền cả id và name
           }}
         >
           <FontAwesomeIcon icon={faTrashCan} />
@@ -102,7 +107,7 @@ function ProductM() {
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
         </a>
-        <a href={`product/edit/${row._id}`}>
+        <a href={`product/detail/${row._id}`}>
           <button className="btn-icon">
             <FontAwesomeIcon icon={faEye} />
           </button>
@@ -127,6 +132,7 @@ function ProductM() {
     setProducts(updateArrayProduct);
     setShowModal(false);
   };
+
   const sendoProduct = async () => {
     try {
       const sendo = await axios.get(`${api}product/sendo`, config);
@@ -166,17 +172,14 @@ function ProductM() {
     console.log("re-render");
   }, []);
 
-  useEffect(() => {
-    getAllProducts();
-  }, [filter]);
 
+  console.log(products);
 
   return (
     <>
       <div className="ProductM-container">
         <div className="title"> Product Management</div>
         <div className="toolkit">
-
           <div className="addbox">
             <a href={`/${tenantURL}/business/product/add`}>
               <button className="btn add-btn edit">Add product</button>
@@ -203,15 +206,6 @@ function ProductM() {
                 All Products
               </Typography>
             </div>
-
-            {/* <div className="select">
-              <select value={filter} onChange={handleFilterChange} className="filter-status">
-                <option value="All">All</option>
-                <option value="Active">Active</option>
-                <option value="Deactive">Deactive</option>
-              </select>
-            </div> */}
-
             {!loading ? (
               <StyledTable>
                 <TableHead>
@@ -220,13 +214,6 @@ function ProductM() {
                       className="table-label"
                       sx={{ minWidth: 20 }}>
                       Image
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      className="table-label"
-                      sx={{ minWidth: 20 }}
-                    >
-                      Product Code
                     </TableCell>
                     <TableCell
                       align="left"
@@ -253,7 +240,6 @@ function ProductM() {
                   {products
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => (
-                      // Trong hàm render TableRow
                       <TableRow key={index}>
                         <TableCell align="center">
                           <img
@@ -265,13 +251,6 @@ function ProductM() {
                             }}
                             alt=""
                           />
-                        </TableCell>
-                        <TableCell
-                          align="left"
-                          className="table-label"
-                          sx={{ maxWidth: 50 }}
-                        >
-                          {row.sku}
                         </TableCell>
                         <TableCell
                           align="left"
@@ -294,12 +273,12 @@ function ProductM() {
                         <TableCell align="left" className="table-label" sx={{ maxWidth: 10 }}>
                           <div className="flex-row">
                             {row.is_config_variant === false ? (
-                              <div>{row.special_price}</div>
+                              <div>{row.special_price !== null ? row.special_price : row.price}</div>
                             ) : (
                               row.variants && row.variants.length > 0 ? (
                                 row.variants.map((variant, index) => (
                                   <div key={index}>
-                                    {variant.variant_special_price}
+                                    {variant.variant_special_price ? variant.variant_special_price : variant.variant_price}
                                   </div>
                                 ))
                               ) : (
@@ -378,7 +357,7 @@ function ProductM() {
             Delete Product
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Do you want to delete product {idDelete} ?
+            Do you want to delete product {nameDelete} ?
           </Typography>
           <Box
             sx={{ display: "flex", justifyContent: "space-between", mt: "5%" }}

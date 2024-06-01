@@ -26,10 +26,18 @@ router.get(
   authMiddlewares.verifyTokenCustomer,
   orderController.getOrderCustomerById
 ); //get of customer
+router.put(
+  "/update-statuspayment",
+  authMiddlewares.verifyToken,
+  orderController.handlPayOrder
+);
+
+router.get("/info",
+  authMiddlewares.verifyToken,
+  orderController.getInfoOrder);
 
 router.post(
   "/notify-payment",
-  authMiddlewares.verifyTokenCustomer,
   orderController.notifyOrderCustomer
 );
 module.exports = router;

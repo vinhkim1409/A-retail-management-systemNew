@@ -61,6 +61,6 @@ const authMiddlewares={
            return res.json("You are not authenticated")
         }
         
-    }
+    },
 }
 module.exports =authMiddlewares

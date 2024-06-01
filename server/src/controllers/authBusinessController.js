@@ -80,10 +80,10 @@ const businessController = {
             tenantID: user.tenantID,
           },
           process.env.JWT_SECRET_KEY,
-          { expiresIn: "1d" }
+          { expiresIn: "30d" }
         );
         const { password, ...resUser } = user._doc;
-        res.json({ resUser, accessToken });
+        res.json({ resUser, accessToken,tenantURL:business.tenantURL });
       }
     } catch (error) {
       res.status(500).json(error);

@@ -17,7 +17,7 @@ const typecheckbox = ["Jacket", "Jean", "Cotons", "Excool"];
 
 function Shop() {
   const navigate = useNavigate();
-  const productsPerPage = 3;
+  const productsPerPage = 10;
   const productsPerRow = 5;
   const totalProducts = 50;
   const [allProducts, setAllProducts] = useState([]);
@@ -74,7 +74,7 @@ const {tenantURL}=useParams()
   const [topSale, setTopSale] = useState([]);
 
   const getCategory = async () => {
-    const category = await axios.get(`${api}category`);
+    const category = await axios.get(`${api}category/by-tenantURL/${tenantURL}`);
     setCategory(category.data);
   };
   const getTopSale = async () => {

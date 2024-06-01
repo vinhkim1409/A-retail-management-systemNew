@@ -48,11 +48,16 @@ const OrderCustomer = () => {
   const getOrders = async () => {
     const orders = await axios.get(`${api}order/customer`, config);
     console.log(orders.data.data);
-    setInitialOrders(orders.data.data.reverse());
-    setOrders(orders.data.data.reverse());
+    orders.data.data.reverse();
+    setInitialOrders(orders.data.data);
+    setOrders(orders.data.data);
   };
   useEffect(() => {
-    getOrders();
+    if (!customer) {
+      navigate(`/${tenantURL}/customer/login`);
+    } else {
+      getOrders();
+    }
   }, []);
 
   return (
@@ -130,7 +135,7 @@ const OrderCustomer = () => {
                           />
                           <div className="name-frame">
                             <div className="name-product">
-                              {item.product.name}
+                              {item.product?.name}
                             </div>
                           </div>
                         </div>

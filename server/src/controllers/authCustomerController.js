@@ -70,7 +70,7 @@ const customerController = {
             tenantID: business._id,
           },
           process.env.JWT_SECRET_KEY,
-          { expiresIn: "1d" }
+          { expiresIn: "30d" }
         );
         const { password, ...resCustomer } = customer._doc;
         return res.json({

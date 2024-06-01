@@ -2,9 +2,11 @@ const { createHmac } = require("crypto");
 const fetch = require("node-fetch");
 const Order = require("../models/orderModel");
 const Business = require("../models/businessModel");
+const Cart = require("../models/cartModel");
+const Product = require("../models/productModel");
 async function deleteProductFromCart(conditionCart, idProductInCart) {
   try {
-    const updateCart = await Cart.findByIdAndUpdate(
+    const updateCart = await Cart.findOneAndUpdate(
       conditionCart,
       { $pull: { products: { _id: idProductInCart } } },
       { new: true }
@@ -16,6 +18,18 @@ async function deleteProductFromCart(conditionCart, idProductInCart) {
     }
   } catch (error) {
     console.error("Lỗi khi cố gắng xóa sản phẩm khỏi giỏ hàng:", error);
+  }
+}
+async function reduceQuantity(productIncart) {
+  const product = await Product.findOne({ _id: productIncart.product });
+  if (productIncart.variant == 0) {
+    product.stock_quantity = product.stock_quantity - productIncart.quantity;
+    await product.save();
+  } else {
+    product.variants[productIncart.variant - 1].variant_quantity =
+      product.variants[productIncart.variant - 1].variant_quantity -
+      productIncart.quantity;
+    await product.save();
   }
 }
 
@@ -40,13 +54,21 @@ const MonoController = {
       ...req.body,
     });
     await newOrder.save();
+    const conditionCart = { customerID: user._id };
+    const productIds = newOrder.products.map((product) => {
+      return product._id;
+    });
+    deleteProductFromCart(conditionCart, productIds);
+    newOrder.products.map((product) => {
+      reduceQuantity(product);
+    });
     const data = {
       buyer: user._id.toString(),
       orderId: newOrder._id,
     };
     const deliveryFee = 0;
     const extraData = Buffer.from(JSON.stringify(data)).toString("base64");
-    const requestId = "657342ee8e03b1440287e216" + new Date().getTime();
+    const requestId = user._id.toString() + new Date().getTime();
     const rawSignature =
       "accessKey=" +
       accessKey +
@@ -178,53 +200,51 @@ const MonoController = {
         body: requestBody,
       }
     );
-    res
-      .status(200)
-      .json({success:true, momoInfo: await response.json()});
+    res.status(200).json({ success: true, momoInfo: await response.json() });
   },
   packageNotification: async (req, res) => {
-   try {
-     const accessKey = process.env.ACCESS_KEY;
-     const secretkey = process.env.SECRET_KEY;
- 
-     const {
-       partnerCode,
-       orderId,
-       requestId,
-       amount,
-       orderInfo,
-       orderType,
-       transId,
-       resultCode,
-       message,
-       payType,
-       responseTime,
-       extraData,
-       signature,
-     } = req.body;
-     const data = JSON.parse(Buffer.from(extraData, "base64").toString());
-     if (resultCode == 0) {
-       const endDate = new Date(startDate);
-       endDate.setDate(endDate.getDate() + newPackage.duration);
-       const newPackage = {
-         typePackage: data.typePackage,
-         duration: data.duration,
-         startDate: data.startDate,
-         endDate: endDate,
-       };
-       const business = await Business.findOneAndUpdate(
-         { _id: data.buyer },
-         {
-           package: newPackage,
-         },
-         { new: true }
-       );
-       console.log("success");
-       return res.status(200).json("OK");
-     }
-   } catch (error) {
-    res.status(500).json({ message: error.message });
-   }
+    try {
+      const accessKey = process.env.ACCESS_KEY;
+      const secretkey = process.env.SECRET_KEY;
+
+      const {
+        partnerCode,
+        orderId,
+        requestId,
+        amount,
+        orderInfo,
+        orderType,
+        transId,
+        resultCode,
+        message,
+        payType,
+        responseTime,
+        extraData,
+        signature,
+      } = req.body;
+      const data = JSON.parse(Buffer.from(extraData, "base64").toString());
+      if (resultCode == 0) {
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + newPackage.duration);
+        const newPackage = {
+          typePackage: data.typePackage,
+          duration: data.duration,
+          startDate: data.startDate,
+          endDate: endDate,
+        };
+        const business = await Business.findOneAndUpdate(
+          { _id: data.buyer },
+          {
+            package: newPackage,
+          },
+          { new: true }
+        );
+        console.log("success");
+        return res.status(200).json("OK");
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   },
 };
 module.exports = MonoController;

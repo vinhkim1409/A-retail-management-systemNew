@@ -22,7 +22,7 @@ const AdminLayout = () => {
   useEffect(() => {
     if (!userBusiness) {
       navigate("/");
-      //tao mot ham check use nua
+      //tao mot ham check use nua co trung khop voi tenent URL khong co san roi
     }
   }, []);
   useEffect(() => {
