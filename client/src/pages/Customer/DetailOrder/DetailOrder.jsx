@@ -142,7 +142,17 @@ const DetailOrderBusiness = () => {
       console.log(send);
     }
   };
-
+  const handleConfirm=async()=>{
+    const confirm=await axios.post(`${api}order/confirm-receipt`,{orderID:id},config)
+    if(confirm.data.success == true) {
+      setOrder(confirm.data.data)
+      //close modal
+    }
+    else
+    {
+      //closeModel
+    }
+  }
   return (
     <>
       <div className="detailordercustomer-container">
@@ -179,7 +189,7 @@ const DetailOrderBusiness = () => {
                   </div>
                 </div>
               </div>
-              {order?.typeOrder == "Website" && !order?.is_refund ? (
+              {order?.typeOrder == "Website" && !order?.is_refund && order?.shipping_status=="delivered" ? (
                 <button className="confirm">Confirm receipt</button>
               ) : (
                 <></>
@@ -269,17 +279,18 @@ const DetailOrderBusiness = () => {
                             align="left"
                             className="review content-order"
                           >
-                            <div
-                              className="review-btn"
+                            <Button
+                              variant="contained"
                               onClick={() => {
                                 navigate(
                                   `/${tenantURL}/customer/review/${item.product}`
                                 );
                               }}
+                              size="small"
+                              disabled={!order?.is_confirm}
                             >
-                              {" "}
                               Review
-                            </div>
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}

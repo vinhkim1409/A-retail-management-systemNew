@@ -204,8 +204,8 @@ const Order = () => {
         </Box>
         <div className="pages">
           <div className="pages-number">
-            {1 * (page + 1)}-
-            {page == totalPages - 1 ? orderList.length : 5 * (page + 1)} of{" "}
+            {1 * (page + 1)*5}-
+            {page == totalPages - 1 ? orderList.length : 10 * (page + 1)} of{" "}
             {orderList.length}
           </div>
           <button

@@ -40,6 +40,19 @@ const OrderCustomer = () => {
   const [activeTab, setActiveTab] = useState("All");
   const handleTabClick = (event, cityName) => {
     setActiveTab(cityName);
+    if (cityName == "redelivery_request") {
+      const order = initialOrders.filter((order) => order.is_refund == true);
+      setOrders(order);
+      return;
+    }
+    if (cityName == "All") {
+      setOrders(initialOrders);
+      return;
+    }
+    const order = initialOrders.filter(
+      (order) => order.shipping_status == cityName
+    );
+    setOrders(order);
   };
   const customer = useSelector(
     (state) => state.authCustomer.login?.currentUser
@@ -60,15 +73,15 @@ const OrderCustomer = () => {
     setInitialOrders(orders.data.data);
     setOrders(orders.data.data);
   };
-  const checkShipingStatus= async () => {
-    const orders=await axios.get(`${api}order/check-shipping-status`,config)
+  const checkShipingStatus = async () => {
+    const orders = await axios.get(`${api}order/check-shipping-status`, config);
     console.log(orders.data);
-  }
+  };
   useEffect(() => {
     if (!customer) {
       navigate(`/${tenantURL}/customer/login`);
     } else {
-      checkShipingStatus()
+      checkShipingStatus();
       getOrders();
     }
   }, []);
@@ -87,16 +100,38 @@ const OrderCustomer = () => {
           All
         </button>
         <button
-          className={`tablinks ${activeTab === "Wait-pay" ? "active" : ""}`}
-          onClick={(e) => handleTabClick(e, "Wait-pay")}
+          className={`tablinks ${
+            activeTab === "ready_to_pick" ? "active" : ""
+          }`}
+          onClick={(e) => handleTabClick(e, "ready_to_pick")}
         >
-          Unpaid
+          Preparing
         </button>
         <button
-          className={`tablinks ${activeTab === "Transport" ? "active" : ""}`}
-          onClick={(e) => handleTabClick(e, "Transport")}
+          className={`tablinks ${activeTab === "delivering" ? "active" : ""}`}
+          onClick={(e) => handleTabClick(e, "delivering")}
         >
-          Paid
+          Delivering
+        </button>
+        <button
+          className={`tablinks ${activeTab === "delivered" ? "active" : ""}`}
+          onClick={(e) => handleTabClick(e, "delivered")}
+        >
+          Delivered
+        </button>
+        <button
+          className={`tablinks ${activeTab === "cancel" ? "active" : ""}`}
+          onClick={(e) => handleTabClick(e, "cancel")}
+        >
+          Cancel
+        </button>
+        <button
+          className={`tablinks ${
+            activeTab === "redelivery_request" ? "active" : ""
+          }`}
+          onClick={(e) => handleTabClick(e, "redelivery_request")}
+        >
+          Redelivery request
         </button>
       </div>
 

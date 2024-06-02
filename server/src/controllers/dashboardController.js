@@ -28,7 +28,7 @@ function getDayOfWeek(day) {
   return dayOfWeek;
 }
 function get7Days() {
-  const today = new Date("2024-05-08T17:07:06.495+00:00");
+  const today = new Date(); //"2024-05-08T17:07:06.495+00:00"
   const weekDays = [];
 
   for (let i = 0; i < 7; i++) {

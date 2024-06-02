@@ -184,16 +184,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
   }
-  .review-btn:hover::before {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px #0d6efd;
-    border: 1px solid #0d6efd;
-  }
-  .review-btn:hover {
-    box-shadow: 0 0 5px #0d6efd;
-    border: 1px solid #0d6efd;
-    text-shadow: 0 0 1px white;
-  }
   .mini-label {
     display: flex;
     width: 100%;

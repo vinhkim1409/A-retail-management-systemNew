@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./NavbarMain.scss";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
@@ -34,13 +34,16 @@ const style = {
 };
 
 const Navbar = () => {
+  const path=window.location.pathname 
+  useEffect(() => {
+    console.log(path.split("/"));
+  }, []);
   return (
     <nav className="navbar-main">
       <div className="logo">
         <Link to="/">
           <img src={logo} alt="Logo" className="logo-img" />
         </Link>
-
       </div>
       <div className="function-button">
         <div className="home">

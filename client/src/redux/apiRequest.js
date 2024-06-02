@@ -69,7 +69,7 @@ export const loginAdmin= async (user, dispatch, navigate) => {
     console.log(res);
     if (res.data.success) {
       dispatch(
-        loginAdminSuccess({ user: res.data.data, tenantURL: user.tenantURL })
+        loginAdminSuccess({ user: res.data.data})
       );
       return true;
     } else {

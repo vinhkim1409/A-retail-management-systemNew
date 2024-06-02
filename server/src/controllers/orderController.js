@@ -430,6 +430,8 @@ const orderController = {
       //tạo một đơn hàng mới
       let newOrderData = orderRedelivery.toObject();
       delete newOrderData._id;
+      delete newOrderData.createdAt;
+      delete newOrderData.updatedAt;
       const delivery = await createShippingOrder(orderRedelivery, true, true);
       const status = await getShippingStatus(delivery?.order_code);
       const newOrder = new Order({
@@ -442,7 +444,25 @@ const orderController = {
         refund_picture: [],
         orderStatus: "Delivery",
       });
-      res.json({success:true, newOrder, orderRedelivery });
+      await newOrder.save()
+      res.json({ success: true, newOrder, orderRedelivery });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  confirmReceipt: async (req, res) => {
+    try {
+      const order = await Order.findOneAndUpdate(
+        { _id: req.body.orderID, tenantID: req.tenantID },
+        {
+          is_confirmed: true,
+        },
+        { new: true }
+      );
+      if (order) {
+        return res.json({ success: true, data: order });
+      }
+      res.json({ success: false, data: "Confirm Failed" });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

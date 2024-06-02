@@ -128,9 +128,10 @@ const DetailOrderBusiness = () => {
       { orderID: id },
       config
     );
-    if (accept) {
+    console.log(accept);
+    if (accept.data.success) {
       setOrder(accept.data.orderRedelivery);
-      handleClose();
+      handleCloseRequest();
     }
   };
   const rejectRequest = async () => {
@@ -141,7 +142,7 @@ const DetailOrderBusiness = () => {
     );
     if (reject.data.success) {
       setOrder(reject.data.data);
-      handleClose(false);
+      handleCloseRequest(false);
     }
   };
   return (
@@ -149,7 +150,7 @@ const DetailOrderBusiness = () => {
       <div className="detailorder-container">
         <div className="header">
           <div className="title">Order Detail</div>
-          {order?.typeOrder == "Website" ? (
+          {order?.typeOrder == "Website" && order?.is_refund ? (
             <div
               className="request"
               onClick={() => {

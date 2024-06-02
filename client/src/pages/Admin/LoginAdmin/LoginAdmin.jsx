@@ -5,7 +5,7 @@ import background from "../../../assets/backgound-admin.png";
 import { Snackbar, Alert } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginBusiness } from "../../../redux/apiRequest";
+import { loginAdmin, loginBusiness } from "../../../redux/apiRequest";
 import logo from "../../../assets/logo.png";
 
 function LoginAdminPage() {
@@ -21,13 +21,13 @@ function LoginAdminPage() {
       email: email,
       password: password,
     };
-    const loginstatus = await loginBusiness(newUser, dispatch, navigate);
+    const loginstatus = await loginAdmin(newUser, dispatch, navigate);
     if (loginstatus == true) {
-      navigate(`/${newUser.tenantURL}/business`, {
+      navigate(`/admin`, {
         state: { loginState: true },
       });
     } else {
-      setErrorMessage("Wrong email,password or tenantURL!");
+      setErrorMessage("Wrong email or password");
       setOpenWrongConfirm(true);
     }
   };
@@ -35,7 +35,6 @@ function LoginAdminPage() {
     if (reason === "clickaway") {
       return;
     }
-
     setOpenWrongConfirm(false);
   };
   return (
@@ -89,7 +88,7 @@ function LoginAdminPage() {
             <button
               className="btn mb-2"
               onClick={handleLogin}
-              disabled={ !password || !email}
+              disabled={!password || !email}
             >
               Login
             </button>

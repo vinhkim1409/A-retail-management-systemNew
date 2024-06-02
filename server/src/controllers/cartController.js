@@ -55,7 +55,6 @@ const cartController = {
         variant: variant,
         quantity: quantity,
       };
-
       const addProductCartCondition = await Cart.findOne({
         customerID: req.user[0]._id,
       });

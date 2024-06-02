@@ -35,7 +35,7 @@ const customerController = {
       });
       await newCart.save();
 
-      res.json({ success: true, data: newCustomer });
+     return res.json({ success: true, data: newCustomer });
     } catch (error) {
       res.status(500).json(error);
     }
@@ -130,9 +130,9 @@ const customerController = {
     try {
       const customer = await Customer.findOne({ email: req.body.email });
       if (customer) {
-        res.json({ success: false, message: "email already use" });
+       return res.json({ success: false, message: "email already use" });
       } else {
-        res.json({ success: true, message: "email not use" });
+       return res.json({ success: true, message: "email not use" });
       }
     } catch (error) {
       res.status(500).json({ message: error.message });

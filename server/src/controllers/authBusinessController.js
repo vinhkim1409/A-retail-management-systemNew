@@ -104,7 +104,7 @@ const businessController = {
           { expiresIn: "30d" }
         );
         const { password, ...resUser } = user._doc;
-        res.json({ resUser, accessToken, tenantURL: business.tenantURL });
+       return res.json({ resUser, accessToken, tenantURL: business.tenantURL });
       }
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -114,9 +114,9 @@ const businessController = {
     try {
       const business = await Business.findOne({ email: req.body.email });
       if (business) {
-        res.json({ success: false, message: "email already use" });
+        return res.json({ success: false, message: "email already use" });
       } else {
-        res.json({ success: true, message: "email not use" });
+        return res.json({ success: true, message: "email not use" });
       }
     } catch (error) {
       res.status(500).json({ message: error.message });

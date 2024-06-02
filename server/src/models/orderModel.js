@@ -94,7 +94,8 @@ const orderSchema = new mongoose.Schema(
     type_reason:{ type: String, default:"" },
     refund_status:{ type: String, default:"" },
     is_cancel:{type: Boolean, default:false},
-    data_cancel:{ type: Date}
+    data_cancel:{ type: Date},
+    is_confirm:{type: Boolean, default:false}
   },
   {
     timestamps: true,

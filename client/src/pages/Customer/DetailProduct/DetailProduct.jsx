@@ -222,7 +222,7 @@ function DetailProduct() {
         );
         const products = {
           productId: product._id,
-          variant: variantNumber + 1,
+          variant: variantSku == "" ? 0 : variantNumber + 1,
           quantity: quantity,
         };
         const addtoCart = await axios.put(
@@ -251,11 +251,12 @@ function DetailProduct() {
         let variantNumber = product.variants.findIndex(
           (variant) => variant.variant_sku == variantSku
         );
+        console.log(variantNumber, variantSku);
         const products = {
           product: product,
-          variant: variantNumber + 1,
+          variant: variantSku == "" ? 0 : variantNumber + 1,
           quantity: quantity,
-          _id:"buy now"
+          _id: "buy now",
         };
         navigate(`/${tenantURL}/customer/checkout`, {
           state: [products],

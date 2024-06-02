@@ -8,7 +8,7 @@ import {
   Rating,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faList, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { faList, faCaretRight,faChevronLeft,faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import ProductItem from "../../../components/ProductItem/ProductItem";
 import axios from "axios";
 import { api } from "../../../constant/constant";
@@ -17,14 +17,19 @@ const typecheckbox = ["Jacket", "Jean", "Cotons", "Excool"];
 
 function Shop() {
   const navigate = useNavigate();
-  const productsPerPage = 10;
+  const productsPerPage = 3;
   const productsPerRow = 5;
   const totalProducts = 50;
+  const [page, setPage] = React.useState(0);
   const [allProducts, setAllProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [productTable, setProductTable] = useState([]);
 
-  const indexOfLastProduct = currentPage * productsPerPage * productsPerRow;
+  const handleChangePage = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const indexOfLastProduct = (currentPage+1) * productsPerPage * productsPerRow;
   const indexOfFirstProduct =
     indexOfLastProduct - productsPerPage * productsPerRow;
   const currentProducts = productTable?.slice(
@@ -127,7 +132,7 @@ const {tenantURL}=useParams()
         <div className="info-business">
           <div className="total-product">Product: {allProducts.length}</div>
           <div className="rating">{`Rating: ${Ratingpoint} (${numberRating} Rating) `}</div>
-          <div className="total-customer">{"Customer: 2"}</div>
+          {/* <div className="total-customer">{"Customer: 2"}</div> */}
         </div>
       </div>
 
@@ -243,6 +248,34 @@ const {tenantURL}=useParams()
               </div>
             ))}
           </div>
+          <div className="pages">
+          <div className="pages-number">
+            {1 * (currentPage + 1)}-
+            {currentPage == totalPages - 1 ? productTable.length : 5 * (currentPage + 1)} of{" "}
+            {productTable.length}
+          </div>
+          <button
+            className="button-back"
+            onClick={() => handleChangePage(currentPage - 1)}
+            disabled={currentPage == 0}
+          >
+            <FontAwesomeIcon
+              icon={faChevronLeft}
+              className={`${currentPage == 0 ? "icon-back" : "active"}`}
+            />
+          </button>
+          <div className="number-page">{currentPage + 1}</div>
+          <button
+            className="button-next"
+            onClick={() => handleChangePage(currentPage + 1)}
+            disabled={currentPage == totalPages - 1}
+          >
+            <FontAwesomeIcon
+              icon={faChevronRight}
+              className={`${currentPage == totalPages - 1 ? "icon-next" : "active"}`}
+            />
+          </button>
+        </div>
         </div>
       </div>
     </div>

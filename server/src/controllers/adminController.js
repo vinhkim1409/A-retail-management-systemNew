@@ -227,7 +227,7 @@ const adminController = {
   },
   loginAdmin: async (req, res) => {
     try {
-      const resUser = await Admin.findOne({ email: req.body.email });
+      const user = await Admin.findOne({ email: req.body.email });
       if (!user) {
         return res.json({
           success: false,
@@ -254,7 +254,7 @@ const adminController = {
           { expiresIn: "30d" }
         );
         const { password, ...resAdmin } = user._doc;
-        res.json({ resAdmin, accessToken });
+        res.json({ success: true, data: { resAdmin, accessToken } });
       }
     } catch (error) {
       res.status(500).json({ message: error.message });

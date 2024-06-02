@@ -26,7 +26,7 @@ function BusinessHome() {
     dayOfMonth: [],
   });
   const [productsList, setProductsList] = useState([]);
-  const {tenantURL}=useParams()
+  const { tenantURL } = useParams();
   const userBusiness = useSelector(
     (state) => state.authBusiness.login?.currentUser
   );
@@ -36,24 +36,33 @@ function BusinessHome() {
     },
   };
   const getDashboardData = async () => {
-    const dashboardData = await axios.get(`${api}dashboard/get-revenue`,config);
-    console.log(dashboardData.data.data);
-    const data = dashboardData.data.data;
-    const dataweek = data.week;
-    let weekRow = [];
-    let revenueWeek = [{ data: [] }, { data: [] }];
-    for (let i = 0; i <= 6; i++) {
-      weekRow.push(dataweek[i].dayOfWeek);
-      revenueWeek[0].data.push(dataweek[i].numberOfOrder[0]);
-      revenueWeek[1].data.push(dataweek[i].numberOfOrder[1]);
+    const dashboardData = await axios.get(
+      `${api}dashboard/get-revenue`,
+      config
+    );
+    if (dashboardData.data.success == true) {
+      console.log(dashboardData.data);
+      const data = dashboardData.data.data;
+      const dataweek = data?.week;
+      let weekRow = [];
+      let revenueWeek = [{ data: [] }, { data: [] }];
+      for (let i = 0; i <= 6; i++) {
+        weekRow.push(dataweek[i].dayOfWeek);
+        revenueWeek[0].data.push(dataweek[i].numberOfOrder[0]);
+        revenueWeek[1].data.push(dataweek[i].numberOfOrder[1]);
+      }
+      setWeekRow(weekRow);
+      setRevenueWeek(revenueWeek);
+      setDataMonth(data.month);
+      const productsList = await axios.get(
+        `${api}dashboard/top-selling`,
+        config
+      );
+      setProductsList(productsList.data);
     }
-    setWeekRow(weekRow);
-    setRevenueWeek(revenueWeek);
-    setDataMonth(data.month);
-    const productsList = await axios.get(`${api}dashboard/top-selling`,config);
-    setProductsList(productsList.data);
   };
   useEffect(() => {
+    
     getDashboardData();
   }, []);
   return (
@@ -71,7 +80,7 @@ function BusinessHome() {
         <Grid item xs={12} lg={4}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <MonthRevenue data={dataMonth} /> 
+              <MonthRevenue data={dataMonth} />
             </Grid>
           </Grid>
         </Grid>
