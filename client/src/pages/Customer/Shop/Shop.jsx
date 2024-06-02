@@ -17,7 +17,7 @@ const typecheckbox = ["Jacket", "Jean", "Cotons", "Excool"];
 
 function Shop() {
   const navigate = useNavigate();
-  const productsPerPage = 3;
+  const productsPerPage = 10;
   const productsPerRow = 5;
   const totalProducts = 50;
   const [page, setPage] = React.useState(0);

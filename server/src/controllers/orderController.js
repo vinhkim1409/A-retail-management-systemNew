@@ -4,6 +4,8 @@ const Business = require("../models/businessModel");
 const { default: mongoose } = require("mongoose");
 const Product = require("../models/productModel");
 const fetch = require("node-fetch");
+const fs = require('fs');
+const path = require('path');
 async function deleteProductFromCart(conditionCart, idProductInCart) {
   try {
     const updateCart = await Cart.findOneAndUpdate(
@@ -175,7 +177,27 @@ const getShippingStatus = async (order_code) => {
     next(error);
   }
 };
+const getLocalDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}/${month}/${day}`;
+};
+
 const orderController = {
+  accessToken: "",
+  loadAccessToken: function () {
+    const tokenPath = path.join(__dirname, '../token.txt');
+    fs.readFile(tokenPath, 'utf8', (err, data) => {
+      if (err) {
+        console.error('Error reading access token file:', err);
+        process.exit(1);
+      }
+      this.accessToken = data.trim();
+      console.log('Access Token loaded:', this.accessToken);
+    });
+  },
   createOrder: async (req, res) => {
     try {
       //create order

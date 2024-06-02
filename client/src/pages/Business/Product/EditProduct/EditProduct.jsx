@@ -58,11 +58,12 @@ function EditProduct() {
       Authorization: `Bearer ${userBusiness?.accessToken}`,
     },
   };
-  
+
   const getProduct = async () => {
     try {
       const Products = await axios.get(`${api}product/${id}`);
       let Product = Products.data;
+      console.log("product sendo", Product);
       setProduct(Product);
       const arrayImg = Product.pictures.map((img) => {
         return img.picture_url;
@@ -208,11 +209,18 @@ function EditProduct() {
     // Chuyển chuỗi ngày tháng năm giờ thành đối tượng Date
     const date = new Date(dateTimeString);
 
+    // Kiểm tra xem đối tượng Date có hợp lệ không
+    if (isNaN(date.getTime())) {
+      // Nếu không hợp lệ, trả về chuỗi rỗng hoặc giá trị mặc định
+      return "";
+    }
+
     // Sử dụng phương thức toISOString để lấy ra phần ngày tháng năm
     const dateOnly = date.toISOString().split("T")[0];
 
     return dateOnly;
   }
+
 
   console.log("Selected Attributes", selectedAttributes);
   console.log("Attribute Data", attributeData);
@@ -413,11 +421,11 @@ function EditProduct() {
   const handleChangeProduct = async () => {
     const imgArray = [];
     for (let i = 0; i < img.length; i++) {
-      if(img[i].lenght>100){
-      const imgRef = ref(imageDB, `files/${v4()}`);
-      const snapshot = await uploadString(imgRef, img[i], "data_url");
-      const url = await getDownloadURL(snapshot.ref);
-      imgArray.push(url);
+      if (img[i].lenght > 100) {
+        const imgRef = ref(imageDB, `files/${v4()}`);
+        const snapshot = await uploadString(imgRef, img[i], "data_url");
+        const url = await getDownloadURL(snapshot.ref);
+        imgArray.push(url);
       }
       else {
         imgArray.push(img[i]);
@@ -494,7 +502,7 @@ function EditProduct() {
     console.log("productData", productData);
 
     await axios
-      .put(`${api}product/${id}`, productData,config)
+      .put(`${api}product/${id}`, productData, config)
       .then((response) => {
         console.log("Product updated successfully:", response.data);
       })
@@ -515,7 +523,7 @@ function EditProduct() {
 
               <Grid container className="industry">
                 <Grid container item xs={12}>
-                  <Grid item xs={3.3}>
+                  <Grid item xs={11.5}>
                     <Stack spacing={1}>
                       <InputLabel
                         htmlFor="title"
@@ -536,27 +544,7 @@ function EditProduct() {
                       </FormHelperText>
                     </Stack>
                   </Grid>
-                  <Grid xs={3.3} sx={{ marginLeft: 10 }}>
-                    <Stack spacing={1}>
-                      <InputLabel
-                        htmlFor="title"
-                        style={{ fontWeight: 600, color: "gray" }}
-                      >
-                        Product Code
-                      </InputLabel>
-                      <OutlinedInput
-                        value={productCode}
-                        size="small"
-                        style={styles}
-                        sx={{ boxShadow: 3 }}
-                        onChange={(e) => setProductCode(e.target.value)}
-                        error={errorName}
-                      />
-                      <FormHelperText error={errorName}>
-                        {errorName ? "Please enter a name of product" : ""}
-                      </FormHelperText>
-                    </Stack>
-                  </Grid>
+
                 </Grid>
 
                 <Grid container item xs={12} style={{ marginBottom: 20 }}>
@@ -648,7 +636,7 @@ function EditProduct() {
                   >
                     Picture
                   </InputLabel>
-                  <UploadImg setImg={setImg}/>
+                  <UploadImg setImg={setImg} />
                 </Stack>
               </Grid>
 

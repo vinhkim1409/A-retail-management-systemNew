@@ -31,15 +31,33 @@ router.put(
   authMiddlewares.verifyToken,
   orderController.handlPayOrder
 );
+
+router.get("/info", authMiddlewares.verifyToken, orderController.getInfoOrder);
 router.get(
   "/check-shipping-status",
   authMiddlewares.verifyTokenCustomer,
   orderController.checkShippingStatus
 );
 router.post("/notify-payment", orderController.notifyOrderCustomer);
-router.post("/create-request/:orderID",authMiddlewares.verifyTokenCustomer, orderController.createRedeliveryRequest);
-router.post("/reject-request",authMiddlewares.verifyToken, orderController.rejectRequest);
-router.post("/accept-request",authMiddlewares.verifyToken, orderController.acceptRequest);
-router.post("/confirm-receipt",authMiddlewares.verifyTokenCustomer, orderController.confirmReceipt);
+router.post(
+  "/create-request/:orderID",
+  authMiddlewares.verifyTokenCustomer,
+  orderController.createRedeliveryRequest
+);
+router.post(
+  "/reject-request",
+  authMiddlewares.verifyToken,
+  orderController.rejectRequest
+);
+router.post(
+  "/accept-request",
+  authMiddlewares.verifyToken,
+  orderController.acceptRequest
+);
+router.post(
+  "/confirm-receipt",
+  authMiddlewares.verifyTokenCustomer,
+  orderController.confirmReceipt
+);
 
 module.exports = router;

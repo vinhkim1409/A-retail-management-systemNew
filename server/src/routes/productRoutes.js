@@ -33,6 +33,8 @@ router.put(
   productController.updateQuantity
 );
 
+router.put("/updateId", authMiddleware.verifyToken, productController.updateProductId);
 router.put("/:id", authMiddleware.verifyToken, productController.updateProduct);
+
 
 module.exports = router;

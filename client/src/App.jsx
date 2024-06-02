@@ -99,7 +99,7 @@ function App() {
           <Route path="product" element={<ProductM />} />
           <Route path="product/add" element={<AddProduct />} />
           <Route path="product/edit/:id" element={<EditProduct />} />
-          <Route path="product/detail/:id" element={<DetailProduct />} />
+          <Route path="product/detail/:id" element={<DetailProductCustomer />} />
           <Route path="customer-information" element={<CustomerInformation />} />
           <Route path="order" element={<OrderBusiness />} />
           <Route path="order/:id" element={<DetailOrderBusiness/>} />

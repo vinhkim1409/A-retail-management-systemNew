@@ -69,6 +69,12 @@ function SignUpPage() {
         </div>
         <div className="form_container  rounded ">
           <form className="form_container1">
+          <div className="form-box">
+              <div className="logo">
+                <img src={logo} alt="logo" className="img-logo" />
+              </div>
+              <div className="mini-title">Please enter your infomation</div>
+            </div>
             <div className="form-box">
               <div className="logo">
                 <img src={logo} alt="logo" className="img-logo" />
