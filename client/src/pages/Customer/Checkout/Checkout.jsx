@@ -52,7 +52,7 @@ const Checkout = () => {
           (curr.variant > 0
             ? curr.product.variants[curr.variant - 1].variant_special_price
             : curr.product.price) *
-            curr.quantity
+          curr.quantity
           // (1 - 20 / 100) * tai sao lai co
         );
       }, deliveryFee)
@@ -123,6 +123,7 @@ const Checkout = () => {
   const [shippingFee, setShippingFee] = useState(0);
 
   const handleOrder = async () => {
+    updateProductQuantitySendo(order);
     const orderInfo = {
       products: order,
       statusPayment: "Wait Pay",
@@ -154,15 +155,38 @@ const Checkout = () => {
     } else {
       const createOrder = await axios.post(
         `${api}order/createOrder`,
-        orderInfo,config
+        orderInfo, config
       );
-      if(createOrder.data.success){
+      if (createOrder.data.success) {
         navigate(`/${tenantURL}/customers/order`)
       }
 
       console.log(createOrder.data);
     }
+
   };
+
+  console.log("orderrr", order);
+  function extractProductDetails(orders) {
+    return orders.map(order => ({
+      id: order.product.id,
+      quantity: order.quantity
+    }));
+  }
+
+  async function updateProductQuantitySendo(orders) {
+    const productDetails = extractProductDetails(orders);
+
+    for (const detail of productDetails) {
+      try {
+        console.log("detail", detail);
+        const response = await axios.put(`${api}product/quantitySendo`, detail, config);
+        console.log(`Updated product ${detail.id} with response:`, response.data);
+      } catch (error) {
+        console.error(`Failed to update product ${detail.id}:`, error);
+      }
+    }
+  }
 
   return (
     <>
@@ -195,7 +219,7 @@ const Checkout = () => {
                 id="phone"
                 value={phone}
                 className="input-info"
-                // onChange={(e) => setPhone(e.target.value)}
+              // onChange={(e) => setPhone(e.target.value)}
               />
             </div>
           </div>
@@ -217,9 +241,8 @@ const Checkout = () => {
               >
                 {customer.resCustomer.address.map((address, index) => (
                   <option key={index} value={parseInt(index)}>
-                    {`${address.detail}, ${address.ward.split("//")[0]}, ${
-                      address.district.split("//")[0]
-                    }, ${address.province.split("//")[0]}`}
+                    {`${address.detail}, ${address.ward.split("//")[0]}, ${address.district.split("//")[0]
+                      }, ${address.province.split("//")[0]}`}
                   </option>
                 ))}
               </select>
@@ -326,7 +349,7 @@ const Checkout = () => {
                       {getPriceExpr(
                         item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                              .variant_special_price
+                            .variant_special_price
                           : item.product.price
                       )}
                     </div>
@@ -334,7 +357,7 @@ const Checkout = () => {
                       {getPriceExpr(
                         item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                              .variant_price
+                            .variant_price
                           : item.product.price
                       )}
                     </div>
@@ -347,7 +370,7 @@ const Checkout = () => {
                       {getPriceExpr(
                         (item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                              .variant_special_price
+                            .variant_special_price
                           : item.product.price) * item.quantity
                       )}
                     </div>
@@ -376,21 +399,17 @@ const Checkout = () => {
               </div>
               <div className="address-confirm">
                 <p>Địa chỉ nhận hàng:</p>
-                <p className="text-confirm">{`${
-                  customer.resCustomer?.address[addressChoice]?.detail
-                }, ${
-                  customer.resCustomer?.address[addressChoice]?.ward.split(
+                <p className="text-confirm">{`${customer.resCustomer?.address[addressChoice]?.detail
+                  }, ${customer.resCustomer?.address[addressChoice]?.ward.split(
                     "//"
                   )[0]
-                }, ${
-                  customer.resCustomer?.address[addressChoice]?.district.split(
+                  }, ${customer.resCustomer?.address[addressChoice]?.district.split(
                     "//"
                   )[0]
-                }, ${
-                  customer.resCustomer?.address[addressChoice]?.province.split(
+                  }, ${customer.resCustomer?.address[addressChoice]?.province.split(
                     "//"
                   )[0]
-                }`}</p>
+                  }`}</p>
               </div>
               <div className="delivery-confirm">
                 <p>Phương thức vận chuyển:</p>

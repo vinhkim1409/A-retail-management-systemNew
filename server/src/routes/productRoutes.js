@@ -12,6 +12,7 @@ router.get("/get/top-sale/:tenantURL", productController.getTopSale);
 
 router.get("/sendo", authMiddleware.verifyToken, productController.fetchSendoProducts);
 router.get("/create-sendo", authMiddleware.verifyToken, productController.createSendoProduct);
+router.put("/quantitySendo", authMiddleware.verifyToken, productController.updateQuantitySendo);
 
 router.post(
   "/add",

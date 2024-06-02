@@ -129,7 +129,16 @@ const productController = {
               const productDetailmain = await detailResponse.json();
               const productDetail = productDetailmain.result;
 
+              // Chuyển đổi timestamp sang định dạng Date
+              if (productDetail.promotion_from_date_timestamp) {
+                productDetail.promotion_from_date = new Date(productDetail.promotion_from_date_timestamp * 1000);
+              }
+              if (productDetail.promotion_to_date_timestamp) {
+                productDetail.promotion_to_date = new Date(productDetail.promotion_to_date_timestamp * 1000);
+              }
+
               const newProduct = new Product({ tenantID: req.tenantID, ...productDetail });
+              console.log("newProductfromSendo", newProduct);
               await newProduct.save();
 
               return productDetail;
@@ -261,6 +270,74 @@ const productController = {
       res.status(500).json({ message: "Error updating product quantity", error });
     }
   },
+  updateQuantitySendo: async (req, res) => {
+    try {
+      const { id, quantity } = req.body;
+
+      const intId = parseInt(id, 10);
+
+      // Tìm sản phẩm theo ID
+      const product = await Product.findOne({ id: intId });
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      // Cập nhật số lượng tồn kho
+      if (product.is_config_variant) {
+        product.variants.forEach(variant => {
+          variant.variant_quantity -= quantity;
+        });
+      } else {
+        product.stock_quantity -= quantity;
+      }
+
+      const productData = {
+        product_id: product.id,
+        price: product.price,
+        stock_quantity: product.stock_quantity,
+        is_config_variant: product.is_config_variant,
+        stock_availability: product.stock_availability,
+        special_price: product.special_price || undefined,
+        promotion_start_date: product.special_price && product.promotion_from_date instanceof Date ? product.promotion_from_date.toISOString() : undefined,
+        promotion_end_date: product.special_price && product.promotion_to_date instanceof Date ? product.promotion_to_date.toISOString() : undefined,
+        variants: product.is_config_variant ? product.variants.map(variant => ({
+          variant_attributes: variant.variant_attributes,
+          variant_sku: variant.variant_sku,
+          variant_price: variant.variant_price,
+          variant_quantity: variant.variant_quantity,
+        })) : []
+      };
+
+      // Loại bỏ các trường undefined
+      Object.keys(productData).forEach(key => {
+        if (productData[key] === undefined) {
+          delete productData[key];
+        }
+      });
+
+      console.log("productData", productData);
+
+      const response = await fetch('https://open.sendo.vn/api/partner/product/config/variant-price', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `bearer ${productController.accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify([productData])
+      });
+
+      console.log("response Sendo ne", response);
+
+      if (response.ok) {
+        res.status(200).json({ message: "Product quantity updated successfully on Sendo" });
+      } else {
+        const errorData = await response.json();
+        res.status(500).json({ message: "Failed to update product quantity on Sendo", details: errorData });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Error updating product quantity", error: error.message });
+    }
+  },
   updateProduct: async (req, res) => {
     try {
       const productId = req.params.id;
@@ -351,6 +428,7 @@ const productController = {
       res.status(500).json({ message: 'An error occurred while creating products on Sendo', details: error.message });
     }
   },
+
   init: function () {
     this.loadAccessToken();
   }
