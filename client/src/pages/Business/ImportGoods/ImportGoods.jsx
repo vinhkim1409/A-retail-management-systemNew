@@ -90,24 +90,6 @@ function ImportGoods() {
       });
   };
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(`${api}/order/info`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const result = await response.json();
-      setData(result);
-      console.log("result sendo", result);
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   return (
     <>
       <div className="import-goods-container">

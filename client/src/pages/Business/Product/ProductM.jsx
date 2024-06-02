@@ -79,7 +79,8 @@ function ProductM() {
 
   const [showModal, setShowModal] = useState(false);
   const [idDelete, setIdDelete] = useState("");
-  const [nameDelete, setNameDelete] = useState(""); // Thêm state cho tên sản phẩm cần xóa
+  const [nameDelete, setNameDelete] = useState("");
+  const [sendoOrder, setSendoOrder] = useState("");
 
   const handleOpenModal = (id, name) => {
     setIdDelete(id);
@@ -117,6 +118,7 @@ function ProductM() {
   );
 
   const [filter, setFilter] = useState('Active');
+  const [isOrderFetched, setIsOrderFetched] = useState(false);
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
@@ -165,11 +167,32 @@ function ProductM() {
     }
   };
 
+  const fetchOrderSendo = async () => {
+    if (isOrderFetched) return;
+    try {
+      const response = await axios.get(`${api}order/info`, config);
+      console.log("fetchOrderSendo", response);
+      const result = response.data;
+      setSendoOrder(result.sku_details);
+      console.log("result sendo", result.sku_details);
+      setIsOrderFetched(true);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+
+    }
+  };
+
   useEffect(() => {
     sendoProduct();
     createSendoProduct();
     getAllProducts();
     console.log("re-render");
+  }, []);
+
+  useEffect(() => {
+    if (!isOrderFetched) {
+      fetchOrderSendo();
+    }
   }, []);
 
 
