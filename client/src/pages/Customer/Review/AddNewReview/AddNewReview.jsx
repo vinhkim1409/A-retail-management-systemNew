@@ -26,6 +26,10 @@ function AddNewReview() {
       point: stars,
       desc: desc,
     },config);
+    if(newReview.data.success)
+      {
+        navigate(`/${tenantURL}/customer/detail-product/${id}`)
+      }
     console.log(newReview.data);
   };
   return (
