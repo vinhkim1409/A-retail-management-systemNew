@@ -27,10 +27,10 @@ const NavbarAdminBusiness = () => {
           <img src={avt} alt="avt" />
         </div>
         <div className="drop">
-          <a >
+          {/* <a >
             <FontAwesomeIcon icon={faUser} className="icon" />
             Profile
-          </a>
+          </a> */}
           <a onClick={handleLogOut}>
           <FontAwesomeIcon icon={faRightFromBracket} className="icon"  />
             Logout
