@@ -16,7 +16,7 @@ function ReadMore({ children, maxChareacterCount = 100 }) {
         <div className="ReadMore-container">
             {resultString}
             <div className="Xem_them_grid">
-                <button onClick={toggleIsTruncated} className="Xem_them_button"> {isTruncated ? "Xem Thêm" : "Rút gọn"}</button>
+                <button onClick={toggleIsTruncated} className="Xem_them_button"> {isTruncated ? "See more" : "Compact"}</button>
             </div>
         </div>
     );

@@ -1,0 +1,93 @@
+.signupCustomer-form {
+  display: flex;
+  justify-content: center;
+  .inner{
+    font-family: 'Josefin Sans', sans-serif;
+    width: 780px;
+    
+    border-radius: 20px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 40px 20px 40px;
+    margin-bottom: 100px;
+
+}
+.lable{
+  
+}
+.title{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.passworkWrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.signupBtn{
+    margin-left: auto;
+    margin-top: 20px;
+}
+
+
+.fileArea {
+    width: 100%;
+    position: relative;
+}
+
+.inputFile{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+    
+}
+
+.fileSuccess {
+    display: none;
+}
+
+.fileDummy {
+    width: 100%;
+    min-height: 103px;
+    padding: 15px 30px;
+    background: rgba(255,255,255,0.2);
+    text-align: center;
+    transition: rgba(255,255,255,0.2) 0.3s ease-in-out;
+    border: 1px solid #1488DB;
+    margin-bottom: 10px;
+}
+
+.inputFile:focus + .fileDummy {
+    outline: 2px solid rgba(255,255,255,0.5);
+    outline: -webkit-focus-ring-color auto 5px;
+}
+.inputFile:valid + .fileDummy {
+    border-color: rgba(0,255,0,0.3);
+    background-color: rgba(0,255,0,0.2);
+}
+.inputFile:valid + .fileDummy .fileSuccess {
+    display: inline-block;
+}
+.inputFile:valid + .fileDummy  .fileDefault {
+    display: none;
+} 
+
+.iconProgess{
+    margin-top: 1px;
+}
+.mr-2
+{
+    margin-right: 2%;
+}
+}

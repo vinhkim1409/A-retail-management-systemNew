@@ -1,4 +1,4 @@
-.login-form {
+.loginBusiness-form {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -7,7 +7,8 @@
 
   .form_container {
     width: 40%;
-    padding-top: 3%;
+    padding-top: 1%;
+    padding-top: 1%;
     padding-bottom: 3%;
     border-radius: 25px;
     background-color: white;
@@ -58,7 +59,10 @@
   .form-box {
     width: 100%;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    align-items: center;
+    flex-direction: column;
   }
   .btn-google {
     background-color: rgba(215, 215, 215, 0.5);
@@ -83,9 +87,44 @@
     flex-direction: column;
     width: 55%;
   }
-  .img{
+
+  .img {
     width: 70%;
-    
     margin-left: 10%;
+  }
+  .form-box .label {
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 550;
+    align-self: flex-start;
+    margin-left: 10%;
+  }
+  .form-box .form-title {
+    font-size: 30px;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 550;
+    margin-bottom: 1%;
+    align-self: flex-start;
+    margin-left: 10%;
+  }
+  .form-box .mini-title {
+    font-size: 14;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 500;
+    margin-bottom: 1%;
+    align-self: flex-start;
+    margin-left: 10%;
+  }
+  .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .img-logo {
+    width: 70px;
+    height: 70px;
   }
 }

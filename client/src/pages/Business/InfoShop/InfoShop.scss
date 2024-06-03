@@ -1,0 +1,72 @@
+.info-shop-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin-top: 50px;
+  
+    .info-shop-title {
+      font-size: 24px;
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  
+    .info-shop-form {
+      display: flex;
+      flex-direction: column;
+  
+      .info-shop-form-item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+  
+        label {
+          font-size: 16px;
+          margin-bottom: 10px;
+          display: flex;
+          flex-direction: column;
+  
+          input {
+            margin-top: 5px;
+          }
+        }
+  
+        select, input {
+          padding: 10px;
+          border: 2px solid #007BFF;
+          border-radius: 4px;
+          font-size: 16px;
+  
+          &:focus {
+            border-color: #28A745;
+            outline: none;
+          }
+        }
+      }
+  
+      button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007BFF;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+  
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+    }
+    .message{
+      margin-top: 10px;
+      text-align: center;
+      font-weight: 550;
+    }
+  }

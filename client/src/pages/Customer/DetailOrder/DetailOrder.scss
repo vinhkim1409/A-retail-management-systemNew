@@ -1,224 +1,301 @@
-.DetailOrderM-container {
-  margin-top: 30px;
-  font-family: "Roboto", sans-serif;
-  display: flex;
-  flex-direction: column;
+.detailordercustomer-container {
+  width: 80%;
+  margin-left: 10%;
 
   .title {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: bold;
   }
   .header {
-    width: 100%;
     padding: 10px 0;
-  }
-
-  .delivery {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .address {
-    width: 40%;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1% 1% 1% 1%;
-  }
-  .detail-delivery {
-    width: 55%;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1% 1% 1% 1%;
-  }
-
-  .title-address,
-  .title-delivery {
-    font-size: 24px;
-    font-weight: bold;
-  }
-
-  .content-address,
-  .content-delivery {
-    width: 100%;
-    margin-top: 20px;
-  }
-
-  .name-address {
-    font-size: 20px;
     margin-bottom: 1%;
     display: flex;
-    .lable {
-        margin-right: 2%;
-        font-weight: 600;
-      }
+    justify-content: space-between;
   }
-
-  .phone-address {
-    display: flex;
-    color: rgb(168, 168, 168);
-    .lable {
-      margin-right: 2%;
-      font-weight: 600;
-    }
-  }
-  .detail-address {
-    color: rgb(168, 168, 168);
-    .lable {
-      font-weight: 600;
-    }
-  }
-
-  .time-status-delivery {
-    width: 100%;
-    display: flex;
-    margin-bottom: 5px;
-  }
-  .time-delivery {
-    margin-right: 20px;
+  .request{
     display: flex;
     align-items: center;
+    padding: 1% 1% 1% 2%;
+    font-weight: 600;
+    border-radius: 10px;
+    background-color: #F7BF4D;
+    color: black;
+    height: 80%;
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
   }
-  .icon-circle {
-    font-size: 8px;
-    margin-right: 5px;
-  }
-
-  .order {
-    width: 100%;
-    margin-top: 20px;
+  .detail-info {
     display: flex;
     justify-content: space-between;
-    background-color: rgb(255, 255, 255);
-    min-height: 470px;
+  }
+  .order-info {
+    width: 61%;
+    background-color: white;
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1% 1% 1% 1%;
+    padding: 1.5% 1% 0% 2%;
   }
+  .another-info {
+    width: 37%;
 
-  .tab button {
-    background-color: inherit;
-    float: left;
-    border: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-    width: 20%;
-    font-size: 16px;
+    .order-summary {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding-top: 1%;
+      padding-bottom: 1%;
+      height: auto;
+      margin-bottom: 1%;
+      .summary-label {
+        margin-left: 4%;
+        margin-bottom: 2%;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        font-size: 17px;
+        color: #334155;
+      }
+    }
+    .ship-info {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 1% 0% 0% 5%;
+      .phone-number {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .ship-status {
+        margin-bottom: 4%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .person-info {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .address {
+        margin-bottom: 3%;
+        display: flex;
+        .label {
+          font-weight: 600;
+          margin-right: 1%;
+        }
+        font-family: "Inter", sans-serif;
+        color: #334155;
+      }
+      .ship-label {
+        margin-bottom: 2%;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        font-size: 17px;
+        color: #334155;
+      }
+    }
   }
-  .tab button:hover {
-    background-color: #ddd;
+  .label-frame {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2%;
+    align-items: center;
   }
-
-  .tab button.active {
-    background-color: sumpricergb(0, 0, 0);
+  .content-label {
+    width: 70%;
+    // border: 1px solid gray;
+  }
+  .action {
+    width: 22%;
+    display: flex;
+    align-items: center;
+    padding: 1% 1% 1% 2%;
+    font-weight: 600;
+    border-radius: 10px;
+    background-color: #0d6efd;
     color: white;
+    height: 80%;
+    font-size: 14px;
+    border: 1px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-  .tabcontent {
-    // padding: 6px 12px;
-    border-top: none;
-    width: 100%;
+  .action:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0d6efd;
+    border: 1px solid #0d6efd;
   }
-  .username {
-    border-bottom: solid 1.5px black;
-    margin-bottom: 16px;
-    font-weight: bold;
-    // margin: 0 16px;
+  .action:hover {
+    box-shadow: 0 0 5px #0d6efd;
+    border: 1px solid #0d6efd;
+    text-shadow: 0 0 5px white;
   }
-  .username-content {
-    padding-bottom: 5px;
-  }
-  .book-detail {
+  .confirm {
+    width: 22%;
     display: flex;
-    margin: 16px 0;
-    justify-content: space-between;
-    font-weight: bold;
-    padding-bottom: 8px;
-
-    border-bottom: solid 1.5px black;
-  }
-  .book-info {
-    display: flex;
-    justify-content: space-between;
-  }
-  .image {
-    margin-right: 16px;
-  }
-  .name-count {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .price {
-    float: right;
-    width: 9rem;
-    display: flex;
-    justify-content: space-between;
-  }
-  .initial-price {
-    color: #808080;
-    text-decoration-line: line-through;
-  }
-  .last-price {
-    color: #c00000;
-  }
-  .horizontal-line {
-    margin-top: -10px;
-    border-top: 2px solid #808080;
-  }
-  .total {
-    display: flex;
-    flex-direction: column;
-    float: right;
-  }
-  .sumprice {
-    width: 13rem;
-    text-align: right;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-  }
-  .sum {
-    color: #808080;
-  }
-  .total-price {
-    color: #000000;
-  }
-  .final-price {
-    color: #c00000;
-  }
-  .repurchase {
-    width: 10rem;
-  }
-  .button-repurchase {
-    width: 5rem;
-    height: 2rem;
-    cursor: pointer;
-    border-radius: 6px;
-    border: none;
-    background-color: #c00000;
+    align-items: center;
+    padding: 1% 1% 1% 2%;
+    font-weight: 600;
+    border-radius: 10px;
+    background-color: #65E87A;
     color: white;
+    height: 80%;
+    font-size: 14px;
+    border: 1px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .confirm:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #65E87A;
+    border: 1px solid #65E87A;
+  }
+  .confirm:hover {
+    box-shadow: 0 0 5px #65E87A;
+    border: 1px solid #65E87A;
+    text-shadow: 0 0 5px white;
+  }
+  .review-btn {
     text-align: center;
-    margin-top: 16px;
-    float: right;
-  }
-  .button-order {
-    margin-top: 130px;
-    display: flex;
-    justify-content: right;
-  }
-  .detail-button {
-    margin-left: 10px;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-weight: 500;
+    padding: 1% 4% 1% 2%;
+    font-weight: 600;
+    border-radius: 10px;
+    background-color: #0d6efd;
     color: white;
-    background-color: black;
+    height: 80%;
+    font-size: 14px;
+    border: 1px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  .mini-label {
+    display: flex;
+    width: 100%;
+    margin-top: 1%;
+  }
+  .paidTag {
+    border-radius: 10px;
+    background-color: #198754;
+    color: white;
+    width: 30%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .wayPaidTag {
+    border-radius: 10px;
+    background-color: #ffca2c;
+    color: black;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0% 0% 0% 0%;
+  }
+  .payment-status {
+    display: flex;
+    align-items: center;
+    width: 14%;
+    margin-left: 2%;
+  }
+  .order-date {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+  }
+  .order-id {
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    font-size: 17px;
+    color: #334155;
+  }
+  .lable-product {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    font-weight: 550;
+  }
+  .product {
+    width: 40%;
+    padding-left: 4%;
+    // border: 1px solid gray;
+    .img {
+      width: 20%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+    .product-container {
+      display: flex;
+      align-items: center;
+    }
+    .name-frame {
+      margin-left: 1%;
+    }
+    .name-product {
+      max-width: 65%;
+      font-family: "Inter", sans-serif;
+      color: #334155;
+      font-weight: 550;
+      text-transform: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sku {
+      font-family: "Inter", sans-serif;
+      color: #334155;
+    }
+  }
+  .description {
+    padding-left: 4%;
+
+    font-family: "Inter", sans-serif;
+    color: #334155;
+    width: 50%;
+  }
+  .quantity {
+    width: 15%;
+    // border: 1px solid gray
+  }
+  .amount {
+    width: 15%;
+    // border: 1px solid gray
+  }
+  .review{
+    width: 10%;
+  }
+  .img{
+    width: 300px;
+    height: 200px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .label-box{
+    width: 300px;
+    height: 200px;
+    border: 1px dashed blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+  .icon{
+    width: 200px;
+    height: 100px;
   }
 }

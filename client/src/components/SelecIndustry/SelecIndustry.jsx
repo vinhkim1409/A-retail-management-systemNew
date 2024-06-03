@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import "./SelecIndustry.scss";
 const style = {
   position: "absolute",
-  top: "50%",
+  top: "45%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "50%",
-  height: "50%",
+  width: 800,
   bgcolor: "background.paper",
   border: "2px solid white",
-
   p: 4,
+  outline:"none",
+  borderRadius:"10px"
 };
 const industrys = [
   "",
@@ -65,6 +65,7 @@ function SelecIndustry() {
                     onClick={() => {
                       setNumInd(index);
                       setNumSub(0);
+                      setNumSubSub(0)
                     }}
                     key={index}
                   >
@@ -87,6 +88,7 @@ function SelecIndustry() {
                       className={index === numSub ? `inds selected` : `inds`}
                       onClick={() => {
                         setNumSub(index);
+                        setNumSubSub(0)
                       }}
                     >
                       {subInd}

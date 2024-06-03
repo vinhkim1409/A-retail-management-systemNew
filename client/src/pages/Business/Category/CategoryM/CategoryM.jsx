@@ -14,6 +14,8 @@ import AddNewCategory from "../../../../components/AddNewCategory/AddNewCategory
 import AddProductCatalog from "../AddProductCatalog/AddProductCatalog";
 import axios from "axios";
 import { api } from "../../../../constant/constant";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const StyledTable = styled(Table)(() => ({
   whiteSpace: "pre",
@@ -40,6 +42,16 @@ const style = {
 function CategoryM() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const userBusiness = useSelector(
+    (state) => state.authBusiness.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userBusiness?.accessToken}`,
+    },
+  };
+  const { tenantURL } = useParams();
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -76,9 +88,13 @@ function CategoryM() {
     }
   };
   const getCatergory = async () => {
-    const Category = await axios.get(`${api}category`);
+    const Category = await axios.get(
+      `${api}category/by-tenantURl/${tenantURL}`
+    );
     setCategorys(Category.data);
+    console.log(Category);
   };
+
   useEffect(() => {
     getCatergory();
   }, []);
@@ -101,10 +117,18 @@ function CategoryM() {
   const handleCloseDelete = () => {
     setOpenDelete(false);
   };
-  const handleDelete = () => {
-    const newArrayIds = categorys.filter((item) => !ids.includes(item.id));
-    setCategorys(newArrayIds);
-    setOpenDelete(false);
+  const handleDelete = async () => {
+    const deleteCategory = await axios.put(
+      `${api}category/delete`,
+      ids,
+      config
+    );
+    if (deleteCategory.data.success) {
+      const newArrayIds = categorys.filter((item) => !ids.includes(item._id));
+      console.log(newArrayIds);
+      setCategorys(newArrayIds);
+      setOpenDelete(false);
+    }
   };
 
   return (
@@ -168,7 +192,13 @@ function CategoryM() {
           </div>
         </div>
       </div>
-      <AddProductCatalog open={open} handleClose={handleClose} id={idCatalog} categorys={categorys} setCategorys={setCategorys} />
+      <AddProductCatalog
+        open={open}
+        handleClose={handleClose}
+        id={idCatalog}
+        categorys={categorys}
+        setCategorys={setCategorys}
+      />
 
       <Modal
         open={openDelete}

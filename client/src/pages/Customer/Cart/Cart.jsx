@@ -1,60 +1,51 @@
-import React, { useState, useEffect } from 'react'
-import './Cart.scss';
+import React, { useState, useEffect } from "react";
+import "./Cart.scss";
 import images from "../../../images/index";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import { getPriceExpr } from "../../../utils/getPriceRepr"
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { getPriceExpr } from "../../../utils/getPriceRepr";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { api } from "../../../constant/constant";
+import { useSelector } from "react-redux";
 const Cart = () => {
-
-  const [book, setBook] = useState([
+  const { tenantURL } = useParams();
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const customer = useSelector(
+    (state) => state.authCustomer.login?.currentUser
+  );
+  const config = {
+    headers: {
+      Authorization: `Bearer ${customer?.accessToken}`,
+    },
+  };
+  const address = [
     {
       id: "1",
-      name: "Thay đổi cuộc sống với nhân số học",
-      image: images.checkoutBook1,
-      price: 250000,
-      discount: 20,
-      count: 1,
+      fullname: "Lê Duy Khang",
+      phonenumber: "(+84)123456780",
+      province: "TP Hồ Chí Minh",
+      district: "Thành Phố Thủ Đức",
+      ward: "Phường Linh Trung",
+      addr: "Đại học Bách Khoa TPHCM",
     },
-    {
-      id: "2",
-      name: "Hiểu về trái tim (Tái bản 2023)",
-      image: images.checkoutBook2,
-      price: 125000,
-      discount: 25,
-      count: 2,
-    },
-    {
-      id: "3",
-      name: "Hiểu về trái tim (Tái bản 2023) v2",
-      image: images.checkoutBook2,
-      price: 150000,
-      discount: 25,
-      count: 1,
-    },
-    {
-      id: "4",
-      name: "Thay đổi cuộc sống với nhân số học v2",
-      image: images.checkoutBook1,
-      price: 300000,
-      discount: 20,
-      count: 1,
-    },
-  ]);
-
-  const address = [{
-    id: "1",
-    fullname: "Lê Duy Khang",
-    phonenumber: "(+84)123456780",
-    province: "TP Hồ Chí Minh",
-    district: "Thành Phố Thủ Đức",
-    ward: "Phường Linh Trung",
-    addr: "Đại học Bách Khoa TPHCM",
-  },
   ];
 
+  const getCart = async () => {
+    const cart = await axios.get(`${api}cart`, config);
+    console.log(cart.data[0].products);
+    setProducts(cart.data[0].products);
+  };
+  useEffect(() => {
+    if (!customer) {
+      navigate(`/${tenantURL}/customer/login`);
+    } else {
+      getCart();
+    }
+  }, []);
 
-  const countbook = book.length;
+  const countproducts = products.length;
   // const getTotalPrice = (deliveryFee = 0) =>
   //   getPriceExpr(
   //     book.reduce((prev, curr) => {
@@ -63,46 +54,56 @@ const Cart = () => {
   //   );
 
   const handleCountIncrease = (index) => {
-    const newBook = [...book];
-    newBook[index].count += 1;
-    setBook(newBook);
+    const newProducts = [...products];
+    newProducts[index].quantity += 1;
+    setProducts(newProducts);
   };
 
   const handleCountDecrease = (index) => {
-    const newBook = [...book];
-    if (newBook[index].count > 1) {
-      newBook[index].count -= 1;
-      setBook(newBook);
+    const newProducts = [...products];
+    if (newProducts[index].quantity > 1) {
+      newProducts[index].quantity -= 1;
+      setProducts(newProducts);
     }
   };
 
   const handleCountChange = (event, index) => {
-    const newBook = [...book];
+    const newProducts = [...products];
     const count = Number(event.target.value);
     if (count > 0) {
-      newBook[index].count = count;
-      setBook(newBook);
+      newProducts[index].quantity = count;
+      setProducts(newProducts);
     }
   };
 
-  const handleRemoveItem = (index) => {
-    const newBook = [...book];
-    newBook.splice(index, 1);
-    setBook(newBook);
+  const handleRemoveItem = async (index) => {
+    const deleteProductInCart = await axios.put(
+      `${api}cart/delete-product/${products[index]._id}`,
+      { productid: products[index]._id },
+      config
+    );
+    console.log(deleteProductInCart);
+    const newProducts = [...products];
+    newProducts.splice(index, 1);
+    setProducts(newProducts);
+    //goi api de thay doi so luong product trong cart
   };
-
 
   const [selectedItems, setSelectedItems] = useState([]);
   const [isHeadChecked, setIsHeadChecked] = useState(false);
 
   const handleHeadCheckboxChange = () => {
-    const newSelectedItems = !isHeadChecked ? book.map(item => item.id) : [];
+    const newSelectedItems = !isHeadChecked
+      ? products.map((item) => item._id)
+      : [];
     setSelectedItems(newSelectedItems);
-    setIsHeadChecked(!isHeadChecked || newSelectedItems.length === book.length);
+    setIsHeadChecked(
+      !isHeadChecked || newSelectedItems.length === products.length
+    );
   };
 
   const handleCheckboxChange = (index) => {
-    const selectedItem = book[index].id;
+    const selectedItem = products[index]._id;
     const selectedIndex = selectedItems.indexOf(selectedItem);
     let newSelectedItems = [...selectedItems];
 
@@ -122,24 +123,43 @@ const Cart = () => {
 
     setSelectedItems(newSelectedItems);
 
-    if (isHeadChecked && selectedIndex > -1 && newSelectedItems.indexOf(selectedItem) === -1) {
+    if (
+      isHeadChecked &&
+      selectedIndex > -1 &&
+      newSelectedItems.indexOf(selectedItem) === -1
+    ) {
       setIsHeadChecked(false);
-    } else if (newSelectedItems.length === book.length) {
+    } else if (newSelectedItems.length === products.length) {
       setIsHeadChecked(true);
     }
   };
 
-
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    const selectedBook = book.filter(item => selectedItems.includes(item.id));
-    const newTotalPrice = selectedBook.reduce((prev, curr) => {
-      return prev + curr.price * (1 - curr.discount / 100) * curr.count;
+    const selectedProducts = products.filter((item) =>
+      selectedItems.includes(item._id)
+    );
+    const newTotalPrice = selectedProducts.reduce((prev, curr) => {
+      return (
+        prev +
+        (curr.variant > 0
+          ? curr.product.variants[curr.variant - 1].variant_special_price
+          : curr.product.price) *
+          (1 - 10 / 100) *
+          curr.quantity
+      );
     }, 0);
     setTotalPrice(newTotalPrice);
-  }, [selectedItems, book]);
+  }, [selectedItems, products]);
+  const buyProduct = () => {
+    console.log(selectedItems);
+    const selectedProducts = products.filter((item) =>
+      selectedItems.includes(item._id)
+    );
 
+    navigate(`/${tenantURL}/customer/checkout`, { state: selectedProducts });
+  };
   return (
     <div className="Cart-container">
       <div className="title">Cart</div>
@@ -147,60 +167,83 @@ const Cart = () => {
         <div className="info">
           <div className="head">
             <div className="checkbox-head">
-              <input className="checkbox" type="checkbox" checked={isHeadChecked}
-                onChange={() => handleHeadCheckboxChange()} />
+              <input
+                className="checkbox"
+                type="checkbox"
+                checked={isHeadChecked}
+                onChange={() => handleHeadCheckboxChange()}
+              />
             </div>
             <div className="count-book-head">
-              Tất cả ({countbook} sản phẩm)
+              Tất cả ({countproducts} sản phẩm)
             </div>
-            <div className="price-head">
-              Đơn giá
-            </div>
-            <div className="count-head">
-              Số lượng
-            </div>
+            <div className="price-head">Đơn giá</div>
+            <div className="count-head">Số lượng</div>
           </div>
 
-          {book.map((item, index) => (
-            <div key={item.id}>
+          {products.map((item, index) => (
+            <div key={item._id}>
               <div className="book-info">
                 <div className="checkbox-info">
-                  <input className="checkbox" type="checkbox"
-                    checked={selectedItems.includes(item.id)}
-                    onChange={() => handleCheckboxChange(index)} />
+                  <input
+                    className="checkbox"
+                    type="checkbox"
+                    checked={selectedItems.includes(item._id)}
+                    onChange={() => handleCheckboxChange(index)}
+                  />
                 </div>
                 <div className="book-detail">
                   <div className="book-image">
-                    <img src={item.image} width="65px" height="92px" alt="alt" />
+                    <img
+                      src={item.product.avatar.picture_url}
+                      width="65px"
+                      height="92px"
+                      alt="alt"
+                    />
                   </div>
                   <div className="book-name">
-                    <p>{item.name}</p>
+                    <p>{item.product.name}</p>
                   </div>
                 </div>
                 <div className="price">
                   <div className="last-price">
-                    <p>{getPriceExpr(item.price, item.discount)}</p>
+                    <p>
+                      {getPriceExpr(
+                        item.variant > 0
+                          ? item.product.variants[item.variant - 1]
+                              .variant_special_price
+                          : item.product.price,
+                        20
+                      )}
+                    </p>
                   </div>
                   <div className="initial-price">
-                    {getPriceExpr(item.price)}
+                    {getPriceExpr(
+                      item.variant > 0
+                        ? item.product.variants[item.variant - 1].variant_price
+                        : item.product.price
+                    )}
                   </div>
                 </div>
                 <div className="count">
                   <button onClick={() => handleCountDecrease(index)}>-</button>
                   <input
-                    className='quantity-input'
-                    value={item.count}
+                    className="quantity-input"
+                    value={item.quantity}
                     onChange={(event) => handleCountChange(event, index)}
                   />
                   <button onClick={() => handleCountIncrease(index)}>+</button>
                 </div>
                 <button className="button-delete">
-                  <FontAwesomeIcon icon={faTrashCan} className="icon-trashcan" onClick={() => handleRemoveItem(index)} />
+                  <FontAwesomeIcon
+                    icon={faTrashCan}
+                    className="icon-trashcan"
+                    onClick={() => handleRemoveItem(index)}
+                  />
                 </button>
               </div>
             </div>
           ))}
-
         </div>
         <div className="address-price">
           <div className="price-info">
@@ -214,21 +257,19 @@ const Cart = () => {
                 <p>{getPriceExpr(0)}</p>
               </div>
             </div>
-            <div className="line">
-            </div>
+            <div className="line"></div>
             <div className="total-price">
               <p className="color-grey">Tổng tiền</p>
               <p className="final-price">{getPriceExpr(totalPrice)}</p>
             </div>
           </div>
-          <button className="button-buy">
+          <button className="button-buy" onClick={buyProduct}>
             Mua hàng ({selectedItems.length})
           </button>
         </div>
       </div>
+    </div>
+  );
+};
 
-    </div >
-  )
-}
-
-export default Cart
+export default Cart;

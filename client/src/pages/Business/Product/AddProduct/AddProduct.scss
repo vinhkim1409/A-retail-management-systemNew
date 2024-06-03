@@ -1,48 +1,62 @@
 .addproduct-container {
   display: flex;
   flex-direction: column;
+  padding: 20px;
+  background-color: #f9f9f9;
+
   .title {
     font-size: 30px;
     font-weight: bold;
-    margin-bottom: 3%;
+    margin-bottom: 2%;
     margin-top: 2%;
   }
+
   .title-small {
     font-size: 24px;
     font-weight: bold;
     color: #0d6efd;
   }
-  .basic-info{}
-  // .industry {
-  //   margin-top: 3%;
-  // }
-  // .desc {
-  //   margin-top: 3%;
-  // }
+
+  .basic-info {}
+
+  .desc {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
   .detail {
     margin-top: 2%;
+    margin-bottom: 2%;
   }
+
+  .variants {
+    margin-bottom: 2%;
+  }
+
+  .table {
+    margin-bottom: 2%;
+  }
+
   .pic {
     display: inline-block;
     width: 100%;
-
     height: 100px;
     overflow: hidden;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
     box-sizing: border-box;
     background-color: white;
     background-size: 60px 60px;
   }
+
   .title-detail {
     font-size: 20px;
     font-weight: 600;
   }
-  .detail-title
-  {
+
+  .detail-title {
     color: gray;
     font-weight: 600;
   }
+
   .btn {
     background-color: #0d6efd;
     border: none;
@@ -54,28 +68,80 @@
     border-radius: 5px;
     font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s ease;
   }
-  .btn-add{
+
+  .btn-cancel {
+    background-color: #dd3333;
+    border: none;
+    color: white;
+    padding: 12px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover, .btn-cancel:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-add {
     width: 100%;
     display: flex;
     justify-content: flex-end;
     margin-bottom: 2%;
-    
   }
-  button:hover::before{
-    transform: scale(1.1);
-    box-shadow: 0 0 15px #0d6efd;
+
+  .btn-generate-sku {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+
+    button {
+      background-color: #198754;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
   }
-  button:hover{
-    box-shadow: 0 0 5px #0d6efd;
-    text-shadow: 0 0 5px white;
+
+  .bulk-edit {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    margin-top: 50px;
+  
+    h3 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  
+    div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: 100%;
+    }
+  
+    .bulk-input {
+      flex: 1;
+      min-width: 150px;
+    }
   }
-  .btn:hover::before{
-    transform: scale(1.1);
-    box-shadow: 0 0 15px #0d6efd;
-  }
-  .btn:hover{
-    box-shadow: 0 0 5px #0d6efd;
-    text-shadow: 0 0 5px white;
-  }
+  
 }
