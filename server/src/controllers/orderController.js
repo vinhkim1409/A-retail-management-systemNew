@@ -1,5 +1,6 @@
 const Order = require("../models/orderModel");
 const Cart = require("../models/cartModel");
+const OrderId = require("../models/orderIdModel");
 const Business = require("../models/businessModel");
 const { default: mongoose } = require("mongoose");
 const Product = require("../models/productModel");
@@ -285,16 +286,12 @@ const orderController = {
   },
   getOrderBusiness: async (req, res) => {
     try {
-      const order = await Order.find({ tenantID: req.tenantID }).populate(
-        "customerID"
-      );
+      const order = await Order.find({ tenantID: req.tenantID });
       const orderRequest = await Order.find({
         tenantID: req.tenantID,
         is_refund: true,
-      }).populate("customerID");
-      const arrayOrder = orderRequest.concat(order);
-      const resOrder = [...new Set(arrayOrder)];
-      res.json({ success: true, data: resOrder });
+      });
+      res.json({ success: true, data: { order, orderRequest } });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -304,7 +301,7 @@ const orderController = {
       const order = await Order.findOne({
         tenantID: req.tenantID,
         _id: req.params.orderID,
-      }).populate("customerID");
+      });
       res.json({ success: true, data: order });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -316,7 +313,7 @@ const orderController = {
         { _id: req.body.orderID },
         { statusPayment: "Paid" },
         { new: true }
-      ).populate("customerID");
+      );
       if (order) {
         res.json({ success: true, data: order });
       }
@@ -513,50 +510,144 @@ const orderController = {
       const data = await response.json();
 
       if (data.success) {
-        const skuDetails = data.result.data.map((order) => order.sku_details);
-        const flattenedSkuDetails = skuDetails.flat();
+        const orderNumbers = data.result.data.map(
+          (order) => order.sales_order.order_number
+        );
+        // Tìm tất cả order_number có trong OrderId
+        const existingOrderIds = await OrderId.find({
+          order_number: { $in: orderNumbers },
+        })
+          .select("order_number")
+          .lean();
+        const existingOrderNumbers = existingOrderIds.map(
+          (order) => order.order_number
+        );
 
-        for (const skuDetail of flattenedSkuDetails) {
-          const product = await Product.findOne({ sku: skuDetail.sku });
-
-          if (product) {
-            product.stock_quantity -= skuDetail.quantity;
-            await product.save();
-            console.log(
-              `Updated stock for product ${skuDetail.product_name}: ${product.stock_quantity}`
-            );
-          } else {
-            // Tách giá trị SKU thành hai phần
-            const [productSku, variantSku] = skuDetail.sku.split("-");
-
-            // Tìm sản phẩm dựa trên SKU sản phẩm
-            const product = await Product.findOne({ sku: productSku });
+        for (const order of data.result.data) {
+          if (existingOrderNumbers.includes(order.sales_order.order_number)) {
+            // Bỏ qua đơn hàng nếu order_number đã tồn tại trong existingOrderNumbers
+            continue;
+          }
+          //product
+          for (const skuDetail of order.sku_details) {
+            const product = await Product.findOne({ sku: skuDetail.sku });
 
             if (product) {
-              // Tìm variant dựa trên variant_sku
-              const variant = product.variants.find(
-                (v) => v.variant_sku === variantSku
+              product.stock_quantity -= skuDetail.quantity;
+              await product.save();
+              console.log(
+                `Updated stock for product ${skuDetail.product_name}: ${product.stock_quantity}`
               );
-
-              if (variant) {
-                variant.variant_quantity -= skuDetail.quantity;
-                await product.save();
-                console.log(
-                  `Updated stock for variant ${skuDetail.product_name} (${variantSku}): ${variant.variant_quantity}`
-                );
-              } else {
-                console.error(
-                  `Variant with SKU ${variantSku} not found for product ${productSku}`
-                );
-              }
             } else {
-              console.error(`Product with SKU ${productSku} not found`);
+              // Tách giá trị SKU thành hai phần
+              const [productSku, variantSku] = skuDetail.sku.split("-");
+
+              // Tìm sản phẩm dựa trên SKU sản phẩm
+              const product = await Product.findOne({ sku: productSku });
+
+              if (product) {
+                // Tìm variant dựa trên variant_sku
+                const variant = product.variants.find(
+                  (v) => v.variant_sku === variantSku
+                );
+
+                if (variant) {
+                  variant.variant_quantity -= skuDetail.quantity;
+                  await product.save();
+                  console.log(
+                    `Updated stock for variant ${skuDetail.product_name} (${variantSku}): ${variant.variant_quantity}`
+                  );
+                } else {
+                  console.error(
+                    `Variant with SKU ${variantSku} not found for product ${productSku}`
+                  );
+                }
+              } else {
+                console.error(`Product with SKU ${productSku} not found`);
+              }
             }
           }
+          //order
+          let arrayProduct = [];
+          for (const skuDetail of order.sku_details) {
+            const product = await Product.findOne({
+              id: skuDetail.product_variant_id,
+            });
+            if (product.sku == skuDetail.sku) {
+              arrayProduct.push({
+                product: product._id,
+                product_idThirty: product.id,
+                product_name: product.name,
+                product_sku: product.sku,
+                variant: 0,
+                quantity: skuDetail.quantity,
+                unit_price: skuDetail.price.toString(),
+                weight: product.weight,
+                product_img: [product?.avatar?.picture_url],
+                description: product.description,
+                unit_id: product.unit_id,
+              });
+            } else {
+              arrayProduct.push({
+                product: product._id,
+                product_idThirty: product.id,
+                product_name: product.name,
+                product_sku: product.sku,
+                variant: 0,
+                quantity: skuDetail.quantity,
+                unit_price: skuDetail.price.toString(),
+                weight: product.weight,
+                product_img: [product?.avatar?.picture_url],
+                description: product.description,
+                unit_id: product.unit_id,
+              });
+            }
+          }
+          const newOrder = new Order({
+            tenantID: req.tenantID,
+            customerID: "663b8c383601877b98e5a4ef",
+            products: arrayProduct,
+            buyer_firstName: order?.sales_order?.receiver_name,
+            buyer_lastName: " ",
+            buyer_phoneNumber: order?.sales_order?.buyer_phone,
+            buyer_province:
+              order?.sales_order?.receiver_full_address.split(", ")[3],
+            buyer_district:
+              order?.sales_order?.receiver_full_address.split(", ")[2],
+            buyer_ward:
+              order?.sales_order?.receiver_full_address.split(", ")[1],
+            buyer_address_detail:
+              order?.sales_order?.receiver_full_address.split(", ")[0],
+            statusPayment: "Wait Pay",
+            totalPrice: order?.sales_order?.total_amount_buyer,
+            paymentType: "Thanh toán khi nhận hàng (COD)",
+            shipMethod: "Thông thường",
+            shipPrice:
+              order?.sales_order?.total_amount_buyer -
+              order?.sales_order?.total_amount
+                ? (
+                    order?.sales_order?.total_amount_buyer -
+                    order?.sales_order?.total_amount
+                  ).toString()
+                : "0",
+            typeOrder: "Sendo",
+            orderStatus: "Delivering",
+            shippingCode: "Null",
+            shipping_status: "Null",
+          });
+          await newOrder.save();
+          console.log("oke");
+          const newOrderId = new OrderId({
+            order_number: order.sales_order.order_number,
+            tenantID: req.tenantID,
+          });
+          await newOrderId.save();
+          console.log(
+            `Added order_number ${order.sales_order.order_number} to OrderId`
+          );
         }
 
-        console.log("skuDetails", skuDetails);
-        res.json({ success: true, sku_details: skuDetails });
+        res.json({ success: true });
       } else {
         res
           .status(500)
@@ -570,6 +661,10 @@ const orderController = {
 
   init: function () {
     this.loadAccessToken();
+  },
+  deleteOrder: async (req, res) => {
+    const order = await Order.findOneAndDelete({ _id: req.params.orderID });
+    res.json(order);
   },
 };
 orderController.init();

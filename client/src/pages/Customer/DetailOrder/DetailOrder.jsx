@@ -142,22 +142,34 @@ const DetailOrderBusiness = () => {
       console.log(send);
     }
   };
-  const handleConfirm=async()=>{
-    const confirm=await axios.post(`${api}order/confirm-receipt`,{orderID:id},config)
-    if(confirm.data.success == true) {
-      setOrder(confirm.data.data)
+  const handleConfirm = async () => {
+    const confirm = await axios.post(
+      `${api}order/confirm-receipt`,
+      { orderID: id },
+      config
+    );
+    if (confirm.data.success == true) {
+      setOrder(confirm.data.data);
       //close modal
-    }
-    else
-    {
+    } else {
       //closeModel
     }
-  }
+  };
+  // const deleteOrder=async()=>{
+  //   const Delete=await axios.delete(`${api}order/delete/${id}`,)
+  //   console.log(Delete)
+  // }
   return (
     <>
       <div className="detailordercustomer-container">
         <div className="header">
           <div className="title">Order Detail</div>
+          {/* <div
+              className="request"
+              onClick={deleteOrder}
+            >
+              Delete
+            </div> */}
           {/* order.shipping_status == "delivered" && */}
           {order?.typeOrder == "Website" ? (
             <div
@@ -189,7 +201,9 @@ const DetailOrderBusiness = () => {
                   </div>
                 </div>
               </div>
-              {order?.typeOrder == "Website" && !order?.is_refund && order?.shipping_status=="delivered" ? (
+              {order?.typeOrder == "Website" &&
+              !order?.is_refund &&
+              order?.shipping_status == "delivered" ? (
                 <button className="confirm">Confirm receipt</button>
               ) : (
                 <></>

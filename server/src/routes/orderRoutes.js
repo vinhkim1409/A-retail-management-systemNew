@@ -58,5 +58,6 @@ router.post(
   authMiddlewares.verifyTokenCustomer,
   orderController.confirmReceipt
 );
+router.delete("/delete/:orderID",orderController.deleteOrder)
 
 module.exports = router;
