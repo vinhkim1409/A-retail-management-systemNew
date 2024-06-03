@@ -122,11 +122,32 @@ const Checkout = () => {
   ];
   const [shippingFee, setShippingFee] = useState(0);
 
+  function extractProductDetails(orders) {
+    return orders.map(order => ({
+      id: order.product.id,
+      quantity: order.quantity
+    }));
+  }
+
+  async function updateProductQuantitySendo(orders) {
+    const productDetails = extractProductDetails(orders);
+
+    for (const detail of productDetails) {
+      try {
+        console.log("detail", detail);
+        const response = await axios.put(`${api}product/quantitySendo`, detail, config);
+        console.log(`Updated product ${detail.id} with response:`, response.data);
+      } catch (error) {
+        console.error(`Failed to update product ${detail.id}:`, error);
+      }
+    }
+  }
+
   const handleOrder = async () => {
     const orderInfo = {
       products: order,
       statusPayment: "Wait Pay",
-      totalPrice: Number(getTotalPrice(shippingFee)),
+      totalPrice: Number(getTotalPrice(shippingFee)) * 1000,
       shipMethod: deliveryMethods[deliveryMethod],
       paymentType: paymentMethods[paymentMethod].text,
       shipPrice: shippingFee,
@@ -151,14 +172,15 @@ const Checkout = () => {
         window.open(paymentMomo.data?.momoInfo?.payUrl, "_self");
       }
       console.log(paymentMomo.data);
+      updateProductQuantitySendo(order);
     } else {
-      console.log(orderInfo);
       const createOrder = await axios.post(
         `${api}order/createOrder`,
         orderInfo,
         config
       );
       if (createOrder.data.success) {
+        updateProductQuantitySendo(order);
         navigate(`/${tenantURL}/customer/order`);
       }
 
@@ -197,7 +219,7 @@ const Checkout = () => {
                 id="phone"
                 value={phone}
                 className="input-info"
-                // onChange={(e) => setPhone(e.target.value)}
+              // onChange={(e) => setPhone(e.target.value)}
               />
             </div>
           </div>
