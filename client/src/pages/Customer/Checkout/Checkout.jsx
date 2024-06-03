@@ -51,7 +51,11 @@ const Checkout = () => {
           prev +
           (curr.variant > 0
             ? curr.product.variants[curr.variant - 1].variant_special_price
-            : curr.product.special_price?curr.product.special_price:curr.product.price) *
+              ? curr.product.variants[curr.variant - 1].variant_special_price
+              : curr.product.variants[curr.variant - 1].variant_price
+            : curr.product.special_price
+            ? curr.product.special_price
+            : curr.product.price) *
             curr.quantity
           // (1 - 20 / 100) * tai sao lai co
         );
@@ -123,9 +127,9 @@ const Checkout = () => {
   const [shippingFee, setShippingFee] = useState(0);
 
   function extractProductDetails(orders) {
-    return orders.map(order => ({
+    return orders.map((order) => ({
       id: order.product.id,
-      quantity: order.quantity
+      quantity: order.quantity,
     }));
   }
 
@@ -135,8 +139,15 @@ const Checkout = () => {
     for (const detail of productDetails) {
       try {
         console.log("detail", detail);
-        const response = await axios.put(`${api}product/quantitySendo`, detail, config);
-        console.log(`Updated product ${detail.id} with response:`, response.data);
+        const response = await axios.put(
+          `${api}product/quantitySendo`,
+          detail,
+          config
+        );
+        console.log(
+          `Updated product ${detail.id} with response:`,
+          response.data
+        );
       } catch (error) {
         console.error(`Failed to update product ${detail.id}:`, error);
       }
@@ -147,7 +158,7 @@ const Checkout = () => {
     const orderInfo = {
       products: order,
       statusPayment: "Wait Pay",
-      totalPrice: Number(getTotalPrice(shippingFee)) * 1000,
+      totalPrice: Number(getTotalPrice(shippingFee)),
       shipMethod: deliveryMethods[deliveryMethod],
       paymentType: paymentMethods[paymentMethod].text,
       shipPrice: shippingFee,
@@ -174,6 +185,7 @@ const Checkout = () => {
       console.log(paymentMomo.data);
       updateProductQuantitySendo(order);
     } else {
+      console.log(orderInfo);
       const createOrder = await axios.post(
         `${api}order/createOrder`,
         orderInfo,
@@ -219,7 +231,7 @@ const Checkout = () => {
                 id="phone"
                 value={phone}
                 className="input-info"
-              // onChange={(e) => setPhone(e.target.value)}
+                // onChange={(e) => setPhone(e.target.value)}
               />
             </div>
           </div>
@@ -350,8 +362,10 @@ const Checkout = () => {
                       {getPriceExpr(
                         item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                              .variant_special_price
-                          : item.product.price
+                              .variant_special_price?item.product.variants[item.variant - 1]
+                              .variant_special_price:item.product.variants[item.variant - 1]
+                              .variant_price
+                          : item.product.special_price?item.product.special_price:item.product.price
                       )}
                     </div>
                     <div className="price-initial">
@@ -371,8 +385,10 @@ const Checkout = () => {
                       {getPriceExpr(
                         (item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                              .variant_special_price
-                          : item.product.price) * item.quantity
+                              .variant_special_price?item.product.variants[item.variant - 1]
+                              .variant_special_price:item.product.variants[item.variant - 1]
+                              .variant_price
+                          : item.product.special_price?item.product.special_price:item.product.price) * item.quantity
                       )}
                     </div>
                   </td>

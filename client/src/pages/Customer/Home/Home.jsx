@@ -135,7 +135,7 @@ function HomePage() {
                   className="img-product"
                 />
                 <div className="name-product">{product.name}</div>
-                <div className="price-product">{product.special_price}</div>
+                <div className="price-product">{product.special_price?product.special_price:product.price}</div>
               </div>
             </div>
           ))}

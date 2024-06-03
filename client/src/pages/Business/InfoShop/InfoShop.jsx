@@ -21,8 +21,8 @@ const InfoShop = () => {
     const getInfo = async () => {
         try {
             const response = await axios.get(`${api}info-connect`, config);
-            console.log("info", response.data); // kiểm tra dữ liệu trả về từ API
-            if (response.data) {
+            console.log("info", response.data);
+            if (response && response.data) {
                 setShopKey(response.data.data.shop_key);
                 setSecretKey(response.data.data.secret_key);
             } else {
@@ -48,7 +48,7 @@ const InfoShop = () => {
                 { shop_key: shopKey, secret_key: secretKey },
                 config
             );
-            setMessage('Successfully saved!');
+            setMessage(response.data.message);
         } catch (error) {
             console.error('There was an error!', error);
             setMessage('There was an error saving your changes.');

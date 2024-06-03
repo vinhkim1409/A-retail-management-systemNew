@@ -145,8 +145,11 @@ const Cart = () => {
         prev +
         (curr.variant > 0
           ? curr.product.variants[curr.variant - 1].variant_special_price
+            ? curr.product.variants[curr.variant - 1].variant_special_price
+            : curr.product.variants[curr.variant - 1].variant_price
+          : curr.product.special_price
+          ? curr.product.special_price
           : curr.product.price) *
-          (1 - 10 / 100) *
           curr.quantity
       );
     }, 0);
@@ -212,8 +215,13 @@ const Cart = () => {
                         item.variant > 0
                           ? item.product.variants[item.variant - 1]
                               .variant_special_price
-                          : item.product.price,
-                        20
+                            ? item.product.variants[item.variant - 1]
+                                .variant_special_price
+                            : item.product.variants[item.variant - 1]
+                                .variant_price
+                          : item.product.special_price
+                          ? item.product.special_price
+                          : item.product.price
                       )}
                     </p>
                   </div>

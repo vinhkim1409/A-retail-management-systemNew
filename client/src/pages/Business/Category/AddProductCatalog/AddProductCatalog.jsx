@@ -125,7 +125,7 @@ const AddProductCatalog = ({ open, handleClose, id, categorys, setCategorys }) =
                   </div>
 
                   <div className="num-product">
-                    {item.special_price}
+                    {item.special_price?item.special_price:item.price}
                   </div>
                   <div className="quantity">{item.stock_quantity}</div>
                 </div>

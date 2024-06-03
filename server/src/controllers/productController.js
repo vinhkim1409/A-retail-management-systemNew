@@ -108,13 +108,15 @@ const productController = {
         })
       });
 
+      console.log("response fetch sendo", response);
+
       if (response.ok) {
         const data = await response.json();
         const productIds = data.result.data.map(product => product.id);
 
         const productDetails = await Promise.all(productIds.map(async id => {
           // Kiểm tra xem sản phẩm đã tồn tại trong cơ sở dữ liệu hay chưa
-          const existingProduct = await Product.findOne({ id: id });
+          const existingProduct = await Product.findOne({ id: id, tenantID: req.tenantID });
 
           if (existingProduct) {
             return existingProduct;

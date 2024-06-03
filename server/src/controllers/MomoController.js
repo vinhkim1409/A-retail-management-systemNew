@@ -63,9 +63,11 @@ const MonoController = {
         quantity: product.quantity,
         unit_price:
           product.variant == 0
-            ? product.product.special_price
+            ? product.product.special_price?product.product.special_price:product.product.price
             : product.product.variants[product.variant - 1]
-                .variant_special_price,
+                .variant_special_price?product.product.variants[product.variant - 1]
+                .variant_special_price:product.product.variants[product.variant - 1]
+                .variant_price,
         weight: product.product.weight,
         product_img: productImg,
         description: product.product.description,

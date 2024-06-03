@@ -54,7 +54,7 @@ function SignupCustomer() {
     if (resRegister.data.success) {
       setOpenSuccess(true);
       setTimeout(() => {
-        navigate(`${tenantURL}/customer/login`);
+        navigate(`/${tenantURL}/customer/login`);
       }, 2000);
     } else {
       setErrorMessage(resRegister.data.message)
