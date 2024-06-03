@@ -17,7 +17,7 @@ const typecheckbox = ["Jacket", "Jean", "Cotons", "Excool"];
 
 function Shop() {
   const navigate = useNavigate();
-  const productsPerPage = 10;
+  const productsPerPage = 3;
   const productsPerRow = 5;
   const totalProducts = 50;
   const [page, setPage] = React.useState(0);
@@ -250,8 +250,8 @@ const {tenantURL}=useParams()
           </div>
           <div className="pages">
           <div className="pages-number">
-            {1 * (currentPage + 1)}-
-            {currentPage == totalPages - 1 ? productTable.length : 5 * (currentPage + 1)} of{" "}
+            {1 * (currentPage*15 + 1)}-
+            {currentPage == totalPages - 1 ? productTable.length : 15 * (currentPage + 1)} of{" "}
             {productTable.length}
           </div>
           <button

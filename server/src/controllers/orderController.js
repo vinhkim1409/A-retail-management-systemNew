@@ -4,8 +4,8 @@ const Business = require("../models/businessModel");
 const { default: mongoose } = require("mongoose");
 const Product = require("../models/productModel");
 const fetch = require("node-fetch");
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 async function deleteProductFromCart(conditionCart, idProductInCart) {
   try {
     const updateCart = await Cart.findOneAndUpdate(
@@ -180,22 +180,22 @@ const getShippingStatus = async (order_code) => {
 const getLocalDateString = () => {
   const now = new Date();
   const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+  const day = String(now.getDate()).padStart(2, "0");
   return `${year}/${month}/${day}`;
 };
 
 const orderController = {
   accessToken: "",
   loadAccessToken: function () {
-    const tokenPath = path.join(__dirname, '../token.txt');
-    fs.readFile(tokenPath, 'utf8', (err, data) => {
+    const tokenPath = path.join(__dirname, "../token.txt");
+    fs.readFile(tokenPath, "utf8", (err, data) => {
       if (err) {
-        console.error('Error reading access token file:', err);
+        console.error("Error reading access token file:", err);
         process.exit(1);
       }
       this.accessToken = data.trim();
-      console.log('Access Token loaded:', this.accessToken);
+      console.log("Access Token loaded:", this.accessToken);
     });
   },
   createOrder: async (req, res) => {
@@ -241,15 +241,15 @@ const orderController = {
         products: productArray,
       });
       await newOrder.save();
-      if (products[0]._id != "buy now") {
-        //delete product from cart
-        // const conditionCart = { customerID: user._id };
-        // deleteProductFromCart(conditionCart, productIds);
-      }
+      const productIds = products.map((product) => {
+        return product._id;
+      });
 
-      // const productIds = products.map((product) => {
-      //   return product._id;
-      // });
+      if (products[0]._id != "buy now") {
+        //delete from cart
+        const conditionCart = { customerID: user._id };
+        deleteProductFromCart(conditionCart, productIds);
+      }
 
       newOrder.products.map((product) => {
         reduceQuantity(product);
@@ -285,15 +285,13 @@ const orderController = {
   },
   getOrderBusiness: async (req, res) => {
     try {
-      const order = await Order.find({ tenantID: req.tenantID })
-        .populate("customerID")
-        .populate("products.product");
+      const order = await Order.find({ tenantID: req.tenantID }).populate(
+        "customerID"
+      );
       const orderRequest = await Order.find({
         tenantID: req.tenantID,
         is_refund: true,
-      })
-        .populate("customerID")
-        .populate("products.product");
+      }).populate("customerID");
       const arrayOrder = orderRequest.concat(order);
       const resOrder = [...new Set(arrayOrder)];
       res.json({ success: true, data: resOrder });
@@ -306,9 +304,7 @@ const orderController = {
       const order = await Order.findOne({
         tenantID: req.tenantID,
         _id: req.params.orderID,
-      })
-        .populate("customerID")
-        .populate("products.product");
+      }).populate("customerID");
       res.json({ success: true, data: order });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -320,9 +316,7 @@ const orderController = {
         { _id: req.body.orderID },
         { statusPayment: "Paid" },
         { new: true }
-      )
-        .populate("customerID")
-        .populate("products.product");
+      ).populate("customerID");
       if (order) {
         res.json({ success: true, data: order });
       }
@@ -357,11 +351,13 @@ const orderController = {
           _id: data.orderId,
         }).populate("products.product");
         const delivery = await createShippingOrder(firtStepOrder, false);
+        const status = await getShippingStatus(delivery?.order_code);
         const secondStepOrder = await Order.findOneAndUpdate(
           { _id: data.orderId },
           {
             statusPayment: "Paid",
             shippingCode: delivery ? delivery.order_code : "null",
+            shipping_status: status.status ? "ready_to_pick" : status.status,
           },
           { new: true }
         ).populate("products.product");
@@ -466,7 +462,7 @@ const orderController = {
         refund_picture: [],
         orderStatus: "Delivery",
       });
-      await newOrder.save()
+      await newOrder.save();
       res.json({ success: true, newOrder, orderRedelivery });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -489,5 +485,92 @@ const orderController = {
       res.status(500).json({ message: error.message });
     }
   },
+  getInfoOrder: async (req, res) => {
+    try {
+      const date_to = getLocalDateString();
+
+      const response = await fetch(
+        "https://open.sendo.vn/api/partner/salesorder/search",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `bearer ${orderController.accessToken}`,
+            "Content-Type": "application/json",
+            "cache-control": "no-cache",
+          },
+          body: JSON.stringify({
+            page_size: 50,
+            order_status: 2,
+            order_date_from: "2024/03/20",
+            order_date_to: date_to,
+            order_status_date_from: null,
+            order_status_date_to: null,
+            token: null,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        const skuDetails = data.result.data.map((order) => order.sku_details);
+        const flattenedSkuDetails = skuDetails.flat();
+
+        for (const skuDetail of flattenedSkuDetails) {
+          const product = await Product.findOne({ sku: skuDetail.sku });
+
+          if (product) {
+            product.stock_quantity -= skuDetail.quantity;
+            await product.save();
+            console.log(
+              `Updated stock for product ${skuDetail.product_name}: ${product.stock_quantity}`
+            );
+          } else {
+            // Tách giá trị SKU thành hai phần
+            const [productSku, variantSku] = skuDetail.sku.split("-");
+
+            // Tìm sản phẩm dựa trên SKU sản phẩm
+            const product = await Product.findOne({ sku: productSku });
+
+            if (product) {
+              // Tìm variant dựa trên variant_sku
+              const variant = product.variants.find(
+                (v) => v.variant_sku === variantSku
+              );
+
+              if (variant) {
+                variant.variant_quantity -= skuDetail.quantity;
+                await product.save();
+                console.log(
+                  `Updated stock for variant ${skuDetail.product_name} (${variantSku}): ${variant.variant_quantity}`
+                );
+              } else {
+                console.error(
+                  `Variant with SKU ${variantSku} not found for product ${productSku}`
+                );
+              }
+            } else {
+              console.error(`Product with SKU ${productSku} not found`);
+            }
+          }
+        }
+
+        console.log("skuDetails", skuDetails);
+        res.json({ success: true, sku_details: skuDetails });
+      } else {
+        res
+          .status(500)
+          .json({ message: "Failed to fetch order details from Sendo" });
+      }
+    } catch (error) {
+      console.error("Lỗi khi gọi API Sendo:", error);
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  init: function () {
+    this.loadAccessToken();
+  },
 };
+orderController.init();
 module.exports = orderController;

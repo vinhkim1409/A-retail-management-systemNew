@@ -113,10 +113,10 @@ function DetailProduct() {
   };
   const getQuantity = () => {
     const variantSku = getVariantSku();
-    let variantNumber = product.variants.findIndex(
+    let variantNumber = product?.variants.findIndex(
       (variant) => variant.variant_sku == variantSku
     );
-    const remain_quantity = product.variants[variantNumber].variant_quantity;
+    const remain_quantity = product?.variants[variantNumber]?.variant_quantity;
     return remain_quantity;
   };
   ///get product

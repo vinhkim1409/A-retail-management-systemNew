@@ -154,10 +154,11 @@ const Checkout = () => {
     } else {
       const createOrder = await axios.post(
         `${api}order/createOrder`,
-        orderInfo,config
+        orderInfo,
+        config
       );
-      if(createOrder.data.success){
-        navigate(`/${tenantURL}/customer/order`)
+      if (createOrder.data.success) {
+        navigate(`/${tenantURL}/customer/order`);
       }
 
       console.log(createOrder.data);

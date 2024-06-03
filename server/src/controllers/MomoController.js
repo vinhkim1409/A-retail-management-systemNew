@@ -46,19 +46,53 @@ const MonoController = {
     const ipnUrl = process.env.IPN_URL_ORDER;
     const redirectUrl = `${process.env.REDIRECT_URL_ORDER}${req.body.tenantURL}/customer/cart`;
     const partnerClientId = process.env.PARTNER_CLIENT_ID;
+    const { products } = req.body;
 
+    const productArray = products.map((product) => {
+      
+      const productImg = product.product.pictures.map((productImage) => {
+        return productImage.picture_url;
+      });
+      
+      const productInOrder = {
+        product: product.product._id,
+        product_idThir: product.product.id,
+        product_name: product.product.name,
+        product_sku: product.product.sku,
+        variant: product.variant,
+        quantity: product.quantity,
+        unit_price:
+          product.variant == 0
+            ? product.product.special_price
+            : product.product.variants[product.variant - 1]
+                .variant_special_price,
+        weight: product.product.weight,
+        product_img: productImg,
+        description: product.product.description,
+        unit_id: product.product.unit_id,
+      };
+      return productInOrder;
+    });
+    
     const newOrder = new Order({
       customerID: user._id,
       tenantID: req.tenantID,
       typeOrder: "Website",
+      orderStatus: "Delivery",
       ...req.body,
+      products: productArray,
     });
     await newOrder.save();
-    const conditionCart = { customerID: user._id };
-    const productIds = newOrder.products.map((product) => {
+    const productIds = products.map((product) => {
       return product._id;
     });
-    deleteProductFromCart(conditionCart, productIds);
+    
+    if (products[0]._id != "buy now") {
+     // delete product from cart
+      const conditionCart = { customerID: user._id };
+      deleteProductFromCart(conditionCart, productIds);
+    }
+    
     newOrder.products.map((product) => {
       reduceQuantity(product);
     });
@@ -124,7 +158,7 @@ const MonoController = {
     );
     res
       .status(200)
-      .json({ momoInfo: await response.json(), orderInfo: newOrder });
+      .json({ momoInfo: await response.json(), orderInfo: {newOrder,products,productIds} });
   },
   payPackageMomo: async (req, res) => {
     const partnerCode = process.env.PARTNER_CODE;
