@@ -62,9 +62,9 @@ function BusinessHome() {
     }
   };
   useEffect(() => {
-    
     getDashboardData();
   }, []);
+  console.log(dataMonth)
   return (
     <div className="Businesshome-container">
       <h2 className="label">Dashboard</h2>

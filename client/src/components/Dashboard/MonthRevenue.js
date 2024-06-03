@@ -13,22 +13,22 @@ const MonthRevenue = ({ data }) => {
             data: [
               {
                 id: 0,
-                value: data?.RevenueMonth[0] == 0 ? 1 : data?.RevenueMonth[0],
+                value: data?.RevenueMonth[0] ,
                 label: "Week 1",
               },
               {
                 id: 1,
-                value: data?.RevenueMonth[1] == 0 ? 1 : data?.RevenueMonth[1],
+                value: data?.RevenueMonth[1] ,
                 label: "Week 2",
               },
               {
                 id: 2,
-                value: data?.RevenueMonth[2] == 0 ? 1 : data?.RevenueMonth[2],
+                value: data?.RevenueMonth[2] ,
                 label: "Week 3",
               },
               {
                 id: 3,
-                value: data?.RevenueMonth[3] == 0 ? 1 : data?.RevenueMonth[3],
+                value: data?.RevenueMonth[3] ,
                 label: "Week 4",
               },
             ],
