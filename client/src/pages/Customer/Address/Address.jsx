@@ -49,16 +49,23 @@ const Address = () => {
           <div className="info-default">
             <p className="text-bold">
               {" "}
-              {addressdefault?.firstName} {addressdefault?.lastName} |{" "}
-              {addressdefault?.phoneNumber}
+              {customer?.resCustomer?.firstName}{" "}
+              {customer?.resCustomer?.lastName} |{" "}
+              {customer?.resCustomer?.phoneNumber}
             </p>
             <p>
-              {" "}
-              {`${addressdefault?.detail}, ${
-                addressdefault?.ward.split("//")[0]
-              }, ${addressdefault?.district.split("//")[0]}, ${
-                addressdefault?.province.split("//")[0]
-              }`}{" "}
+              {addressdefault?.ward ? (
+                <>
+                  {" "}
+                  {`${addressdefault?.detail}, ${
+                    addressdefault?.ward.split("//")[0]
+                  }, ${addressdefault?.district.split("//")[0]}, ${
+                    addressdefault?.province.split("//")[0]
+                  }`}{" "}
+                </>
+              ) : (
+                "Please add you address"
+              )}
             </p>
             <button className="default">Default</button>
           </div>
@@ -77,7 +84,9 @@ const Address = () => {
                 </p>
                 <p>
                   {" "}
-                  {`${item?.detail}, ${item?.ward.split("//")[0]}, ${item?.district.split("//")[0]}, ${item?.province.split("//")[0]}`}{" "}
+                  {`${item?.detail}, ${item?.ward.split("//")[0]}, ${
+                    item?.district.split("//")[0]
+                  }, ${item?.province.split("//")[0]}`}{" "}
                 </p>
               </div>
               <div className="button-modify-extra">
