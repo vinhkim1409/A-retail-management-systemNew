@@ -82,8 +82,15 @@ const Order = () => {
   const getOrder = async () => {
     const orders = await axois.get(`${api}order`, config);
     console.log(orders.data);
-    setOrderList(orders.data.data);
-    setInitialOrderList(orders.data.data);
+    const order = [...orders?.data?.data?.order];
+    const orderRequest = orders?.data?.data?.order.filter(
+      (order) => order?.is_refund == true
+    );
+    const arrayOrder = [...orderRequest, ...order];
+    const unitOrder = [...new Set(arrayOrder)];
+    console.log(unitOrder);
+    setOrderList(unitOrder);
+    setInitialOrderList(unitOrder);
   };
   useEffect(() => {
     getOrder();
@@ -175,8 +182,8 @@ const Order = () => {
                         className="customer content-order"
                         sx={{ maxWidth: 140 }}
                       >
-                        {item.customerID?.firstName}
-                        {item.customerID?.lastName}
+                        {item?.buyer_firstName}
+                        {item?.buyer_lastName}
                       </TableCell>
                       <TableCell align="left" className="date content-order">
                         {moment(item.createdAt).format("D MMM, YYYY h:mm A")}
@@ -189,13 +196,13 @@ const Order = () => {
                         {""} đ
                       </TableCell>
                       <TableCell align="left" className="order-status">
-                        {item?.is_refund
-                          ? <div style={{color:"red"}}>
-                            {"Refund"}
-                          </div>
-                          : item?.shipping_status
-                          ? configStatus(item.shipping_status)
-                          : "In shipped"}
+                        {item?.is_refund ? (
+                          <div style={{ color: "red" }}>{"Refund"}</div>
+                        ) : item?.shipping_status ? (
+                          configStatus(item.shipping_status)
+                        ) : (
+                          "In shipped"
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -204,7 +211,7 @@ const Order = () => {
         </Box>
         <div className="pages">
           <div className="pages-number">
-            {1 * (page + 1)*5}-
+            {1 * (page + 1) * 5}-
             {page == totalPages - 1 ? orderList.length : 10 * (page + 1)} of{" "}
             {orderList.length}
           </div>

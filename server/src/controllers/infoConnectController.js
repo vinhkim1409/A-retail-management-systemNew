@@ -25,15 +25,24 @@ const infoConnectController = {
         try {
             const { shop_key, secret_key } = req.body;
             const updateInfoConnectCondition = { tenantID: req.tenantID };
-            const updatedInfoConnect = await InfoConnect.findOneAndUpdate(
+            let updatedInfoConnect = await InfoConnect.findOneAndUpdate(
                 updateInfoConnectCondition,
                 { shop_key, secret_key },
                 { new: true }
             );
             if (!updatedInfoConnect) {
-                return res
-                    .status(401)
-                    .json({ success: false, message: "InfoConnect not found" });
+                // Create new document if not found
+                updatedInfoConnect = new InfoConnect({
+                    tenantID: req.tenantID,
+                    shop_key,
+                    secret_key
+                });
+                await updatedInfoConnect.save();
+                res.json({
+                    success: true,
+                    message: "InfoConnect created successfully",
+                    infoConnect: updatedInfoConnect,
+                });
             } else {
                 res.json({
                     success: true,

@@ -148,7 +148,7 @@ function ProductM() {
   const createSendoProduct = async () => {
     try {
       const sendo = await axios.get(`${api}product/create-sendo`, config);
-      console.log("sendo", sendo);
+      console.log("sendo create", sendo);
     } catch (error) {
       console.error('Error fetching products:', error);
       setLoading(false);

@@ -119,7 +119,20 @@ function DetailProduct() {
     const remain_quantity = product?.variants[variantNumber]?.variant_quantity;
     return remain_quantity;
   };
-  ///get product
+  const getProductPrice = () => {
+    if (!product.is_config_variant) {
+      return product.special_price || product.price;
+    }
+    const variantSku = getVariantSku();
+    if (variantSku) {
+      const variant = product.variants.find(
+        (variant) => variant.variant_sku === variantSku
+      );
+      return variant.variant_special_price || variant.variant_price;
+    }
+    return product.price;
+  };
+
   const [product, setProduct] = useState();
   const [review, setReview] = useState([]);
   const getProduct = async () => {
@@ -307,7 +320,9 @@ function DetailProduct() {
             </div>
             <div className="name-price">
               <div className="name">{product.name}</div>
-
+              <div className="price">
+                {getProductPrice().toLocaleString('en-US')}đ
+              </div>
               {attributeName.map((attribute, index) => (
                 <div key={index} className="color">
                   <div className="title-color">

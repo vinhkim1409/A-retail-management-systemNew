@@ -80,6 +80,7 @@ function EditProduct() {
 
   useEffect(() => {
     if (product) {
+      setIdProduct(product.id);
       setName(product.name);
       setDescription(product.description);
       setProductCode(product.sku);
@@ -153,6 +154,7 @@ function EditProduct() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [variants, setVariants] = useState([]);
+  const [idProduct, setIdProduct] = useState("");
 
   const handleChangeUnit = (event) => {
     const value = event.target.value;
@@ -463,7 +465,7 @@ function EditProduct() {
     );
 
     const productData = {
-      id: 0,
+      id: idProduct,
       name: name,
       sku: productCode,
       description: description,
