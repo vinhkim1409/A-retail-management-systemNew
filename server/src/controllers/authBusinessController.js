@@ -128,7 +128,7 @@ const businessController = {
       if(!business) {
         return res.json({ success: false, message: "business not exist" });
       }
-      return res.json({ success: true, data: business.name });
+      return res.json({ success: true, data: business });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

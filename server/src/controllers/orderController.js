@@ -447,7 +447,11 @@ const orderController = {
       delete newOrderData._id;
       delete newOrderData.createdAt;
       delete newOrderData.updatedAt;
-      const delivery = await createShippingOrder(orderRedelivery, true, true);
+      const delivery = await createShippingOrder(
+        orderRedelivery,
+        orderRedelivery?.paymentType == "Ví Momo"?false:true,
+        true
+      );
       const status = await getShippingStatus(delivery?.order_code);
       const newOrder = new Order({
         ...newOrderData,

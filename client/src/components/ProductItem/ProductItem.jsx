@@ -12,7 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 function ProductItem({ product, index }) {
   const navigate = useNavigate();
-  const {tenantURL}=useParams()
+  const { tenantURL } = useParams();
 
   return (
     <div
@@ -20,19 +20,21 @@ function ProductItem({ product, index }) {
     >
       <div className="img-frame">
         <img
-          src={product.avatar.picture_url}
+          src={product?.avatar?.picture_url}
           className="img"
           alt="..."
           onClick={() => {
-            navigate(`/${tenantURL}/customer/detail-product/${product._id}`);
+            navigate(`/${tenantURL}/customer/detail-product/${product?._id}`);
           }}
         />
       </div>
 
       <div className="info">
-        <div className="name">{product.name}</div>
+        <div className="name">{product?.name}</div>
         <div className="price-product">
-          {new Intl.NumberFormat("en-US").format(product.price)}
+          {product?.special_price
+            ? new Intl.NumberFormat("en-US").format(product?.special_price)
+            : new Intl.NumberFormat("en-US").format(product?.price)}
         </div>
         <Rating value={product?.ratingPoint} precision={0.5} readOnly />
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import "./LoginCustomer.scss";
@@ -6,6 +6,8 @@ import google from "../../../assets/google.png";
 import { Snackbar, Alert } from "@mui/material";
 import background from "../../../assets/login-background.png";
 import { loginCustomer } from "../../../redux/apiRequest";
+import axios from "axios";
+import { api } from "../../../constant/constant";
 function LoginCustomer() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,6 +15,16 @@ function LoginCustomer() {
   const { tenantURL } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [businessName, setBusinessName] = useState("");
+  const getBusinessInfo = async () => {
+    const businessInfo = await axios.get(`${api}business/info/${tenantURL}`);
+    console.log(businessInfo.data);
+    setBusinessName(businessInfo.data?.data?.name);
+  };
+  useEffect(() => {
+    getBusinessInfo();
+  }, []);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -31,11 +43,12 @@ function LoginCustomer() {
 
     const login = await loginCustomer(customer, dispatch, navigate);
     if (login) {
-      navigate(`/${tenantURL}/customer`,{state:{
-        loginState:login
-      }});
-    }
-    else{
+      navigate(`/${tenantURL}/customer`, {
+        state: {
+          loginState: login,
+        },
+      });
+    } else {
       setOpen(true);
     }
   };
@@ -43,13 +56,13 @@ function LoginCustomer() {
     <>
       <div className="loginCustomer-form">
         <div className="title">
-          <h1>Welcome to CoolMate!</h1>
+          <h1>Welcome to {businessName}!</h1>
           <img src={background} alt="" className="img" />
         </div>
         <div className="form_container  rounded ">
           <form className="form_container1">
             <div className="form-box">
-              <div className="form-title">Logo Business</div>
+              <div className="form-title"> {businessName} </div>
               <div className="mini-title">Please enter your infomation</div>
             </div>
             <div className="form-box">

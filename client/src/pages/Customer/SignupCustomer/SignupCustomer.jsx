@@ -64,7 +64,7 @@ function SignupCustomer() {
   const getBusinessInfo = async () => {
     const businessInfo = await axios.get(`${api}business/info/${tenantURL}`);
     console.log(businessInfo.data);
-    setBusinessName(businessInfo.data?.data);
+    setBusinessName(businessInfo.data?.data?.name);
   };
 
   const handleClose = (event, reason) => {

@@ -8,7 +8,12 @@ import {
   Rating,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faList, faCaretRight,faChevronLeft,faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faList,
+  faCaretRight,
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import ProductItem from "../../../components/ProductItem/ProductItem";
 import axios from "axios";
 import { api } from "../../../constant/constant";
@@ -29,7 +34,8 @@ function Shop() {
     setCurrentPage(newPage);
   };
 
-  const indexOfLastProduct = (currentPage+1) * productsPerPage * productsPerRow;
+  const indexOfLastProduct =
+    (currentPage + 1) * productsPerPage * productsPerRow;
   const indexOfFirstProduct =
     indexOfLastProduct - productsPerPage * productsPerRow;
   const currentProducts = productTable?.slice(
@@ -57,7 +63,7 @@ function Shop() {
       setTyp([...typ, item]);
     }
   };
-const {tenantURL}=useParams()
+  const { tenantURL } = useParams();
   const getProduct = async () => {
     const products = await axios.get(`${api}product/by-tenantURL/${tenantURL}`);
     console.log(products.data);
@@ -79,7 +85,9 @@ const {tenantURL}=useParams()
   const [topSale, setTopSale] = useState([]);
 
   const getCategory = async () => {
-    const category = await axios.get(`${api}category/by-tenantURL/${tenantURL}`);
+    const category = await axios.get(
+      `${api}category/by-tenantURL/${tenantURL}`
+    );
     setCategory(category.data);
   };
   const getTopSale = async () => {
@@ -106,28 +114,39 @@ const {tenantURL}=useParams()
     setProductTable(allproduct.reverse());
   };
   const topsale = () => {
-    const topProdut = topSale.map((productID) => {
+    let topProdut = topSale.map((productID) => {
       const productget = allProducts.filter(
         (product) => product._id === productID.productId
       );
       return productget[0];
     });
-    const arrayProduct=topProdut.concat(allProducts);
-    const unitArrayProduct = [... new Set(arrayProduct)]
-    setProductTable(unitArrayProduct)
+    topProdut = topProdut.filter((product) => product != undefined);
+
+    const arrayProduct = topProdut.concat(allProducts);
+    const unitArrayProduct = [...new Set(arrayProduct)];
+    setProductTable(unitArrayProduct);
     setCategoryStatus("All");
+  };
+  const [businessName, setBusinessName] = useState();
+  const getBusinessInfo = async () => {
+    const businessInfo = await axios.get(`${api}business/info/${tenantURL}`);
+    console.log(businessInfo.data);
+    setBusinessName(businessInfo.data?.data);
   };
   useEffect(() => {
     getProduct();
     getCategory();
     getTopSale();
+    getBusinessInfo();
   }, []);
   return (
     <div className="Shop-container">
       <div className="bottom-label">
         <div className="lable-business">
-          <div className="title">Coolmate</div>
-          <div className="name-business">Coolmate - Ho Chi Minh</div>
+          <div className="title">{businessName?.name}</div>
+          <div className="name-business">
+            {businessName?.name} - {businessName?.location}
+          </div>
         </div>
         <div className="info-business">
           <div className="total-product">Product: {allProducts.length}</div>
@@ -191,7 +210,7 @@ const {tenantURL}=useParams()
               }`}
               onClick={() => {
                 setSort(1);
-                topsale()
+                topsale();
               }}
             >
               {" "}
@@ -209,7 +228,7 @@ const {tenantURL}=useParams()
               {" "}
               Lastest
             </div>
-            <div
+            {/* <div
               className={`${
                 sort === 3
                   ? "tag-sort price-high sort-active"
@@ -220,8 +239,8 @@ const {tenantURL}=useParams()
               }}
             >
               Price: High To Low
-            </div>
-            <div
+            </div> */}
+            {/* <div
               className={`${
                 sort === 4
                   ? "tag-sort price-low sort-active"
@@ -232,7 +251,7 @@ const {tenantURL}=useParams()
               }}
             >
               Price: Low To High
-            </div>
+            </div> */}
           </div>
           <div className="list-product">
             {Array.from({ length: productsPerPage }, (_, rowIndex) => (
@@ -249,33 +268,37 @@ const {tenantURL}=useParams()
             ))}
           </div>
           <div className="pages">
-          <div className="pages-number">
-            {1 * (currentPage*15 + 1)}-
-            {currentPage == totalPages - 1 ? productTable.length : 15 * (currentPage + 1)} of{" "}
-            {productTable.length}
+            <div className="pages-number">
+              {1 * (currentPage * 15 + 1)}-
+              {currentPage == totalPages - 1
+                ? productTable.length
+                : 15 * (currentPage + 1)}{" "}
+              of {productTable.length}
+            </div>
+            <button
+              className="button-back"
+              onClick={() => handleChangePage(currentPage - 1)}
+              disabled={currentPage == 0}
+            >
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                className={`${currentPage == 0 ? "icon-back" : "active"}`}
+              />
+            </button>
+            <div className="number-page">{currentPage + 1}</div>
+            <button
+              className="button-next"
+              onClick={() => handleChangePage(currentPage + 1)}
+              disabled={currentPage == totalPages - 1}
+            >
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className={`${
+                  currentPage == totalPages - 1 ? "icon-next" : "active"
+                }`}
+              />
+            </button>
           </div>
-          <button
-            className="button-back"
-            onClick={() => handleChangePage(currentPage - 1)}
-            disabled={currentPage == 0}
-          >
-            <FontAwesomeIcon
-              icon={faChevronLeft}
-              className={`${currentPage == 0 ? "icon-back" : "active"}`}
-            />
-          </button>
-          <div className="number-page">{currentPage + 1}</div>
-          <button
-            className="button-next"
-            onClick={() => handleChangePage(currentPage + 1)}
-            disabled={currentPage == totalPages - 1}
-          >
-            <FontAwesomeIcon
-              icon={faChevronRight}
-              className={`${currentPage == totalPages - 1 ? "icon-next" : "active"}`}
-            />
-          </button>
-        </div>
         </div>
       </div>
     </div>
