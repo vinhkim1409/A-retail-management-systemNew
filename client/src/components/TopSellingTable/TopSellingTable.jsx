@@ -72,6 +72,7 @@ const TopSellingTable = ({ productsList }) => {
   const bgPrimary = palette.primary.main;
   const bgSecondary = palette.secondary.main;
   const {tenantURL}=useParams()
+  console.log(productsList)
   return (
     <Card
       elevation={3}
@@ -136,7 +137,7 @@ const TopSellingTable = ({ productsList }) => {
                   sx={{ px: 0, textTransform: "capitalize",maxWidth:40,minWidth:40}}
                   className="name"
                 >
-                  {product.product.price}đ
+                  {product?.product?.price}đ
                 </TableCell>
                 <TableCell
                   align="left"
@@ -144,7 +145,7 @@ const TopSellingTable = ({ productsList }) => {
                   sx={{ px: 0, textTransform: "capitalize",maxWidth:30,minWidth:30}}
                   className="name"
                 >
-                 100
+                {product?.count}
                 </TableCell>
 
                 <TableCell sx={{ px: 0 }} align="left" colSpan={2}>

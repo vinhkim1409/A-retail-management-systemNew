@@ -171,7 +171,7 @@ const DetailOrderBusiness = () => {
               Delete
             </div> */}
           {/* order.shipping_status == "delivered" && */}
-          {order?.typeOrder == "Website" ? (
+          {order?.typeOrder == "Website" && order?.shipping_status == "delivered" && !order?.is_confirm? (
             <div
               className="request"
               onClick={() => {
@@ -203,8 +203,8 @@ const DetailOrderBusiness = () => {
               </div>
               {order?.typeOrder == "Website" &&
               !order?.is_refund &&
-              order?.shipping_status == "delivered" ? (
-                <button className="confirm">Confirm receipt</button>
+              order?.shipping_status == "delivered"? (
+                <button className="confirm" onClick={handleConfirm}>Confirm receipt</button>
               ) : (
                 <></>
               )}

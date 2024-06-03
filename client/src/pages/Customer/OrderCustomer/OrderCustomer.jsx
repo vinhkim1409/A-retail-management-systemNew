@@ -75,7 +75,7 @@ const OrderCustomer = () => {
   };
   const checkShipingStatus = async () => {
     const orders = await axios.get(`${api}order/check-shipping-status`, config);
-    console.log(orders.data);
+    console.log(orders);
   };
   useEffect(() => {
     if (!customer) {

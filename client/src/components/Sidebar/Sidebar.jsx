@@ -36,12 +36,6 @@ const Sidebar = () => {
             icon: faUser,
             subTabs: []
         },
-        {
-            name: 'Registered businesses',
-            path: '/admin/business',
-            icon: faUser,
-            subTabs: []
-        },
     ];
 
     return (
