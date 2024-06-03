@@ -1,5 +1,6 @@
 const Order = require("../models/orderModel");
 const Cart = require("../models/cartModel");
+const OrderId = require("../models/orderIdModel");
 const Business = require("../models/businessModel");
 const { default: mongoose } = require("mongoose");
 const Product = require("../models/productModel");
@@ -105,11 +106,9 @@ const createShippingOrder = async (order, COD, refund = false) => {
           from_province_name: "HCM",
           to_name: `${order.buyer_firstName} ${order.buyer_lastName}`,
           to_phone: order?.buyer_phoneNumber,
-          to_address: `${order?.buyer_address_detail}, ${
-            order.buyer_ward.split("//")[0]
-          }, ${order.buyer_district.split("//")[0]}, ${
-            order.buyer_province.split("//")[0]
-          }, Vietnam`,
+          to_address: `${order?.buyer_address_detail}, ${order.buyer_ward.split("//")[0]
+            }, ${order.buyer_district.split("//")[0]}, ${order.buyer_province.split("//")[0]
+            }, Vietnam`,
           to_ward_name: `${order.buyer_ward.split("//")[0]}`,
           to_district_name: `${order.buyer_district.split("//")[0]}`,
           to_province_name: `${order.buyer_province.split("//")[0]}`,
@@ -222,7 +221,7 @@ const orderController = {
             product.variant == 0
               ? product.product.special_price
               : product.product.variants[product.variant - 1]
-                  .variant_special_price,
+                .variant_special_price,
           weight: product.product.weight,
           product_img: productImg,
           description: product.product.description,
@@ -513,50 +512,63 @@ const orderController = {
       const data = await response.json();
 
       if (data.success) {
-        const skuDetails = data.result.data.map((order) => order.sku_details);
-        const flattenedSkuDetails = skuDetails.flat();
+        const orderNumbers = data.result.data.map(order => order.sales_order.order_number);
+        // Tìm tất cả order_number có trong OrderId
+        const existingOrderIds = await OrderId.find({ order_number: { $in: orderNumbers } }).select('order_number').lean();
+        const existingOrderNumbers = existingOrderIds.map(order => order.order_number);
 
-        for (const skuDetail of flattenedSkuDetails) {
-          const product = await Product.findOne({ sku: skuDetail.sku });
+        for (const order of data.result.data) {
+          if (existingOrderNumbers.includes(order.sales_order.order_number)) {
+            // Bỏ qua đơn hàng nếu order_number đã tồn tại trong existingOrderNumbers
+            continue;
+          }
 
-          if (product) {
-            product.stock_quantity -= skuDetail.quantity;
-            await product.save();
-            console.log(
-              `Updated stock for product ${skuDetail.product_name}: ${product.stock_quantity}`
-            );
-          } else {
-            // Tách giá trị SKU thành hai phần
-            const [productSku, variantSku] = skuDetail.sku.split("-");
-
-            // Tìm sản phẩm dựa trên SKU sản phẩm
-            const product = await Product.findOne({ sku: productSku });
+          for (const skuDetail of order.sku_details) {
+            const product = await Product.findOne({ sku: skuDetail.sku });
 
             if (product) {
-              // Tìm variant dựa trên variant_sku
-              const variant = product.variants.find(
-                (v) => v.variant_sku === variantSku
+              product.stock_quantity -= skuDetail.quantity;
+              await product.save();
+              console.log(
+                `Updated stock for product ${skuDetail.product_name}: ${product.stock_quantity}`
               );
-
-              if (variant) {
-                variant.variant_quantity -= skuDetail.quantity;
-                await product.save();
-                console.log(
-                  `Updated stock for variant ${skuDetail.product_name} (${variantSku}): ${variant.variant_quantity}`
-                );
-              } else {
-                console.error(
-                  `Variant with SKU ${variantSku} not found for product ${productSku}`
-                );
-              }
             } else {
-              console.error(`Product with SKU ${productSku} not found`);
+              // Tách giá trị SKU thành hai phần
+              const [productSku, variantSku] = skuDetail.sku.split("-");
+
+              // Tìm sản phẩm dựa trên SKU sản phẩm
+              const product = await Product.findOne({ sku: productSku });
+
+              if (product) {
+                // Tìm variant dựa trên variant_sku
+                const variant = product.variants.find(
+                  (v) => v.variant_sku === variantSku
+                );
+
+                if (variant) {
+                  variant.variant_quantity -= skuDetail.quantity;
+                  await product.save();
+                  console.log(
+                    `Updated stock for variant ${skuDetail.product_name} (${variantSku}): ${variant.variant_quantity}`
+                  );
+                } else {
+                  console.error(
+                    `Variant with SKU ${variantSku} not found for product ${productSku}`
+                  );
+                }
+              } else {
+                console.error(`Product with SKU ${productSku} not found`);
+              }
             }
           }
+          const newOrderId = new OrderId({ order_number: order.sales_order.order_number, tenantID: req.tenantID});
+          await newOrderId.save();
+          console.log(`Added order_number ${order.sales_order.order_number} to OrderId`);
         }
 
-        console.log("skuDetails", skuDetails);
-        res.json({ success: true, sku_details: skuDetails });
+
+
+        res.json({ success: true });
       } else {
         res
           .status(500)
@@ -567,6 +579,7 @@ const orderController = {
       res.status(500).json({ message: error.message });
     }
   },
+
 
   init: function () {
     this.loadAccessToken();

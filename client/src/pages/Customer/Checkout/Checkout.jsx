@@ -51,8 +51,8 @@ const Checkout = () => {
           prev +
           (curr.variant > 0
             ? curr.product.variants[curr.variant - 1].variant_special_price
-            : curr.product.price) *
-          curr.quantity
+            : curr.product.special_price?curr.product.special_price:curr.product.price) *
+            curr.quantity
           // (1 - 20 / 100) * tai sao lai co
         );
       }, deliveryFee)
@@ -241,8 +241,9 @@ const Checkout = () => {
               >
                 {customer.resCustomer.address.map((address, index) => (
                   <option key={index} value={parseInt(index)}>
-                    {`${address.detail}, ${address.ward.split("//")[0]}, ${address.district.split("//")[0]
-                      }, ${address.province.split("//")[0]}`}
+                    {`${address.detail}, ${address.ward.split("//")[0]}, ${
+                      address.district.split("//")[0]
+                    }, ${address.province.split("//")[0]}`}
                   </option>
                 ))}
               </select>
@@ -349,7 +350,7 @@ const Checkout = () => {
                       {getPriceExpr(
                         item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                            .variant_special_price
+                              .variant_special_price
                           : item.product.price
                       )}
                     </div>
@@ -357,7 +358,7 @@ const Checkout = () => {
                       {getPriceExpr(
                         item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                            .variant_price
+                              .variant_price
                           : item.product.price
                       )}
                     </div>
@@ -370,7 +371,7 @@ const Checkout = () => {
                       {getPriceExpr(
                         (item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                            .variant_special_price
+                              .variant_special_price
                           : item.product.price) * item.quantity
                       )}
                     </div>
@@ -399,17 +400,21 @@ const Checkout = () => {
               </div>
               <div className="address-confirm">
                 <p>Địa chỉ nhận hàng:</p>
-                <p className="text-confirm">{`${customer.resCustomer?.address[addressChoice]?.detail
-                  }, ${customer.resCustomer?.address[addressChoice]?.ward.split(
+                <p className="text-confirm">{`${
+                  customer.resCustomer?.address[addressChoice]?.detail
+                }, ${
+                  customer.resCustomer?.address[addressChoice]?.ward.split(
                     "//"
                   )[0]
-                  }, ${customer.resCustomer?.address[addressChoice]?.district.split(
+                }, ${
+                  customer.resCustomer?.address[addressChoice]?.district.split(
                     "//"
                   )[0]
-                  }, ${customer.resCustomer?.address[addressChoice]?.province.split(
+                }, ${
+                  customer.resCustomer?.address[addressChoice]?.province.split(
                     "//"
                   )[0]
-                  }`}</p>
+                }`}</p>
               </div>
               <div className="delivery-confirm">
                 <p>Phương thức vận chuyển:</p>
