@@ -1,4 +1,4 @@
-export const api = "http://localhost:5000/";  // local server :http://localhost:5000/ ,  live server https://bk-management.onrender.com
+export const api = "https://bk-management.onrender.com/";  // local server :http://localhost:5000/ ,  live server https://bk-management.onrender.com
 export const Industry = {
   industry1: [
     "Detail1",
