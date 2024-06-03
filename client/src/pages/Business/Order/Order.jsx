@@ -84,7 +84,7 @@ const Order = () => {
     console.log(orders.data);
     const order = [...orders?.data?.data?.order.reverse()];
     const orderRequest = orders?.data?.data?.order.filter(
-      (order) => order?.is_refund == true
+      (order) => order?.is_refund == true && order?.refund_status=="Pending"
     );
     const arrayOrder = [...orderRequest, ...order];
     const unitOrder = [...new Set(arrayOrder)];
@@ -119,7 +119,7 @@ const Order = () => {
             className="select-status-box"
           >
             <option value="All">All</option>
-            <option value="Unpaid">Wait Pay</option>
+            <option value="Wait Pay">Wait Pay</option>
             {/* <option value="Transport">Transport</option> */}
             <option value="Paid">Paid</option>
             {/* <option value="Cancelled">Cancelled</option> */}
@@ -198,7 +198,7 @@ const Order = () => {
                       <TableCell align="left" className="order-status">
                         {item?.is_refund ? (
                           <div style={{ color: "red" }}>{"Request"}</div>
-                        ) : item?.shipping_status && !item.typeOrder == "Sendo"  ? (
+                        ) : item?.shipping_status && item.typeOrder != "Sendo"  ? (
                           configStatus(item.shipping_status)
                         ) : item.typeOrder == "Sendo" ? 
                           "Sendo"
