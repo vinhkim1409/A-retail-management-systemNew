@@ -315,7 +315,7 @@ const Checkout = () => {
         </div>
 
         <div className="check-layout">
-          <h1>KIỂM TRA LẠI ĐƠN HÀNG</h1>
+          <h1>CHECK YOUR ORDER AGAIN</h1>
           <table className="table-check">
             <thead className="head-check">
               <tr>
@@ -323,25 +323,25 @@ const Checkout = () => {
                   #
                 </th>
                 <th className="head-image-check" style={{ textAlign: "left" }}>
-                  Hàng hóa
+                  Products
                 </th>
                 <th
                   className="head-price-check"
                   style={{ textAlign: "center" }}
                 >
-                  Đơn giá
+                  Unit Price
                 </th>
                 <th
                   className="head-count-check"
                   style={{ textAlign: "center" }}
                 >
-                  Số lượng
+                  Quantity
                 </th>
                 <th
                   className="head-total-check"
                   style={{ textAlign: "center" }}
                 >
-                  Thành tiền
+                  Into Money
                 </th>
               </tr>
             </thead>
@@ -362,10 +362,14 @@ const Checkout = () => {
                       {getPriceExpr(
                         item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                              .variant_special_price?item.product.variants[item.variant - 1]
-                              .variant_special_price:item.product.variants[item.variant - 1]
-                              .variant_price
-                          : item.product.special_price?item.product.special_price:item.product.price
+                              .variant_special_price
+                            ? item.product.variants[item.variant - 1]
+                                .variant_special_price
+                            : item.product.variants[item.variant - 1]
+                                .variant_price
+                          : item.product.special_price
+                          ? item.product.special_price
+                          : item.product.price
                       )}
                     </div>
                     <div className="price-initial">
@@ -385,10 +389,14 @@ const Checkout = () => {
                       {getPriceExpr(
                         (item.variant > 0
                           ? item.product.variants[item.variant - 1]
-                              .variant_special_price?item.product.variants[item.variant - 1]
-                              .variant_special_price:item.product.variants[item.variant - 1]
-                              .variant_price
-                          : item.product.special_price?item.product.special_price:item.product.price) * item.quantity
+                              .variant_special_price
+                            ? item.product.variants[item.variant - 1]
+                                .variant_special_price
+                            : item.product.variants[item.variant - 1]
+                                .variant_price
+                          : item.product.special_price
+                          ? item.product.special_price
+                          : item.product.price) * item.quantity
                       )}
                     </div>
                   </td>
@@ -397,25 +405,25 @@ const Checkout = () => {
             </tbody>
           </table>
           <div className="total">
-            <div className="total-text">Thành tiền:</div>
+            <div className="total-text">Into Money:</div>
             <div className="total-price">{getTotalPrice()}</div>
           </div>
         </div>
 
         <div className="confirm-layout">
-          <h1>XÁC NHẬN THANH TOÁN</h1>
+          <h1>Confirm Payment</h1>
           <div className="container-confirm">
             <div className="info-confirm">
               <div className="name-confirm">
-                <p>Họ và tên người nhận:</p>
+                <p>Full name:</p>
                 <p className="text-confirm">{name}</p>
               </div>
               <div className="phonenumber-confirm">
-                <p>Số điện thoại:</p>
+                <p>Phone Number:</p>
                 <p className="text-confirm">{phone}</p>
               </div>
               <div className="address-confirm">
-                <p>Địa chỉ nhận hàng:</p>
+                <p>Address:</p>
                 <p className="text-confirm">{`${
                   customer.resCustomer?.address[addressChoice]?.detail
                 }, ${
@@ -433,13 +441,13 @@ const Checkout = () => {
                 }`}</p>
               </div>
               <div className="delivery-confirm">
-                <p>Phương thức vận chuyển:</p>
+                <p>Ship Method:</p>
                 <p className="text-confirm">
                   {deliveryMethods[deliveryMethod]}
                 </p>
               </div>
               <div className="payment-confirm">
-                <p>Phương thức thanh toán:</p>
+                <p>Payment Method:</p>
                 <p className="text-confirm">
                   {paymentMethods[paymentMethod].text}
                 </p>
@@ -447,19 +455,19 @@ const Checkout = () => {
             </div>
             <div className="price-confirm">
               <div className="total-price-confirm">
-                <p>Thành tiền:</p>
+                <p>Into Money:</p>
                 <p className="text-confirm">{getTotalPrice()}</p>
               </div>
               <div className="discount-confirm">
-                <p>Giảm giá:</p>
+                <p>Discount:</p>
                 <p className="text-confirm">{getPriceExpr(0)}</p>
               </div>
               <div className="price-delivery-confirm">
-                <p>Vận chuyển:</p>
+                <p>Shipping fee:</p>
                 <p className="text-confirm">{getPriceExpr(shippingFee)}</p>
               </div>
               <div className="total-confirm">
-                <p className="text-confirm">Tổng cộng:</p>
+                <p className="text-confirm">Total Amount:</p>
                 <p className="text-confirm-final">
                   {getTotalPrice(shippingFee)}
                 </p>
@@ -467,9 +475,9 @@ const Checkout = () => {
             </div>
           </div>
           <div className="button-confirm">
-            <button className="button-return">Quay lại giỏ hàng</button>
+            <button className="button-return" onClick={()=>{navigate(`/${tenantURL}/customer/cart`)}}>Comback Cart</button>
             <button className="button-order" onClick={handleOrder}>
-              Xác nhận đặt hàng
+              Order confirmation
             </button>
           </div>
         </div>

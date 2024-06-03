@@ -178,10 +178,10 @@ const Cart = () => {
               />
             </div>
             <div className="count-book-head">
-              Tất cả ({countproducts} sản phẩm)
+              All ({countproducts} products)
             </div>
-            <div className="price-head">Đơn giá</div>
-            <div className="count-head">Số lượng</div>
+            <div className="price-head">Unit Price</div>
+            <div className="count-head">Quantity</div>
           </div>
 
           {products.map((item, index) => (
@@ -257,22 +257,22 @@ const Cart = () => {
           <div className="price-info">
             <div className="price-detail">
               <div className="initial-total">
-                <p className="color-grey">Tạm tính</p>
+                <p className="color-grey">Sub Total</p>
                 <p>{getPriceExpr(totalPrice)}</p>
               </div>
               <div className="discount">
-                <p className="color-grey">Giảm giá</p>
+                <p className="color-grey">Discount</p>
                 <p>{getPriceExpr(0)}</p>
               </div>
             </div>
             <div className="line"></div>
             <div className="total-price">
-              <p className="color-grey">Tổng tiền</p>
+              <p className="color-grey">Total Amount</p>
               <p className="final-price">{getPriceExpr(totalPrice)}</p>
             </div>
           </div>
           <button className="button-buy" onClick={buyProduct}>
-            Mua hàng ({selectedItems.length})
+            Buy({selectedItems.length})
           </button>
         </div>
       </div>
