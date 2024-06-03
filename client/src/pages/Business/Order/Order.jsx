@@ -82,7 +82,7 @@ const Order = () => {
   const getOrder = async () => {
     const orders = await axois.get(`${api}order`, config);
     console.log(orders.data);
-    const order = [...orders?.data?.data?.order];
+    const order = [...orders?.data?.data?.order.reverse()];
     const orderRequest = orders?.data?.data?.order.filter(
       (order) => order?.is_refund == true
     );
@@ -197,12 +197,14 @@ const Order = () => {
                       </TableCell>
                       <TableCell align="left" className="order-status">
                         {item?.is_refund ? (
-                          <div style={{ color: "red" }}>{"Refund"}</div>
-                        ) : item?.shipping_status ? (
+                          <div style={{ color: "red" }}>{"Request"}</div>
+                        ) : item?.shipping_status && !item.typeOrder == "Sendo"  ? (
                           configStatus(item.shipping_status)
-                        ) : (
+                        ) : item.typeOrder == "Sendo" ? 
+                          "Sendo"
+                        : 
                           "In shipped"
-                        )}
+                        }
                       </TableCell>
                     </TableRow>
                   ))}
@@ -211,7 +213,7 @@ const Order = () => {
         </Box>
         <div className="pages">
           <div className="pages-number">
-            {1 * (page + 1) * 5}-
+            {1 * (page*10 + 1)}-
             {page == totalPages - 1 ? orderList.length : 10 * (page + 1)} of{" "}
             {orderList.length}
           </div>

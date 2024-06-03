@@ -231,9 +231,9 @@ const DetailOrderBusiness = () => {
                               />
                               <div className="name-frame">
                                 <div className="name-product">
-                                  {item.product.name}
+                                  {item.product_name}
                                 </div>
-                                <div className="sku">SKU:1</div>
+                                <div className="sku">SKU:{item.product_sku}</div>
                               </div>
                             </div>
                           </TableCell>

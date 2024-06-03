@@ -244,7 +244,7 @@ const DetailOrderBusiness = () => {
                         Quantity
                       </TableCell>
                       <TableCell align="left" className="amount lable-product">
-                        Amounts
+                        Total
                       </TableCell>
                       <TableCell align="left" className="amount lable-product">
                         Action
