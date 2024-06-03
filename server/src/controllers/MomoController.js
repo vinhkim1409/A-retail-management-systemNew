@@ -44,7 +44,7 @@ const MonoController = {
     const requestType = "linkWallet";
     const orderInfo = "Thanh toán qua ví MoMo";
     const ipnUrl = process.env.IPN_URL_ORDER;
-    const redirectUrl = `${process.env.REDIRECT_URL_ORDER}${req.body.tenantURL}/customer/cart`;
+    const redirectUrl = `${process.env.REDIRECT_URL_ORDER}${req.body.tenantURL}/customer/order`;
     const partnerClientId = process.env.PARTNER_CLIENT_ID;
     const { products } = req.body;
 
