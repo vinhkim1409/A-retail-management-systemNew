@@ -221,11 +221,14 @@ const orderController = {
           quantity: product.quantity,
           unit_price:
             product.variant == 0
-              ? product.product.special_price?product.product.special_price:product.product.price
+              ? product.product.special_price
+                ? product.product.special_price
+                : product.product.price
               : product.product.variants[product.variant - 1]
-                  .variant_special_price?product.product.variants[product.variant - 1]
-                  .variant_special_price:product.product.variants[product.variant - 1]
-                  .variant_price,
+                  .variant_special_price
+              ? product.product.variants[product.variant - 1]
+                  .variant_special_price
+              : product.product.variants[product.variant - 1].variant_price,
           weight: product.product.weight,
           product_img: productImg,
           description: product.product.description,
@@ -374,29 +377,29 @@ const orderController = {
   },
   checkShippingStatus: async (req, res) => {
     try {
-      if(req.user[0]._id.toString() =="663a5ea4c94309029f04c7ef")
-        {
-          return res.json("Ok")
-        }
-      const orders = await Order.find({ customerID: req.user[0]._id });
-      let array = [];
-      orders.map(async (order, index) => {
-        if (!order.is_cancel && order.shippingCode) {
-          const status = await getShippingStatus(order.shippingCode);
-          if (status != null) {
-            const orderUpdate = await Order.findOneAndUpdate(
-              { _id: order._id },
-              {
-                shipping_status: status.status,
-                date_update_shipping_statu: new Date(),
-              },
-              { new: true }
-            );
+      if (req.user[0]._id.toString() == "663a5ea4c94309029f04c7ef") {
+        return res.json("Ok");
+      } else {
+        const orders = await Order.find({ customerID: req.user[0]._id });
+        let array = [];
+        orders.map(async (order, index) => {
+          if (!order.is_cancel && order.shippingCode) {
+            const status = await getShippingStatus(order.shippingCode);
+            if (status != null) {
+              const orderUpdate = await Order.findOneAndUpdate(
+                { _id: order._id },
+                {
+                  shipping_status: status.status,
+                  date_update_shipping_statu: new Date(),
+                },
+                { new: true }
+              );
+            }
           }
-        }
-      });
+        });
 
-      res.json(array);
+        res.json(array);
+      }
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -455,7 +458,7 @@ const orderController = {
       delete newOrderData.updatedAt;
       const delivery = await createShippingOrder(
         orderRedelivery,
-        orderRedelivery?.paymentType == "Ví Momo"?false:true,
+        orderRedelivery?.paymentType == "Ví Momo" ? false : true,
         true
       );
       const status = await getShippingStatus(delivery?.order_code);
