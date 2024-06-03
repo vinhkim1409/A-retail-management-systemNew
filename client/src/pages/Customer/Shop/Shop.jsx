@@ -150,7 +150,7 @@ function Shop() {
         </div>
         <div className="info-business">
           <div className="total-product">Product: {allProducts.length}</div>
-          <div className="rating">{`Rating: ${Ratingpoint} (${numberRating} Rating) `}</div>
+          <div className="rating">{`Rating: ${Ratingpoint?Ratingpoint:0} (${numberRating} Rating) `}</div>
           {/* <div className="total-customer">{"Customer: 2"}</div> */}
         </div>
       </div>

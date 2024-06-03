@@ -34,7 +34,7 @@ const style = {
 };
 
 const Navbar = () => {
-  const path=window.location.pathname 
+  const path = window.location.pathname;
   useEffect(() => {
     console.log(path.split("/"));
   }, []);
@@ -44,6 +44,11 @@ const Navbar = () => {
         <Link to="/">
           <img src={logo} alt="Logo" className="logo-img" />
         </Link>
+        <div className="admin">
+          <Link to="/admin/login">
+            <button className="feature-button">Admin</button>
+          </Link>
+        </div>
       </div>
       <div className="function-button">
         <div className="home">
