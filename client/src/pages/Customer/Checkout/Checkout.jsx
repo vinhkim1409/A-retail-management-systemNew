@@ -51,7 +51,7 @@ const Checkout = () => {
           prev +
           (curr.variant > 0
             ? curr.product.variants[curr.variant - 1].variant_special_price
-            : curr.product.price) *
+            : curr.product.special_price?curr.product.special_price:curr.product.price) *
             curr.quantity
           // (1 - 20 / 100) * tai sao lai co
         );
@@ -126,7 +126,7 @@ const Checkout = () => {
     const orderInfo = {
       products: order,
       statusPayment: "Wait Pay",
-      totalPrice: Number(getTotalPrice(shippingFee)) * 1000,
+      totalPrice: Number(getTotalPrice(shippingFee)),
       shipMethod: deliveryMethods[deliveryMethod],
       paymentType: paymentMethods[paymentMethod].text,
       shipPrice: shippingFee,
@@ -152,6 +152,7 @@ const Checkout = () => {
       }
       console.log(paymentMomo.data);
     } else {
+      console.log(orderInfo);
       const createOrder = await axios.post(
         `${api}order/createOrder`,
         orderInfo,
