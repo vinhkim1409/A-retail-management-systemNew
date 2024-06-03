@@ -205,7 +205,7 @@ const orderController = {
       const { products } = req.body;
 
       const delivery = await createShippingOrder(req.body, true);
-      const status = await getShippingStatus(delivery.order_code);
+      const status = await getShippingStatus(delivery?.order_code);
       const productArray = products.map((product) => {
         const productImg = product.product.pictures.map((productImage) => {
           return productImage.picture_url;
@@ -236,7 +236,7 @@ const orderController = {
         typeOrder: "Website",
         shippingCode: delivery ? delivery.order_code : "null",
         orderStatus: "Delivery",
-        shipping_status: status.status ? "ready_to_pick" : status.status,
+        shipping_status: status?.status ? "ready_to_pick" : status?.status,
         ...req.body,
         products: productArray,
       });
