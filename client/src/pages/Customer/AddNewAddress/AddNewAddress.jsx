@@ -116,17 +116,17 @@ const AddNewAddress = () => {
   };
 
   return (
-    <div className="AddressEdit-container">
+    <div className="AddNewAddress-container">
       <div className="header">
-        <h1>ĐỊA CHỈ</h1>
+        <h1>Address</h1>
       </div>
 
       <div className="content">
         <div className="field">
-          <div className="firstname-field">Họ:</div>
-          <div className="lastname-field">Tên:</div>
-          <div className="phonenumber-field">Số điện thoại:</div>
-          <div className="email-field">Địa chỉ:</div>
+          <div className="firstname-field">First Name:</div>
+          <div className="lastname-field">Last Name:</div>
+          <div className="phonenumber-field">Phone number:</div>
+          <div className="email-field">Address:</div>
         </div>
 
         <div className="infor">
@@ -162,7 +162,7 @@ const AddNewAddress = () => {
               value={provinceInput}
             >
               <option key={""} value="">
-                --Chọn Tỉnh/Thành phố--
+                --Choose Province--
               </option>
               {provinces.map((item) => (
                 <option
@@ -182,7 +182,7 @@ const AddNewAddress = () => {
               value={districtInput}
             >
               <option key={""} value="">
-                --Chọn Quận/Huyện--
+                --Choose District--
               </option>
               {districts.map(
                 (item) =>
@@ -205,7 +205,7 @@ const AddNewAddress = () => {
               value={wardInput}
             >
               <option key={""} value="">
-                --Chọn Xã/Phường--
+                --Choose Ward--
               </option>
               {wards.map(
                 (item) =>
@@ -228,9 +228,9 @@ const AddNewAddress = () => {
 
       <div className="button">
         <div className="button-detail">
-          <button className="button-cancel">Hủy</button>
+          <button className="button-cancel">Cancel</button>
           <button className="button-save" onClick={handleAddNewAddress}>
-            Lưu
+            Save
           </button>
         </div>
       </div>
