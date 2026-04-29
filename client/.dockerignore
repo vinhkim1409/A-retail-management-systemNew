@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+
+# Build output (Tránh copy bản build cũ từ máy local)
+build/
+dist/
+out/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker & Git
+Dockerfile
+.dockerignore
+.git
+.gitignore
+
+# OS metadata
+.DS_Store

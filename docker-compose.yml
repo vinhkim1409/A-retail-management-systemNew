@@ -32,5 +32,5 @@ services:
       - mongo_data:/data/db
     restart: always
   
-  volumes:
+volumes:
     mongo_data:
