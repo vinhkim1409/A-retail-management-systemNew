@@ -4,9 +4,6 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN cat package.json
-RUN cat package-lock.json
-
 RUN npm ci
 
 COPY . .
