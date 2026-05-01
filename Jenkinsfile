@@ -9,6 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '=== Checkout Source ==='
+                deleteDir()
                 checkout scm
             }
         }
@@ -27,7 +28,7 @@ pipeline {
         stage('Build Images'){
             steps {
                 echo '=== Build docker images==='
-                sh 'docker-compose build'
+                sh 'docker-compose build --no-cache'
             }
         }
 
