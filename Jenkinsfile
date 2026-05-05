@@ -54,26 +54,63 @@ pipeline {
         }
     stage('Deploy') {
             steps {
-                withCredentials([sshUserPrivateKey(
-                    credentialsId: 'ec2-ssh-key',
-                    keyFileVariable: 'SSH_KEY',
-                    usernameVariable: 'SSH_USER'
-                )]) {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'ec2-ssh-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
                     sh '''
-                    ssh -i $SSH_KEY \
+                    ssh -i \$SSH_KEY \
                         -o StrictHostKeyChecking=no \
-                        $SSH_USER@${SERVER_IP} << 'EOF'
+                        \$SSH_USER@${SERVER_IP} << 'EOF'
 
                     set -e
-                    cd ${DEPLOY_PATH}
 
-                    docker compose -f docker-compose.pro.yml pull
-                    docker compose -f docker-compose.pro.yml up -d --remove-orphans
+                    # ===== CONFIG =====
+                    CLIENT_IMAGE="kimxuanvinh2002/retailclient:latest"
+                    SERVER_IMAGE="kimxuanvinh/retailserver:latest"
+
+                    CLIENT_CONTAINER="frontend"
+                    SERVER_CONTAINER="backend"
+
+                    SERVER_PORT=5000
+                    CLIENT_PORT=80
+
+                    # ===== PULL IMAGE =====
+                    docker pull \$CLIENT_IMAGE
+                    docker pull \$SERVER_IMAGE
+
+                    # ===== STOP & REMOVE OLD CONTAINERS =====
+                    docker stop \$CLIENT_CONTAINER || true
+                    docker rm \$CLIENT_CONTAINER || true
+
+                    docker stop \$SERVER_CONTAINER || true
+                    docker rm \$SERVER_CONTAINER || true
+
+                    # ===== RUN SERVER =====
+                    docker run -d \
+                        --name \$SERVER_CONTAINER \
+                        -p \$SERVER_PORT:5000 \
+                        --restart unless-stopped \
+                        \$SERVER_IMAGE
+
+                    # ===== RUN CLIENT =====
+                    docker run -d \
+                        --name \$CLIENT_CONTAINER \
+                        -p \$CLIENT_PORT:80 \
+                        --restart unless-stopped \
+                        \$CLIENT_IMAGE
 
                     sleep 10
-                    curl -f http://localhost || exit 1
 
-                    echo "Deploy OK"
+                    # ===== HEALTH CHECK =====
+                    curl -f http://localhost:\$SERVER_PORT || exit 1
+                    curl -f http://localhost:\$CLIENT_PORT || exit 1
+
+                    echo "Deploy OK (client + server)"
+
         EOF
                     '''
                 }
