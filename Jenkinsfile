@@ -42,16 +42,17 @@ pipeline {
                 sh """
                 echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                 """
+                }
         }
-        stage('Push Images') {
+    }
+    stage('Push Images') {
             steps {
                 sh """
                 docker compose -f docker-compose.build.yml push
                 """
             }
         }
-    }
-        }
+
     }
 
     post {
