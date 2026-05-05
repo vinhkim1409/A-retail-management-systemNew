@@ -26,7 +26,7 @@ pipeline {
         stage('Build Images') {
             steps {
                 sh """
-                docker ps
+                docker compose -f docker-compose.build.yml build
                 """
             }
         }
