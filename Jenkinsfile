@@ -26,9 +26,31 @@ pipeline {
         stage('Build Images') {
             steps {
                 sh """
-                docker compose -f docker-compose.build.yml build
+                docker compose -f docker-compose.build.yml build server
+                docker compose -f docker-compose.build.yml build client
+                docker images
                 """
             }
+        }
+        stage('Login Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: DOCKERHUB_CREDENTIALS,
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+             )]) {
+                sh """
+                echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                """
+        }
+        stage('Push Images') {
+            steps {
+                sh """
+                docker compose -f docker-compose.build.yml push
+                """
+            }
+        }
+    }
         }
     }
 
