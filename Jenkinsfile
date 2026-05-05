@@ -54,7 +54,7 @@ pipeline {
         }
     stage('Deploy to Production (Zero Downtime)') {
             steps {
-                sshagent(['SSH_CREDENTIALS']) {
+                sshagent([SSH_CREDENTIALS]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no \
                     -o ServerAliveInterval=60 \
