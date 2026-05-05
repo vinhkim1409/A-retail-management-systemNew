@@ -52,35 +52,33 @@ pipeline {
                 """
             }
         }
-    stage('Deploy to Production (Zero Downtime)') {
+    stage('Deploy') {
             steps {
-                sshagent([SSH_CREDENTIALS]) {
+                withCredentials([sshUserPrivateKey(
+                    credentialsId: 'ec2-ssh-key',
+                    keyFileVariable: 'SSH_KEY',
+                    usernameVariable: 'SSH_USER'
+                )]) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no \
-                    -o ServerAliveInterval=60 \
-                    -o ServerAliveCountMax=3 \
-                    ${SERVER_USER}@${SERVER_IP} << EOF
+                    ssh -i $SSH_KEY \
+                        -o StrictHostKeyChecking=no \
+                        $SSH_USER@${SERVER_IP} << 'EOF'
 
                     set -e
-
                     cd ${DEPLOY_PATH}
 
-                    echo "Pull latest images..."
                     docker compose -f docker-compose.pro.yml pull
-
-                    echo "Recreate containers..."
                     docker compose -f docker-compose.pro.yml up -d --remove-orphans
 
-                    echo "Health check..."
                     sleep 10
                     curl -f http://localhost || exit 1
 
-                    echo "Deploy successful"
-                    EOF
+                    echo "Deploy OK"
+        EOF
                     """
+                }
+            }
         }
-    }
-}
     }
 
     post {
