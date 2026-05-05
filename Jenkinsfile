@@ -70,7 +70,7 @@ pipeline {
 
                     # ===== CONFIG =====
                     CLIENT_IMAGE="kimxuanvinh2002/retailclient:latest"
-                    SERVER_IMAGE="kimxuanvinh/retailserver:latest"
+                    SERVER_IMAGE="kimxuanvinh2002/retailserver:latest"
 
                     CLIENT_CONTAINER="frontend"
                     SERVER_CONTAINER="backend"
