@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = 'eab82e01-fee7-403e-86a7-a63b68ba9310'
-        SSH_CREDENTIALS = 'ec2-ssh-key'
+        SSH_CREDENTIALS = 'Instance_Key_Production_AWS'
 
         DOCKER_IMAGE_CLIENT = "kimxuanvinh2002/retailclient"
         DOCKER_IMAGE_SERVER = "kimxuanvinh2002/retailserver"
@@ -55,7 +55,7 @@ pipeline {
     stage('Deploy') {
             steps {
                 withCredentials([sshUserPrivateKey(
-                    credentialsId: 'ec2-ssh-key',
+                    credentialsId: 'Instance_Key_Production_AWS',
                     keyFileVariable: 'SSH_KEY',
                     usernameVariable: 'SSH_USER'
                 )]) {
