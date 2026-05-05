@@ -46,11 +46,8 @@ async function loginAndSaveToken() {
   }
 }
 
-loginAndSaveToken().then(() => {
-  startServer();
-}).catch((error) => {
-  console.error('Lỗi khi đăng nhập:', error);
-});
+startServer();
+loginAndSaveToken()
 
 function startServer() {
   const app = express();
@@ -112,7 +109,7 @@ function startServer() {
   app.use("/category-info", attributeApiRoutes);
 
 
-  app.listen(PORT, () => {
+  app.listen(PORT,"0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
   });
 }
