@@ -1,12 +1,10 @@
+
+
 services:
   client:
+    build: ./client
     image: kimxuanvinh2002/retailclient:latest
-    build:
-      context: ./client
-      target: production
 
   server:
+    build: ./server
     image: kimxuanvinh2002/retailserver:latest
-    build:
-      context: ./server
-      target: production
