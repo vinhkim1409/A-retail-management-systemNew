@@ -88,10 +88,13 @@ pipeline {
 
                     docker stop \$SERVER_CONTAINER || true
                     docker rm \$SERVER_CONTAINER || true
+                    
+                    docker network create app-net || true
 
                     # ===== RUN SERVER =====
                     docker run -d \
                         --name \$SERVER_CONTAINER \
+                        --network app-net \
                         -p \$SERVER_PORT:5000 \
                         --restart unless-stopped \
                         \$SERVER_IMAGE
@@ -99,6 +102,7 @@ pipeline {
                     # ===== RUN CLIENT =====
                     docker run -d \
                         --name \$CLIENT_CONTAINER \
+                        --network app-net \
                         -p \$CLIENT_PORT:80 \
                         --restart unless-stopped \
                         \$CLIENT_IMAGE
