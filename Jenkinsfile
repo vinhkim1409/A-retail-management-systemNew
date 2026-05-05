@@ -26,7 +26,7 @@ pipeline {
         stage('Build Images') {
             steps {
                 sh """
-                docker-compose -f docker-compose.build.yml build
+                docker compose -f docker-compose.build.yml build
                 """
             }
         }
@@ -48,7 +48,7 @@ pipeline {
         stage('Push Images') {
             steps {
                 sh """
-                docker-compose -f docker-compose.build.yml push
+                docker compose -f docker-compose.build.yml push
                 """
             }
         }
@@ -67,10 +67,10 @@ pipeline {
                     cd ${DEPLOY_PATH}
 
                     echo "Pull latest images..."
-                    docker-compose -f docker-compose.pro.yml pull
+                    docker compose -f docker-compose.pro.yml pull
 
                     echo "Recreate containers without full downtime..."
-                    docker-compose -f docker-compose.pro.yml up -d --remove-orphans
+                    docker compose -f docker-compose.pro.yml up -d --remove-orphans
 
                     echo "Health check..."
                     curl -f http://localhost || exit 1
