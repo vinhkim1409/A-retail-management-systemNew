@@ -59,7 +59,7 @@ pipeline {
                     keyFileVariable: 'SSH_KEY',
                     usernameVariable: 'SSH_USER'
                 )]) {
-                    sh """
+                    sh '''
                     ssh -i $SSH_KEY \
                         -o StrictHostKeyChecking=no \
                         $SSH_USER@${SERVER_IP} << 'EOF'
@@ -75,7 +75,7 @@ pipeline {
 
                     echo "Deploy OK"
         EOF
-                    """
+                    '''
                 }
             }
         }
