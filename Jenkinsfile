@@ -107,7 +107,7 @@ pipeline {
 
                     echo "Deploy OK (client + server)"
 
-                    EOF
+EOF
                     '''
                 }
             }
