@@ -64,7 +64,7 @@ pipeline {
                     sh '''
                     ssh -i \$SSH_KEY \
                         -o StrictHostKeyChecking=no \
-                        \$SSH_USER@${SERVER_IP} "
+                        \$SSH_USER@${SERVER_IP} << 'EOF'
 
                     set -e
 
@@ -106,7 +106,8 @@ pipeline {
                     sleep 10
 
                     echo "Deploy OK (client + server)"
-                    "
+
+                    EOF
                     '''
                 }
             }
