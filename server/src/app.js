@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const axios = require("axios"); // Thêm dòng này để import axios
 const fs = require("fs"); // Thêm dòng này để import fs
-const path = require('path');
+const path = require("path");
 
 dotenv.config();
 const corsOptions = {
@@ -15,39 +15,38 @@ const corsOptions = {
 };
 // Hàm đăng nhập và lưu token
 async function loginAndSaveToken() {
-  const apiUrl = 'https://open.sendo.vn/login';
+  const apiUrl = "https://open.sendo.vn/login";
 
   const requestData = {
     shop_key: "ade9a5e7a2e84a8c99e95f3a58ef215d",
-    secret_key: "126585a0ae2d4bfcbd8d4c50a3dfa6f2"
+    secret_key: "126585a0ae2d4bfcbd8d4c50a3dfa6f2",
   };
 
   try {
     const response = await axios.post(apiUrl, requestData, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     });
 
     const responseData = response.data;
     if (responseData.success) {
       const token = responseData.result.token;
       // Lưu token vào file
-      const tokenPath = path.join(__dirname, 'token.txt'); // Xác định đường dẫn chính xác đến token.txt
+      const tokenPath = path.join(__dirname, "token.txt"); // Xác định đường dẫn chính xác đến token.txt
       fs.writeFile(tokenPath, token, (err) => {
         if (err) throw err;
-        console.log('Token đã được lưu vào file.');
+        console.log("Token đã được lưu vào file.");
       });
     } else {
-      console.error('Đăng nhập không thành công:', responseData.error);
+      console.error("Đăng nhập không thành công:", responseData.error);
     }
   } catch (error) {
-    console.error('Đã xảy ra lỗi:', error);
+    console.error("Đã xảy ra lỗi:", error);
   }
 }
 
 startServer();
-
 
 function startServer() {
   const app = express();
@@ -80,15 +79,13 @@ function startServer() {
   const customerRoutes = require("./routes/customerRoutes");
   const paymentRoutes = require("./routes/paymentRoutes");
   const attributeRoutes = require("./routes/attributeRoutes");
-  const dashboardRoutes = require("./routes/dashboardRoutes")
-  const reviewRoutes=require("./routes/reviewRoutes")
-  const packageOrderRoutes=require("./routes/packageOrderRoutes")
-  const adminRoutes=require("./routes/adminRoutes")
+  const dashboardRoutes = require("./routes/dashboardRoutes");
+  const reviewRoutes = require("./routes/reviewRoutes");
+  const packageOrderRoutes = require("./routes/packageOrderRoutes");
+  const adminRoutes = require("./routes/adminRoutes");
   // const infoRoutes = require("./routes/infoRoutes");
-  const attributeApiRoutes = require('./scripts/attribute_api');
-  const infoConnectRoutes = require("./routes/infoConnectRoutes")
- 
-
+  const attributeApiRoutes = require("./scripts/attribute_api");
+  const infoConnectRoutes = require("./routes/infoConnectRoutes");
 
   app.use("/product", productRoutes);
   app.use("/staff", staffRoutes);
@@ -108,8 +105,10 @@ function startServer() {
   app.use("/info-connect", infoConnectRoutes);
   app.use("/category-info", attributeApiRoutes);
 
-
-  app.listen(PORT,"0.0.0.0", () => {
+  app.get("/health", (req, res) => {
+    res.status(200).send("OK");
+  });
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
   });
 }
