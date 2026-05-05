@@ -1,19 +1,16 @@
 FROM node:20-alpine
 
-WORKDIR /home/node/app
+WORKDIR /app
 
 COPY package*.json ./
 
-RUN chown -R node:node /home/node/app
-
-USER node
-
+# deterministic install
 RUN npm ci --omit=dev
 
-COPY --chown=node:node . .
+COPY . .
 
 ENV NODE_ENV=production
 
 EXPOSE 5000
 
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]
