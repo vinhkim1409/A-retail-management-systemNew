@@ -52,6 +52,34 @@ pipeline {
                 """
             }
         }
+    stage('Deploy to Production (Zero Downtime)') {
+            steps {
+                sshagent(credentials: [SSH_CREDENTIALS]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no \
+                        -o ServerAliveInterval=60 \
+                        -o ServerAliveCountMax=3 \
+                        ${SERVER_USER}@${SERVER_IP} << 'EOF'
+
+                    set -e
+
+                    cd ${DEPLOY_PATH}
+
+                    echo "Pull latest images..."
+                    docker compose -f docker-compose.pro.yml pull
+
+                    echo "Recreate containers without full downtime..."
+                    docker compose -f docker-compose.pro.yml up -d --remove-orphans
+
+                    echo "Health check..."
+                    curl -f http://localhost || exit 1
+
+                    echo "Deploy successful"
+EOF
+                    """
+                }
+            }
+        }
 
     }
 
