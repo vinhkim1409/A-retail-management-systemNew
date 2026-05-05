@@ -47,7 +47,7 @@ async function loginAndSaveToken() {
 }
 
 startServer();
-loginAndSaveToken()
+
 
 function startServer() {
   const app = express();
