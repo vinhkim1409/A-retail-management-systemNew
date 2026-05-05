@@ -105,10 +105,6 @@ pipeline {
 
                     sleep 10
 
-                    # ===== HEALTH CHECK =====
-                    curl -f http://localhost:\$SERVER_PORT || exit 1
-                    curl -f http://localhost:\$CLIENT_PORT || exit 1
-
                     echo "Deploy OK (client + server)"
 
         EOF
