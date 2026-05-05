@@ -19,7 +19,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main-develope', url: 'https://github.com/vinhkim1409/A-retail-management-systemNew'
+                git branch: 'main-deploy', url: 'https://github.com/vinhkim1409/A-retail-management-systemNew'
             }
         }
 
